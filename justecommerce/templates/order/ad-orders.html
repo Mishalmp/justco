@@ -1,0 +1,91 @@
+{% extends 'adminapp/dashboardbase.html' %}
+{% block title %}Orders{% endblock  %}
+
+
+
+{% block content %} 
+
+
+  {% if messages %}
+  
+  {% for message in messages %}
+  
+  <div class="text-center text-danger">
+  <strong>{{message}}</strong>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+ 
+<div class="col-lg-12 grid-margin stretch-card ">
+    
+  <div class="card cartdata">
+    <div class="card-body">
+    
+
+        <div class="search-field d-none d-xl-block" style="float: right;">
+            <form class="d-flex align-items-center" action="#">
+              <div class="input-group form-control">
+                <div class=" bg-transparent border-0" style="font-size: 25px;">
+                    <a href="{% url 'admin_orders' %}"> <i class="mdi mdi-refresh"></i></a>
+                    </div>
+                
+              <input type="text" class="form-control bg-transparent border-0 h-100" name="keyword" placeholder="Search category"> 
+              <div class=" bg-transparent border-0">
+                <button type="submit"> <i class=" mdi mdi-magnify"></i></button>
+               </div>
+              </div>
+              
+            </form>
+          </div>
+          <br>
+          <br>
+
+    
+      <h4 class="card-title">Orders</h4>
+     
+      <table class="table table-striped">
+        <thead>
+            <tr>
+              <th scope="col">user</th>
+              <th scope="col">Order Date</th>
+              <th scope="col">Total Amount</th>
+              <th scope="col">payment mode</th>
+              <th scope="col">View Order</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+      <tbody>
+        {% for c in orders %}
+
+        <tr>
+          <td>  {{c.user}}  </td>
+          <td>  {{c.created_at}} </td>
+          <td>  {{c.total_price}} </td>
+          <td>  {{c.payment_mode}} </td>
+         
+          <td>
+            <a href="{% url 'ad_order_detail' c.id %}" class="btn btn-outline-dark">View order details</a>
+          </td>
+          <td >
+           
+            <span class="badge p-2 my-2 text-secondary" style="font-size: medium;">Pending</span>
+        </td>
+        
+          
+ 
+       </tr>
+      {% endfor %}
+      </tbody>
+      </table>
+   
+    
+    </div>
+  </div>
+</div>
+{% if message %}
+<div class="message"><a href="{%url 'admin_orders'%}">
+    <h4 class="font-weight-bold text-center pt-5" style="color: #403c3c52;font-weight: bold;">{{ message }}</h4> </a></div>
+{% endif %}
+
+{% endblock %}

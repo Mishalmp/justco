@@ -1,0 +1,113 @@
+{% extends 'registration/base1.html' %}
+
+{% block title %}Signup{% endblock title %}
+
+{% block content %}
+
+{% if otp %}
+<section class="section-content padding-y" style="min-height:84vh">
+
+    <!-- ============================ COMPONENT LOGIN   ================================= -->
+        <div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
+            {% include 'registration/alert.html' %}
+          <div class="card-body">
+          <h4 class="card-title mb-4">otp</h4>
+          <form action="{% url 'user_signup' %}" method="POST">
+            {% csrf_token %}
+             
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="enter otp" name="otp" >
+              </div> <!-- form-group// -->
+              <div class="form-group">
+                <input type="hidden" name="email" value="{{usr.email}}" >
+              </div>
+              
+             
+              <div class="form-group">
+                  <button  type="submit" class="btn btn-dark btn-block"> verify  </button>
+              </div> <!-- form-group// -->    
+          </form>
+          </div> <!-- card-body.// -->
+        </div> <!-- card .// -->
+    
+        
+    <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
+    
+    
+    </section>
+{% else %}
+
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+
+    <!-- ============================ COMPONENT REGISTER   ================================= -->
+        <div class="card" style="max-width:520px; margin-top:40px; margin-left:30%">
+          <article class="card-body">
+            {% include 'registration/alert.html' %}
+            <header class="mb-4"><h4 class="card-title">Sign up</h4></header>
+            <form action="{% url 'user_signup' %}" method="POST">
+                {% csrf_token %}
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label>First name</label>
+                            <input type="text" name="fname" value="{{ pre.first_name }}">
+                        </div> <!-- form-group end.// -->
+                        <div class="col form-group">
+                            <label>Last name</label>
+                            <input type="text" name="lname" value="{{ pre.last_name }}">
+                            
+                        </div> <!-- form-group end.// -->
+                    </div> <!-- form-row end.// -->
+
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label>Email</label>
+                            <input type="text" name="email" value="{{pre.email}}">
+                            
+                        </div> <!-- form-group end.// -->
+                        <div class="col form-group">
+                            <label>user name</label>
+                            <input type="text" name="username" value="{{pre.username}}">
+                            
+                        </div> <!-- form-group end.// -->
+                    </div> <!-- form-row end.// -->
+                    
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Create password</label>
+                            <input type="text" name="password1" value="{{pre.password1}}">
+                        
+                        </div> <!-- form-group end.// -->
+                        <div class="col form-group">
+                            <label>Repeat password</label>
+                            <input type="text" name="password2" value="{{pre.password2}}">
+                            {{pre.password2}}
+                        </div> <!-- form-group end.// -->
+                    </div> <!-- form-row end.// -->
+
+                    <div class="form-group">
+                       
+                    <a> <button type="submit"  class="btn btn-dark btn-block"> Register  </button> </a>   
+                    </div> <!-- form-group// -->   
+                {% comment %} {{form.email.errors}}       
+                {{form.non_field_errors }} {% endcomment %}
+                </form>
+            </article><!-- card-body.// -->
+        
+            <p class="text-center mt-4">Have an account? <a href="{% url 'user_login'%}">Log In</a></p>
+            <br><br>
+        </div> <!-- card .// -->
+    <!-- ============================ COMPONENT REGISTER  END.// ================================= -->
+</section>
+{% endif %}
+    {% endblock content %}
+    
+    <!-- ========================= SECTION CONTENT END// ========================= -->
+    
+
+
+
+
+
+
