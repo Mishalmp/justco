@@ -76,7 +76,10 @@
           <input name='product_description' value="{{c.product_description}}"  type="text" id="form3Example3cg" class="form-control form-control-lg" />
           <label class="form-label" for="form3Example3cg">Description</label>
         </div>
-       
+        <div class="form-outline mb-4">
+          <input name='quantity' value="{{c.quantity}}"  type="text" id="form3Example3cg" class="form-control form-control-lg" />
+          <label class="form-label" for="form3Example3cg">Quantity</label>
+        </div>
         <div class="form-outline mb-4">
           <label class="form-label">Is Available</label>
           <input type="checkbox" name='checkbox'>
@@ -132,6 +135,7 @@
               <th scope="col">brand</th>
               <th scope="col">product description</th>
               <th scope="col">is_available</th>
+              <th scope="col">Quantity</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
@@ -152,11 +156,12 @@
           <td>  {{c.category}} </td>
           <td>  {{c.brand}} </td>
           <td>  {{c.product_description}} </td>
-          {% if c.is_available %}
+          {% if c.is_available and c.quantity > 0 %}
           <td> Yes</td>
           {% else %}
           <td> No</td>
           {% endif %}
+          <td>{{c.quantity}}</td>
          <td>
           <!-- edit -->
 
@@ -230,7 +235,10 @@
                       <input name='product_description' value="{{c.product_description}}"  type="text" id="form3Example3cg" class="form-control form-control-lg" />
                       <label class="form-label" for="form3Example3cg">Description</label>
                     </div>
-                   
+                    <div class="form-outline mb-4">
+                      <input name='quantity' value="{{c.quantity}}"  type="text" id="form3Example3cg" class="form-control form-control-lg" />
+                      <label class="form-label" for="form3Example3cg">Quantity</label>
+                    </div>
 
                     <!-- one here -->
 

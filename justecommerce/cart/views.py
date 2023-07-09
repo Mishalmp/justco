@@ -55,7 +55,13 @@ def add_cart(request):
                 return JsonResponse({'status': 'No such product found'})
 
             if Cart.objects.filter(user=request.user, product_id=prod_id).exists():
-                return JsonResponse({'status': 'Product already in Cart'})
+                prod_qty = int(request.POST.get('product_qty'))
+                if product_check.quantity > prod_qty:
+                    Cart.objects.filter(user=request.user, product_id=prod_id).update(product_qty=prod_qty + 1)
+                    return JsonResponse({'status': 'Product quantity increased'})
+                else:
+                    return JsonResponse({'status': "Only few quantity available"})
+
             else:
                 prod_qty = int(request.POST.get('product_qty'))
                 

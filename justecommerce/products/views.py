@@ -39,6 +39,7 @@ def createproduct(request):
         brandname = request.POST.get('brand')
         category_id = request.POST.get('category')
         description = request.POST['product_description']
+        quantity = request.POST['quantity']
        
         
 # Validaiton
@@ -81,6 +82,7 @@ def createproduct(request):
             brand = brandid,
             category = categeryid,
             price_range =prange,
+            quantity=quantity
            
         )
         produc.save()
@@ -102,6 +104,8 @@ def editproduct(request,editproduct_id):
         price_range = request.POST.get('price_range')
         image2 = request.FILES.get('product_image2')
         image3 = request.FILES.get('product_image3')
+        quantity = request.POST.get('quantity')
+
 # validation
         try:
             pro = products.objects.get(slug=editproduct_id)
@@ -112,7 +116,7 @@ def editproduct(request,editproduct_id):
                 pro.product_image3=image3
                 pro.save()
         except products.DoesNotExist:
-            messages.error(request,'Image Not Fount')
+            messages.error(request,'Image Not Found')
             return redirect('product')
 #    one here
         try:
@@ -145,6 +149,7 @@ def editproduct(request,editproduct_id):
         cat.product_price = pprice
         cat.product_description = cdescription
         cat.is_available = is_availables
+        cat.quantity=quantity
         cat.brand = produc
         cat.category = cates
        
@@ -183,7 +188,9 @@ def deleteproduct(request,deleteproduct_slug):
         return redirect('admin_login')
     pro = products.objects.get(slug=deleteproduct_slug)
     
-    # pro.delete()
+    pro.quantity=0
+    pro.is_available=False
+    pro.save()
 
     return redirect('product')
 

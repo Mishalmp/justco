@@ -244,10 +244,10 @@
                     $("a.primary-btn").replaceWith(checkoutLink);
                     }
                     sub_total = parseInt(response.sub_total)
-                    document.getElementById('sub_total').textContent = sub_total
-                    document.getElementById('tax_field').textContent = sub_total * 0.18
-                    document.getElementById('grand_total').textContent = sub_total + (sub_total *0.18)
-                    document.getElementById('single_product_total'+product_id).textContent = parseInt(response.product_price) * parseInt(response.quantity)
+                    document.getElementById('sub_total').textContent = sub_total.toFixed(2)
+                    document.getElementById('tax_field').textContent = (sub_total * 0.18).toFixed(2)
+                    document.getElementById('grand_total').textContent = sub_total + (sub_total *0.18).toFixed(2)
+                    document.getElementById('single_product_total'+product_id).textContent = parseInt(response.product_price) * parseInt(response.quantity).toFixed(2)
                    
                     
                 }

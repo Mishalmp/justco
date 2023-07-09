@@ -46,6 +46,8 @@
           <article class="card-body">
             {% include 'registration/alert.html' %}
             <header class="mb-4"><h4 class="card-title">Sign up</h4></header>
+            {% csrf_token %}
+
             <form action="{% url 'user_signup' %}" method="POST">
                 {% csrf_token %}
                     <div class="form-row">

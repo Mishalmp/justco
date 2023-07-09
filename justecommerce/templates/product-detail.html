@@ -164,12 +164,22 @@
 									</button>
 
 								</div> -->
+
+								{% if pro_detail.quantity %}
 								
 
 								<button class="add-to-cart-btn flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 " data-product_id="{{ pro_detail.id }}">Add to Cart</button>
 
-							
-							
+								{% else %}
+								<h4 class="text-danger" >Out of stock</h4> 
+
+								{% endif %}
+								
+								{% for item in cart %}
+
+								<input readonly id="pro_qty{{item.product.id}}" class="mtext-104 cl3 txt-center num-product" type="hidden" name="num-product1" value="{{item.product_qty}}">
+
+								{% endfor %}
 
 
 								</div>
@@ -619,7 +629,7 @@
 			  e.preventDefault();
 			 
 			  var product_id = $(this).data('product_id');
-			  var quantity = 1; // Or get quantity from a form input field
+			  var quantity = $('#pro_qty' + product_id).val()
 			  
 			  $.ajax({
 				method: "POST",
@@ -630,12 +640,14 @@
 				  csrfmiddlewaretoken: '{{ csrf_token }}'
 				},
 				 success: function(response) {
+					
 				  console.log(response);
+				 
 				  
-				  if (response.status === 'Product already in Cart' || response.status === 'No such product found' || response.status === 'Only few quantity available') {
+				  if (response.status === 'No such product found' || response.status === 'Only few quantity available') {
 					swal("Error!", response.status, "error");
 					$('.cartdata').load(location.href + " .cartdata");
-				  } else if (response.status === 'Product added successfully') {
+				  } else if (response.status === 'Product added successfully' || response.status === 'Product quantity increased') {
 					swal("Congratulations!", response.status, "success");
 					$('.cartdata').load(location.href + " .cartdata");
 				  } else {
@@ -663,7 +675,7 @@
 				success: function(response) {
 				  console.log(response);
 				  
-				  if (response.status === 'Product already in wishlist' || response.status === 'No such product found' || response.status === 'Only few quantity available') {
+				  if (response.status === 'Product already in wishlist' ||  response.status === 'Only few quantity available') {
 					swal("Error!", response.status, "error");
 					$('.cartdata').load(location.href + " .cartdata");
 				  } else if (response.status === 'Product added successfully') {

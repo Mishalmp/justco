@@ -4,7 +4,7 @@ from brand.models import brand
 from categories.models import category
 from django.utils.text import slugify
 from justeco.settings import *
-from django_resized import ResizedImageField
+# from django_resized import ResizedImageField
 
 
 # Create your models here.

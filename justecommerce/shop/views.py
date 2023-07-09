@@ -4,6 +4,7 @@ from products.models import Product
 from wishlist.models import Wishlist
 from django.views.decorators.cache import cache_control
 from django.http.response import JsonResponse
+from cart.models import Cart
 # Create your views here.
 
 
@@ -21,13 +22,18 @@ def product_detail(request,product_id):
         prod_id=request.POST.get('prod_id')
         product=Product.objects.get(product=prod_id)
         product_quantity=prod.quantity
+        
         return JsonResponse({'product_id':product.id, 'product_quantity':product_quantity})
 
     related=Product.objects.all()
+    cart = Cart.objects.filter(user=request.user, product=prod)
+    
+   
 
     context={
         'allpro':related,
-        'pro_detail':prod
+        'pro_detail':prod,
+        'cart':cart
 
     }
 

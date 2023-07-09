@@ -39,7 +39,7 @@
                                 <a class="nav-link" id="tab-wishlist-link" data-toggle="tab" href="#tab-wishlist" role="tab" aria-controls="tab-wishlist" aria-selected="false">Wishlist</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false">Adresses</a>
+                                <a class="nav-link" id="tab-address-link" data-toggle="tab" href="#tab-address" role="tab" aria-controls="tab-address" aria-selected="false">Address</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
@@ -189,6 +189,167 @@
 
                             <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
                                 <p>The following addresses will be used on the checkout page by default.</p>
+                                <!--add address modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">Billing Details</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body" style="margin-left:35px; ">
+                    
+                                        <form action="{% url 'add_address' %}" method="post">
+                                                {% csrf_token %}
+                                            <div class="row">
+                                            <div class="col-lg-9">
+                                                <h3 class="checkout-title">Billing Details</h3><!-- End .checkout-title -->
+                                                
+                                                    <div class="row">
+                                                        <div class="col-sm-6 col-xl-6">
+                                                            <label>First Name *</label>
+                                                            <input type="text" class="form-control" name="firstname" required>
+                                                        </div><!-- End .col-sm-6 -->
+                    
+                                                        <div class="col-sm-6 col-xl-6">
+                                                            <label>Last Name *</label>
+                                                            <input type="text" class="form-control" name="lastname" required>
+                                                        </div><!-- End .col-sm-6 -->
+                                                    </div><!-- End .row -->
+                    
+                    
+                                                    <label>Country *</label>
+                                                    <input type="text" class="form-control" name="country" required>
+                    
+                                                    <label>Street address *</label>
+                                                    <input type="text" class="form-control" name="address" placeholder="House number and Street name" required>
+                                                    <input type="text" class="form-control" name="address" placeholder="Appartments, suite, unit etc ..." required>
+                    
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <label>Town / City *</label>
+                                                            <input type="text" class="form-control" name="city" required>
+                                                        </div><!-- End .col-sm-6 -->
+                    
+                                                        <div class="col-sm-6">
+                                                            <label>State *</label>
+                                                            <input type="text" class="form-control" name="state" required>
+                                                        </div><!-- End .col-sm-6 -->
+                                                    </div><!-- End .row -->
+                    
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <label>Postcode / ZIP *</label>
+                                                            <input type="number" class="form-control" name="pincode" required>
+                                                        </div><!-- End .col-sm-6 -->
+                    
+                                                        <div class="col-sm-6">
+                                                            <label>Phone *</label>
+                                                            <input type="tel" class="form-control" name="phone" required>
+                                                        </div><!-- End .col-sm-6 -->
+                                                    </div><!-- End .row -->
+                    
+                                                    <label>Email address *</label>
+                                                    <input type="email" class="form-control" name="email" required>
+                    
+                                                   
+                                            
+                                                    <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+                                                        <span class="btn-text">Save</span>
+                                                        <span class="btn-hover-text">Save Address</span>
+                                                    </button>
+                                            
+                                                </div><!-- End .col-lg-9 -->
+                    
+                                            </div>
+                                            </form>
+                    
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- modal end -->
+
+                             <!--edit address modal -->
+                             <div class="modal fade" id="editModal" tabindex="-1"  aria-labelledby="editModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">Billing Details</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" style="margin-left:35px; ">
+                
+                                    <form action="{% url 'edit_address' address.id %}" method="post">
+                                            {% csrf_token %}
+                                        <div class="row">
+                                        <div class="col-lg-9">
+                                            <h3 class="checkout-title">Billing Details</h3><!-- End .checkout-title -->
+                                            
+                                                <div class="row">
+                                                    <div class="col-sm-6 col-xl-6">
+                                                        <label>First Name *</label>
+                                                        <input type="text" class="form-control" name="firstname" value="{{address.first_name}}" required>
+                                                    </div><!-- End .col-sm-6 -->
+                
+                                                    <div class="col-sm-6 col-xl-6">
+                                                        <label>Last Name *</label>
+                                                        <input type="text" class="form-control" name="lastname" value="{{address.last_name}}" required>
+                                                    </div><!-- End .col-sm-6 -->
+                                                </div><!-- End .row -->
+                
+                
+                                                <label>Country *</label>
+                                                <input type="text" class="form-control" name="country" value="{{address.country}}" required>
+                
+                                                <label>Street address *</label>
+                                                <input type="text" class="form-control" name="address" value="{{address.address}}" placeholder="House number and Street name" required>
+                                                <input type="text" class="form-control" name="address" value="" placeholder="Appartments, suite, unit etc ..." required>
+                
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label>Town / City *</label>
+                                                        <input type="text" class="form-control" name="city" value="{{address.city}}" required>
+                                                    </div><!-- End .col-sm-6 -->
+                
+                                                    <div class="col-sm-6">
+                                                        <label>State *</label>
+                                                        <input type="text" class="form-control" name="state" value="{{address.state}}" required>
+                                                    </div><!-- End .col-sm-6 -->
+                                                </div><!-- End .row -->
+                
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label>Postcode / ZIP *</label>
+                                                        <input type="number" class="form-control" name="pincode" value="{{address.pincode}}" required>
+                                                    </div><!-- End .col-sm-6 -->
+                
+                                                    <div class="col-sm-6">
+                                                        <label>Phone *</label>
+                                                        <input type="tel" class="form-control" name="phone" value="{{address.phone}}" required>
+                                                    </div><!-- End .col-sm-6 -->
+                                                </div><!-- End .row -->
+                
+                                                <label>Email address *</label>
+                                                <input type="email" class="form-control" name="email" value="{{address.email}}" required>
+                
+                                               
+                                        
+                                                <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+                                                    <span class="btn-text">Save</span>
+                                                    <span class="btn-hover-text">Save Address</span>
+                                                </button>
+                                        
+                                            </div><!-- End .col-lg-9 -->
+                
+                                        </div>
+                                        </form>
+                
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- modal end -->
 
                                 <div class="row">
                                     <div class="col-lg-6">
@@ -204,10 +365,18 @@
                                                 {{address.phone}}<br>
                                                 {{address.email}}<br>
                                                 {{address.city}} {{address.state}}<br>
-                                                <a href="#">Edit <i class="icon-edit"></i></a></p>
+                                                <a href="#" type="button" class="site-btn mb-3" data-bs-toggle="modal" data-bs-target="#editModal">Edit <i class="icon-edit"></i></a></p>
                                             </div><!-- End .card-body -->
                                         </div><!-- End .card-dashboard -->
+                                       
+                                        <button type="button" class="site-btn mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            New Address
+                                       
+                                        </button>
                                     </div><!-- End .col-lg-6 -->
+                                    
+                                       
+                                   
 
                                     <div class="col-lg-6">
                                         <div class="card card-dashboard">
@@ -235,6 +404,7 @@
                                                                 <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#viewaddress{{forloop.counter}}">
                                                                   View
                                                                 </button>
+                                                            <a href="#" type="button" class="site-btn mb-3" data-bs-toggle="modal" data-bs-target="#editModal2{{forloop.counter}}">Edit <i class="icon-edit"></i></a></p>
                                                                
                                                                 <!-- Modal -->
                                                                 <div class="modal fade" id="viewaddress{{forloop.counter}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -367,6 +537,86 @@
                                                              </div>
                                                              
                                                         </div>
+                                                        <!--edit address modal2 -->
+                             <div class="modal fade" id="editModal2{{forloop.counter}}" tabindex="-1"  aria-labelledby="editModal2Label" aria-hidden="true">
+                                <div class="modal-dialog" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">Billing Details</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" style="margin-left:35px; ">
+                
+                                    <form action="{% url 'edit_address' adrs.id %}" method="post">
+                                            {% csrf_token %}
+                                        <div class="row">
+                                        <div class="col-lg-9">
+                                            <h3 class="checkout-title">Billing Details</h3><!-- End .checkout-title -->
+                                            
+                                                <div class="row">
+                                                    <div class="col-sm-6 col-xl-6">
+                                                        <label>First Name *</label>
+                                                        <input type="text" class="form-control" name="firstname" value="{{adrs.first_name}}" required>
+                                                    </div><!-- End .col-sm-6 -->
+                
+                                                    <div class="col-sm-6 col-xl-6">
+                                                        <label>Last Name *</label>
+                                                        <input type="text" class="form-control" name="lastname" value="{{adrs.last_name}}" required>
+                                                    </div><!-- End .col-sm-6 -->
+                                                </div><!-- End .row -->
+                
+                
+                                                <label>Country *</label>
+                                                <input type="text" class="form-control" name="country" value="{{adrs.country}}" required>
+                
+                                                <label>Street address *</label>
+                                                <input type="text" class="form-control" name="address" value="{{adrs.address}}" placeholder="House number and Street name" required>
+                                                <input type="text" class="form-control" name="address" value="" placeholder="Appartments, suite, unit etc ..." required>
+                
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label>Town / City *</label>
+                                                        <input type="text" class="form-control" name="city" value="{{adrs.city}}" required>
+                                                    </div><!-- End .col-sm-6 -->
+                
+                                                    <div class="col-sm-6">
+                                                        <label>State *</label>
+                                                        <input type="text" class="form-control" name="state" value="{{adrs.state}}" required>
+                                                    </div><!-- End .col-sm-6 -->
+                                                </div><!-- End .row -->
+                
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label>Postcode / ZIP *</label>
+                                                        <input type="number" class="form-control" name="pincode" value="{{adrs.pincode}}" required>
+                                                    </div><!-- End .col-sm-6 -->
+                
+                                                    <div class="col-sm-6">
+                                                        <label>Phone *</label>
+                                                        <input type="tel" class="form-control" name="phone" value="{{adrs.phone}}" required>
+                                                    </div><!-- End .col-sm-6 -->
+                                                </div><!-- End .row -->
+                
+                                                <label>Email address *</label>
+                                                <input type="email" class="form-control" name="email" value="{{adrs.email}}" required>
+                
+                                               
+                                        
+                                                <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+                                                    <span class="btn-text">Save</span>
+                                                    <span class="btn-hover-text">Save Address</span>
+                                                </button>
+                                        
+                                            </div><!-- End .col-lg-9 -->
+                
+                                        </div>
+                                        </form>
+                
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- modal end -->
                                                        
                                                         </div>
                                                         {% endfor %}
@@ -379,7 +629,6 @@
                                                 </div>
 
                                                
-                                                <a href="#">Edit <i class="icon-edit"></i></a></p>
                                             </div><!-- End .card-body -->
                                         </div><!-- End .card-dashboard -->
                                     </div><!-- End .col-lg-6 -->
@@ -387,40 +636,106 @@
                             </div><!-- .End .tab-pane -->
 
                             <div class="tab-pane fade" id="tab-account" role="tabpanel" aria-labelledby="tab-account-link">
-                                <form action="#">
+                                <div class="col-lg-6">
+                                    <div class="card card-dashboard">
+                                        <div class="card-body">
+                                            <h3 class="card-title">Your Profile</h3><!-- End .card-title -->
+
+                                            
+
+                                            <p>{{user.username}}<br>
+                                            {{user.first_name}}<br>
+                                            {{user.last_name}}<br>
+                                            {{user.phone}}<br>
+                                            {{user.email}}<br>
+                                            <br>
+                                            <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#editproModal">Edit </button>
+                                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editpassModal">Change Password </button>
+                                        </div><!-- End .card-body -->
+                                    </div><!-- End .card-dashboard -->
+                                    
+                                    
+                                </div>
+
+                                <!--edit profile modal -->
+                             <div class="modal fade" id="editproModal" tabindex="-1"  aria-labelledby="editproModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="editproModalLabel" style="font-weight: bold;">Your profile</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" style="margin-left:35px; ">
+
+                                <form action="{% url 'editprofile' %}">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <label>First Name *</label>
-                                            <input type="text" class="form-control" required>
+                                            <input type="text" class="form-control" name="first_name" value="{{user.first_name}}"  required>
                                         </div><!-- End .col-sm-6 -->
 
                                         <div class="col-sm-6">
                                             <label>Last Name *</label>
-                                            <input type="text" class="form-control" required>
+                                            <input type="text" class="form-control" name="last_name" value="{{user.last_name}}" required>
                                         </div><!-- End .col-sm-6 -->
                                     </div><!-- End .row -->
 
-                                    <label>Display Name *</label>
-                                    <input type="text" class="form-control" required>
+                                    <label>Username *</label>
+                                    <input type="text" class="form-control" name="username" value="{{user.username}}" required>
                                     <small class="form-text">This will be how your name will be displayed in the account section and in reviews</small>
 
                                     <label>Email address *</label>
-                                    <input type="email" class="form-control" required>
+                                    <input type="email" class="form-control" name="email" value="{{user.email}}" required>
 
-                                    <label>Current password (leave blank to leave unchanged)</label>
-                                    <input type="password" class="form-control">
-
-                                    <label>New password (leave blank to leave unchanged)</label>
-                                    <input type="password" class="form-control">
-
-                                    <label>Confirm new password</label>
-                                    <input type="password" class="form-control mb-2">
+                                
 
                                     <button type="submit" class="btn btn-outline-primary-2">
                                         <span>SAVE CHANGES</span>
                                         <i class="icon-long-arrow-right"></i>
                                     </button>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- modal end -->
+
+                
+                                <!--edit password modal -->
+                                <div class="modal fade" id="editpassModal" tabindex="-1"  aria-labelledby="editpassModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h5 class="modal-title" id="editpassModalLabel" style="font-weight: bold;">Change Password</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body" style="margin-left:35px; ">
+    
+                                    <form action="{% url 'changepassword' %}">
+                                     
+    
+                                       
+    
+                                        <label>Current password </label>
+                                        <input type="password" name="old_password" class="form-control">
+    
+                                        <label>New password </label>
+                                        <input type="password" name="new_password" class="form-control">
+    
+                                        <label>Confirm new password</label>
+                                        <input type="password" name="confirm_new_password" class="form-control mb-2">
+    
+                                        <button type="submit" class="btn btn-outline-primary-2">
+                                            <span>SAVE CHANGES</span>
+                                            <i class="icon-long-arrow-right"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- modal end -->
+                           
                             </div><!-- .End .tab-pane -->
                         </div>
                     </div><!-- End .col-lg-9 -->
