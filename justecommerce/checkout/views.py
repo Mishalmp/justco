@@ -13,6 +13,8 @@ from checkout.models import Order, OrderItem
 
 from django.shortcuts import render, redirect
 import random
+import razorpay
+import string
 
 
 def checkout(request):
@@ -112,7 +114,7 @@ def placeorder(request):
         # Create a new Order instance and set its attributes
         neworder = Order(user=user, address=address)
         neworder.payment_mode = request.POST.get('payment_method')
-        neworder.payment_id = request.POST.get('payment_id')
+       
         neworder.message = request.POST.get('order_note')
 
         # Calculate the cart total price and tax
@@ -131,6 +133,12 @@ def placeorder(request):
         while Order.objects.filter(tracking_no=trackno).exists():
             trackno = random.randint(1111111, 9999999)
         neworder.tracking_no = trackno
+
+      
+        
+        neworder.payment_id=generate_random_payment_id(10)
+        while Order.objects.filter(payment_id=neworder.payment_id).exists():
+            neworder.payment_id=generate_random_payment_id(10)
 
         neworder.save()
 
@@ -152,16 +160,32 @@ def placeorder(request):
         cart_items.delete()
 
         payment_mode = request.POST.get('payment_method')
-        if payment_mode == "cod":
+        if payment_mode == "cod" or payment_mode == 'razorpay':
             
             return JsonResponse({'status': "Your order has been placed successfully"})
        
 
     return redirect('checkout')
 
+def generate_random_payment_id(length):
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choices(characters, k=length))
 
 
 
+
+def razarypaycheck(request):
+    cart = Cart.objects.filter(user=request.user)
+    total_price = 0
+    grand_total=0
+    tax=0
+    for item in cart:
+  
+        total_price = total_price + item.product.product_price * item.product_qty
+        tax = total_price * 0.18
+        grand_total += total_price+tax
+    
+    return JsonResponse({'total_price': total_price})
 
 
 

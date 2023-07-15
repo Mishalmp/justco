@@ -1,3 +1,4 @@
+from tkinter import Image
 from django.shortcuts import render,redirect
 from categories.models import category
 from django.contrib import messages
@@ -6,8 +7,24 @@ from brand.models import brand
 import logging
 from django.contrib.auth.decorators import login_required
 
-
+from django.http import JsonResponse
 # Create your views here.
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+import base64
+import re
+from PIL import Image
+from io import BytesIO
+from PIL import Image
+import base64
+from io import BytesIO
+
+
+
+
+# Rest of your code.
+
+
 
 # Product
 @login_required(login_url='admin_login')
@@ -24,11 +41,22 @@ def product(request):
     }
     return render(request ,'product/product.html',dict_list)
 
+# def main_view(request):
+#     form = ImageForm(request.POST or None, request.FILES or None)
+#     if form.is_valid():
+#         form.save()
+#         return JsonResponse({'message': 'works'})
+#     context = {'form': form}
+#     return render(request, 'templates/main.html', context)
+
 # Add Product
 @login_required(login_url='admin_login')
+
+
 def createproduct(request):
     if not request.user.is_superuser:
         return redirect('admin_login')
+    
     if request.method == 'POST':
         name = request.POST['product_name']
         price = request.POST['product_price']
@@ -40,14 +68,11 @@ def createproduct(request):
         category_id = request.POST.get('category')
         description = request.POST['product_description']
         quantity = request.POST['quantity']
-       
-        
-# Validaiton
-# one here
-      
+
+        # Validation
         if products.objects.filter(product_name=name).exists():
-            messages.error(request, 'Product name already exists')
-            return redirect('product')
+            return JsonResponse({'message': 'Product name already exists'})
+
         try:
             is_availables = request.POST.get('checkbox', False)
             if is_availables == 'on':
@@ -57,37 +82,39 @@ def createproduct(request):
         except:
             is_availables = False
 
-        if name == '' or price =='' :
-            messages.error(request, "Name or Price field are empty")
-            return redirect('product')
-        if name.strip() =='':
-            messages.error(request,'Image Not Found')
-            return redirect('product')
-        if not image:
-            messages.error(request, "Image not uploaded")
-            return redirect('product')
+        if name == '' or price == '':
+            return JsonResponse({'message': 'Name or Price field is empty'})
 
-        categeryid  = category.objects.get(id=category_id)
-        brandid = brand.objects.get(brand_name=brandname)
-        prange = PriceFilter.objects.get(id=price_range)
-# Save        
-        produc = products(
+        if name.strip() == '':
+            return JsonResponse({'message': 'Image Not Found'})
+
+        if not image:
+            return JsonResponse({'message': 'Image not uploaded'})
+
+        category_obj = category.objects.get(id=category_id)
+        brand_obj = brand.objects.get(brand_name=brandname)
+        price_range_obj = PriceFilter.objects.get(id=price_range)
+
+        # Save the product
+        product = products(
             product_name=name,
             product_price=price,
             product_image=image,
             product_image2=image2,
             product_image3=image3,
-            product_description = description,
-            is_available = is_availables,
-            brand = brandid,
-            category = categeryid,
-            price_range =prange,
+            product_description=description,
+            is_available=is_availables,
+            brand=brand_obj,
+            category=category_obj,
+            price_range=price_range_obj,
             quantity=quantity
-           
         )
-        produc.save()
-        return redirect('product')
-    return render(request, 'product/product.html' )
+        product.save()
+
+        return JsonResponse({'message': 'Product created successfully'})
+
+    return render(request, 'product/product.html')
+
 
 
 # Edit Product

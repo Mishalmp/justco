@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import Address,Wallet
 from django.contrib import messages
+
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import update_session_auth_hash
 from django.views.decorators.cache import cache_control
@@ -10,11 +11,20 @@ from django.core.exceptions import ObjectDoesNotExist
 from cart.models import Cart
 from wishlist.models import Wishlist
 from checkout.models import Address
+from checkout.models import Order,OrderItem
+
+from django.http import JsonResponse
+
 
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='user_login')
 def user_profile(request):
+
+    orders=Order.objects.filter(user=request.user).order_by('-created_at')
+    order_items=OrderItem.objects.filter(order__in=orders).order_by('-order__created_at')
+  
+
 
     user_info={
         'address':Address.objects.filter(user=request.user).first(),
@@ -22,19 +32,44 @@ def user_profile(request):
         'wallets':Wallet.objects.filter(user=request.user),
         'cart':Cart.objects.filter(user=request.user).order_by('-id'),
         'wishlist':Wishlist.objects.filter(user=request.user).order_by('-id'),
-        'addresses':Address.objects.filter(user=request.user)
-
-        
+        'addresses':Address.objects.filter(user=request.user),
+        'orders':orders,
+        'order_items':order_items,
+      
         
     }
-
+    
     return render(request,'user/userpro.html',user_info)
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
-@login_required(login_url='user_login')
-def user_orders(request):
 
-    return render(request,'user/userorders.html')
+
+
+
+# def get_order(request):
+#     if request.method == 'POST':
+#         order_id = request.POST.get('order_id')
+#         try:
+#             order = Order.objects.get(id=order_id)
+#             order_items = OrderItem.objects.filter(order=order)
+#             order_item_list = []
+#             for order_item in order_items:
+#                 order_item_data = {
+#                     'product_name': order_item.product.product_name,
+#                     'price': order_item.price,
+#                     'quantity': order_item.quantity,
+#                     'total': order_item.price * order_item.quantity
+#                 }
+#                 order_item_list.append(order_item_data)
+#             return JsonResponse({'order_items': order_item_list})
+#         except Order.DoesNotExist:
+#             return JsonResponse({'error': 'Order not found'})
+#     else:
+#         return JsonResponse({'error': 'Invalid request method'})
+
+
+
+
+
 
 def add_address(request):
 
@@ -171,7 +206,8 @@ def editprofile(request):
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
- 
+
+        print(username,first_name)
 
         if username == '':
             messages.error(request, 'Username is empty')
@@ -188,9 +224,10 @@ def editprofile(request):
             user.last_name = last_name
             user.email=email
             user.save()
+            messages.success(request, 'userprofile updated successfully')
         except ObjectDoesNotExist:
             messages.error(request, 'User does not exist')
-        return redirect('user_profile')
+    return redirect('user_profile')
 
 # Change Password 
 def changepassword(request):
@@ -202,7 +239,8 @@ def changepassword(request):
         if new_password != confirm_new_password:
             messages.error(request,'Password did not match')
             return redirect('user_profile')
-        user = User.objects.get(username = request.user)
+        user = User.objects.get(username=request.user)
+        # print(old_password,'ppppppppppppppppppppppppppppp')
         if check_password(old_password, user.password):
             user.set_password(new_password)
             user.save()

@@ -57,10 +57,19 @@ INSTALLED_APPS = [
     'userprofile',
     'shop',
     'mathfilters',
+    'imagekit',
+    'sorl.thumbnail'
     
     
     
 ]
+# from easy_thumbnails import defaults
+# THUMBNAIL_PROCESSORS = (
+#     'image_cropping.thumbnail_processors.crop_corners',
+# ) + defaults.PROCESSORS
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -106,7 +115,6 @@ DATABASES = {
        'PORT': '5432',
    }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -171,3 +179,5 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 
+RAZORPAY_KEY_ID = 'rzp_test_4vQTEjTZ9mHK3d'
+RAZORPAY_KEY_SECRET = '0mcpiXgs9jiOppGgbFZQ3mdk'

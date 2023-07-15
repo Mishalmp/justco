@@ -10,7 +10,10 @@ urlpatterns=[
     path('admin_logout/',admin_logout,name='admin_logout'),
     path('user/',user, name='user'),
     path('user/blockuser/<int:user_id>',blockuser, name='blockuser'),
-    path('user/searchuser/',searchuser, name='searchuser')
+    path('user/searchuser/',searchuser, name='searchuser'),
+    path('sales_report/',sales_report, name='sales_report'),
+    path('download_csv/',download_csv, name='download_csv'),
+    
    
 
 

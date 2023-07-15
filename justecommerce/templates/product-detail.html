@@ -10,6 +10,10 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
 
+
+
+
+ 
 	<!-- breadcrumb -->
 	<div class="container">
 		<br>
@@ -28,6 +32,9 @@
 
 {% endfor %}
 
+
+  
+
 	<!-- Product Detail -->
 	<section class="sec-product-detail bg0 p-t-65 p-b-60">
 		<div class="container">
@@ -39,29 +46,29 @@
 							<div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
 
 							<div class="slick3 gallery-lb"  >
-								<div class="item-slick3" data-thumb="{{pro_detail.product_image.url}}" >
-									<div class="wrap-pic-w pos-relative image-container" id="img-container">
-										<img src="{{pro_detail.product_image.url}}" alt="IMG-PRODUCT" >
-										<div class="zoom-overlay"></div>
-										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="{{pro_detail.product_image.url}}" >
+								<div class="item-slick3"   data-thumb="{{pro_detail.product_image.url}}" >
+									<div class="wrap-pic-w pos-relative img-magnifier-container zoom-image-hover" style="margin-left:5px; width: 500px; height: 400px;"    >
+										<img id="myimage"  src="{{pro_detail.product_image.url}}"  alt="IMG-PRODUCT" >
+										
+										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" id="myimage" href="{{pro_detail.product_image.url}}" >
 											<i class="fa fa-expand"></i>
 										</a>
 									</div>
 								</div>
 
 								<div class="item-slick3" data-thumb="{{pro_detail.product_image2.url}}">
-									<div class="wrap-pic-w pos-relative" id="img-containe">
-										<img src="{{pro_detail.product_image2.url}}" alt="IMG-PRODUCT">
+									<div class="wrap-pic-w pos-relative img-magnifier-container zoom-image-hover" style="margin-left:5px; width: 500px; height: 400px;" >
+										<img id="myimage" src="{{pro_detail.product_image2.url}}" alt="IMG-PRODUCT">
 
-										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"  href="{{pro_detail.product_image2.url}} " id="img-container">
+										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"  href="{{pro_detail.product_image2.url}} ">
 											<i class="fa fa-expand"></i>
 										</a>
 									</div>
 								</div>
 
 								<div class="item-slick3" data-thumb="{{pro_detail.product_image3.url}}">
-									<div class="wrap-pic-w pos-relative" >
-										<img src="{{pro_detail.product_image3.url}}" alt="IMG-PRODUCT">
+									<div class="wrap-pic-w pos-relative img-magnifier-container zoom-image-hover" style="margin-left:5px; width: 500px; height: 400px;"  >
+										<img id="myimage" src="{{pro_detail.product_image3.url}}" alt="IMG-PRODUCT">
 
 										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="{{pro_detail.product_image3.url}}">
 											<i class="fa fa-expand"></i>
@@ -72,6 +79,7 @@
 						</div>
 					</div>
 				</div>
+		
 					
 				<div class="col-md-6 col-lg-5 p-b-30">
 					<div class="p-r-50 p-t-5 p-lr-0-lg">
@@ -609,16 +617,14 @@
 	</div>
 
 
-	<script>
-		var options = {
-			width: 400,
-			zoomWidth: 500,
-			offset: {vertical: 0, horizontal: 10}
-		};
-		new ImageZoom(document.getElementById("img-container"), options);
-	
-		 
-		</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{% static 'js/xzoom.js'%}"></script>
+<script>
+  $(".zoom-image-hover").zoom();
+</script>
+
+
 
 
 
@@ -630,7 +636,7 @@
 			 
 			  var product_id = $(this).data('product_id');
 			  var quantity = $('#pro_qty' + product_id).val()
-			  
+			  console.log(product_id,quantity,'111111111111111111111111111111')
 			  $.ajax({
 				method: "POST",
 				url: "{% url 'add_cart' %}",

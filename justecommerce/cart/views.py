@@ -42,6 +42,8 @@ def cart(request):
 
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
+
+
 def add_cart(request):
     if request.method == 'POST':
         if request.user.is_authenticated:
@@ -63,7 +65,7 @@ def add_cart(request):
                     return JsonResponse({'status': "Only few quantity available"})
 
             else:
-                prod_qty = int(request.POST.get('product_qty'))
+                prod_qty = 1
                 
                 if product_check.quantity >= prod_qty:
                     Cart.objects.create(user=request.user, product_id=prod_id, product_qty=prod_qty)

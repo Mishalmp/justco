@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from categories.models import category
 
-
+from django.utils import timezone
 from django.db.models import Sum
 from django.db.models.functions import TruncDay
 from django.db.models import DateField
@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login ,logout
-
+from checkout.models import Order
 # verification email
 from registrationuser.models import UserOTP
 from django.contrib import auth
@@ -23,7 +23,7 @@ from django.conf import settings
 import random
 import re
 from django.core.exceptions import ValidationError
-
+import csv
 
 # Create your views here.
 def admin_login(request):
@@ -184,6 +184,80 @@ def dashboard(request):
     return render(request,'adminapp/dashboard.html')
 
 
+
+
+@login_required(login_url='admin_login')
+def sales_report(request):
+    # Handle form submission
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    if start_date and end_date:
+        # Filter orders based on the selected date range
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+        orders = Order.objects.filter(created_at__date__range=(start_date, end_date))
+    else:
+        # If no date range is selected, fetch all orders
+        orders = Order.objects.all()
+
+    # Calculate total sales and total orders
+    total_sales = sum(order.total_price for order in orders)
+    total_orders = orders.count()
+
+    # Calculate sales by status
+    sales_by_status = {
+        'Pending': orders.filter(od_status='Pending').count(),
+        'Processing': orders.filter(od_status='Processing').count(),
+        'Shipped': orders.filter(od_status='Shipped').count(),
+        'Delivered': orders.filter(od_status='Delivered').count(),
+        'Cancelled': orders.filter(od_status='Cancelled').count(),
+        'Return': orders.filter(od_status='Return').count(),
+    }
+
+    # Fetch recent orders
+    recent_orders = orders.order_by('-created_at')[:10]
+
+    # Prepare data for CSV export
+    csv_data = [
+        ['Order ID', 'Tracking Number', 'Total Price', 'Status', 'Created At']
+    ]
+    for order in orders:
+        csv_data.append([order.id, order.tracking_no, order.total_price, order.od_status, order.created_at])
+
+    # Handle CSV export
+    if 'export_csv' in request.GET:
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="sales_report_{start_date}_{end_date}.csv"'
+
+        writer = csv.writer(response)
+        for row in csv_data:
+            writer.writerow(row)
+
+        return response
+
+    # Prepare data for rendering the template
+    sales_report = {
+        'start_date': start_date.strftime('%Y-%m-%d') if start_date else '',
+        'end_date': end_date.strftime('%Y-%m-%d') if end_date else '',
+        'total_sales': total_sales,
+        'total_orders': total_orders,
+        'sales_by_status': sales_by_status,
+        'recent_orders': recent_orders,
+    }
+
+    return render(request, 'adminapp/sales_report.html', {'sales_report': sales_report})
+
+
+
+
+
+
+
+
+
+
 @login_required(login_url='admin_login')
 def admin_logout(request):
 
@@ -233,6 +307,27 @@ def searchuser(request):
 
 
 
+def download_csv(request):
+    # Assuming you have the 'data' containing your CSV content as a list of dictionaries
+    data = [
+        {'Name': 'John Doe', 'Age': 30, 'Country': 'USA'},
+        {'Name': 'Jane Smith', 'Age': 25, 'Country': 'Canada'},
+        # Add more data rows as needed
+    ]
 
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="data.csv"'
+
+    # CSV header
+    header = data[0].keys()
+    writer = csv.DictWriter(response, fieldnames=header)
+
+    writer.writeheader()
+
+    # CSV data rows
+    for row in data:
+        writer.writerow(row)
+
+    return response
 
 

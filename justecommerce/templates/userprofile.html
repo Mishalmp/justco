@@ -164,7 +164,7 @@
                     </button>
                   </div>
                   <div class="modal-body">
-                    <form id="myForm"  action="" enctype="multipart/form-data" method="POST">
+                    <form id="myForm"  action="{% url 'changepassword' %}" enctype="multipart/form-data" method="POST">
                       {% csrf_token %}
                       <div style="display: none;" class="alert alert-danger text-center changepassmessage" id="message" role="alert">
                         
@@ -203,8 +203,8 @@
                     <i class="fa fa-times"></i>
                   </button>
                 </div>
-                <div class="modal-body">
-                  <form action="" enctype="multipart/form-data" method="POST">
+                <div class="modal-body"  style="margin-top: 40px;">
+                  <form action="{% url 'editprofile' %}" enctype="multipart/form-data" method="POST">
                     {% csrf_token %}
                     <div class="form-outline mb-4">
                       <input value=""  name='username'  type="text" id="id_usernam" class="form-control form-control-lg" />
@@ -249,7 +249,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">Billing Details</h5>
+            <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">Add Address</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">

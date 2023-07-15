@@ -24,6 +24,17 @@
         transition: function(url){ window.location.href = url; }
     });
     
+
+// magnify image 
+
+
+
+
+
+
+
+
+
     /*[ Back to top ]
     ===========================================================*/
     var windowH = $(window).height()/2;

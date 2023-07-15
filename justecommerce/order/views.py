@@ -5,7 +5,7 @@ from checkout.models import Order,OrderItem
 from django.http import JsonResponse
 # Create your views here.
 
-
+# ...................admin section.............
 def admin_orders(request):
     orders=Order.objects.all().order_by('-created_at')
     order_item=OrderItem.objects.all()
@@ -32,6 +32,9 @@ def ad_order_detail(request,order_id):
         
     }
     return render(request,'order/ad-order-det.html',context)
+
+
+
 
 def changestatus(request):
     if not request.user.is_superuser:
@@ -60,3 +63,9 @@ def change_od_status(request):
     # Handle the case where the order does not exist
         print("Order does not exist.")
     return JsonResponse({'status': "Updated"+ str(order_status) + "successfully"})
+
+
+# ..................user section....................
+
+
+

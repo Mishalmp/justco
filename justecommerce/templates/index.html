@@ -1,3 +1,4 @@
+<div class="abcde" >
 {% extends 'base.html' %}
 {% load static %}
 
@@ -90,7 +91,7 @@
 	<div class="sec-banner bg0 p-t-80 p-b-50">
 		<div class="container">
 			<div class="row">
-				{% for i in categories %}
+				{% for i in cat %}
 				<div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
 
 					
@@ -142,7 +143,7 @@
 						All 
 					</button>
 
-					{% for i in categories %}
+					{% for i in cat %}
 
 					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".{{i.categories}}">
 						{{i.categories}}
@@ -166,65 +167,102 @@
 					</div>
 				</div>
 				
-				<!-- Search product -->
-				<div class="dis-none panel-search w-full p-t-10 p-b-15">
-					<div class="bor8 dis-flex p-l-15">
-						<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
-							<i class="zmdi zmdi-search"></i>
-						</button>
-
-						<input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search">
-					</div>	
+			<!-- Search product -->
+			<div class="dis-none panel-search w-full p-t-10 p-b-15">
+				<div class="bor8 dis-flex p-l-15">
+					<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04" id="search-button">
+						<i class="zmdi zmdi-search"></i>
+					</button>
+			
+					<input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" id="search-input" name="search-product" placeholder="Search">
 				</div>
+			</div>
 
 				<!-- Filter -->
 				<div class="dis-none panel-filter w-full p-t-10">
 					<div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
-						<div class="filter-col1 p-r-15 p-b-27">
+						<div class="filter-col4 p-b-27 filter-tope-group">
+							<div class="mtext-102 cl2 p-b-15">
+								categories
+							</div>
+
+							<div class="flex-w p-t-4 m-r--5">
+								{% for cat in cat %}
+								<button class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5" data-filter=".{{cat.categories}}">
+									{{cat.categories}}
+								</button>
+
+								{% endfor %}
+
+								<button  class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5" data-filter="*">
+									all
+								</button>
+
+							
+							</div>
+						</div>
+						<div class="filter-col4 p-b-27 filter-tope-group">
+							<div class="mtext-102 cl2 p-b-15">
+								Brands
+							</div>
+
+							<div class="flex-w p-t-4 m-r--5">
+								{% for brand in brand %}
+								<button  class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5 " data-filter=".{{brand.brand_name}}">
+									{{brand.brand_name}}
+								</button>
+
+								{% endfor %}
+
+								<button  class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5" data-filter="*">
+									all
+								</button>
+
+							
+							</div>
+						</div>
+					
+						<div class="filter-col5 m-l-90 p-r-10 p-b-27" >
 							<div class="mtext-102 cl2 p-b-15">
 								Sort By
 							</div>
 
 							<ul>
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										Default
+									<a href="#" class="filter-link stext-106 trans-04" id="sort-all">
+										All
 									</a>
 								</li>
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										Popularity
+									<a href="#" class="filter-link stext-106 trans-04" id="sort-atoz">
+										A to Z
 									</a>
 								</li>
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
-										Average rating
+									<a href="#" class="filter-link stext-106 trans-04" id="sort-ztoa">
+										Z to A
 									</a>
 								</li>
 
-								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-										Newness
-									</a>
-								</li>
+								
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
+									<a href="#" class="filter-link stext-106 trans-04" id="sort-lowtohigh">
 										Price: Low to High
 									</a>
 								</li>
 
 								<li class="p-b-6">
-									<a href="#" class="filter-link stext-106 trans-04">
+									<a href="#" class="filter-link stext-106 trans-04" id="sort-hightolow">
 										Price: High to Low
 									</a>
 								</li>
 							</ul>
 						</div>
 
-						<div class="filter-col2 p-r-15 p-b-27">
+						<!-- <div class="filter-col2 p-r-15 p-b-27">
 							<div class="mtext-102 cl2 p-b-15">
 								Price
 							</div>
@@ -266,106 +304,19 @@
 									</a>
 								</li>
 							</ul>
-						</div>
+						</div> -->
 
-						<div class="filter-col3 p-r-15 p-b-27">
-							<div class="mtext-102 cl2 p-b-15">
-								Color
-							</div>
-
-							<ul>
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #222;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										Black
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #4272d7;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04 filter-link-active">
-										Blue
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #b3b3b3;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										Grey
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #00ad5f;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										Green
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #fa4251;">
-										<i class="zmdi zmdi-circle"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										Red
-									</a>
-								</li>
-
-								<li class="p-b-6">
-									<span class="fs-15 lh-12 m-r-6" style="color: #aaa;">
-										<i class="zmdi zmdi-circle-o"></i>
-									</span>
-
-									<a href="#" class="filter-link stext-106 trans-04">
-										White
-									</a>
-								</li>
-							</ul>
-						</div>
-
-						<div class="filter-col4 p-b-27">
-							<div class="mtext-102 cl2 p-b-15">
-								categories
-							</div>
-
-							<div class="flex-w p-t-4 m-r--5">
-								<a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									Men
-								</a>
-
-								<a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									Women
-								</a>
-
-								<a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-									SmartWatch
-								</a>
-
-								
-							</div>
-						</div>
+						
+					
 					</div>
 				</div>
 			</div>
 
-			<div class="row isotope-grid">
+			<div class="row isotope-grid" id="sorting-part">
 				
 				{% for i in products_list  %}
 
-				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item {{i.category}}">
+				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item {{i.category}} {{i.brand}}">
 					<!-- Block2 -->
 					<div class="block2">
 						<div class="block2-pic hov-img0">
@@ -566,7 +517,61 @@
 		</div>
 	</div>
 	
-
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+	$(document).ready(function() {
+		// Attach click event handlers to each sorting option link
+		$('#sort-all').click(function(e) {
+			e.preventDefault();
+			sortProducts('all');
+		});
+	
+		$('#sort-atoz').click(function(e) {
+			e.preventDefault();
+			sortProducts('atoz');
+		});
+	
+		$('#sort-ztoa').click(function(e) {
+			e.preventDefault();
+			sortProducts('ztoa');
+		});
+	
+		$('#sort-lowtohigh').click(function(e) {
+			e.preventDefault();
+			sortProducts('lowtohigh');
+		});
+	
+		$('#sort-hightolow').click(function(e) {
+			e.preventDefault();
+			sortProducts('hightolow');
+		});
+		// Add click event handler to the search button
+		$('#search-button').click(function(e) {
+			e.preventDefault();
+			var searchQuery = $('#search-input').val();
+			sortProducts('search', searchQuery);
+		});
+		// Function to make AJAX request and update product list
+		function sortProducts(sortOption, searchQuery) {
+			$.ajax({
+				url: "{% url 'home' %}",  // Replace with the actual URL for sorting and searching
+				type: 'GET',
+				data: { sort: sortOption, search: searchQuery },
+				success: function(response) {
+					// Update the product list with the sorted/searched data
+					$('.abcde').replaceWith(response.html);
+					//$('#sorting-part').html(response.html);
+					//$('#sorting-part').html(response);
+					//$('.abcd').replaceWith(response.html);
+				},
+				error: function(xhr, status, error) {
+					// Handle error if necessary
+					console.log(error);
+				}
+			});
+		}
+	});
+	</script>
 
 	{% endblock %}
-	
+</div>

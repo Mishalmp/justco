@@ -5,6 +5,12 @@ from categories.models import category
 from django.utils.text import slugify
 from justeco.settings import *
 # from django_resized import ResizedImageField
+# from image_cropping.fields import ImageRatioField, ImageCropField
+# from imagekit.models import ImageSpecField
+# from imagekit.processors import ResizeToFill
+# from sorl.thumbnail import ImageField, get_thumbnail
+
+from PIL import Image
 
 
 # Create your models here.
@@ -34,7 +40,8 @@ class Product(models.Model):
     product_image = models.ImageField(upload_to='photos/product',default='No image available')
     product_image2 = models.ImageField(upload_to='photos/product',default='No image available')
     product_image3 = models.ImageField(upload_to='photos/product',default='No image available')
-    # product_image3 = ResizedImageField(size=[500, 300], upload_to='photos/product', blank=True, null=True)
+    
+    
     price_range = models.ForeignKey(PriceFilter, on_delete=models.CASCADE)
     brand = models.ForeignKey(brand,on_delete=models.CASCADE)
     category = models.ForeignKey(category,on_delete=models.CASCADE)
@@ -43,6 +50,8 @@ class Product(models.Model):
     is_available = models.BooleanField(default=False)
     slug = models.SlugField(max_length=250,unique=True)
     quantity = models.IntegerField(default=10)
+
+  
 
 
     def save(self, *args, **kwargs):
