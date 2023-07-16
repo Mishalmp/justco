@@ -15,6 +15,7 @@ from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login ,logout
 from checkout.models import Order
+from checkout.models import OrderItem
 # verification email
 from registrationuser.models import UserOTP
 from django.contrib import auth
@@ -24,6 +25,14 @@ import random
 import re
 from django.core.exceptions import ValidationError
 import csv
+import io
+from products.models import Product
+import datetime
+
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+
 
 # Create your views here.
 def admin_login(request):
@@ -180,8 +189,35 @@ def admin_signup(request):
 # @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='admin_login')
 def dashboard(request):
+    total_profit = Order.objects.aggregate(total_profit=Sum('total_price'))['total_profit'] or 0
 
-    return render(request,'adminapp/dashboard.html')
+    # Count total orders
+    total_orders = Order.objects.count()
+
+    # Count total users
+    total_users = User.objects.count()
+
+    # Count total products
+    total_products = Product.objects.count()
+
+    today = datetime.date.today()
+    last_week_start = today - datetime.timedelta(days=7)
+    last_week_end = today - datetime.timedelta(days=1)
+    last_week_profit = Order.objects.filter(created_at__range=(last_week_start, last_week_end)).aggregate(last_week_profit=Sum('total_price'))['last_week_profit'] or 0
+
+    # Retrieve product names for the graph
+    products = Product.objects.all()
+
+    context = {
+        'total_profit': total_profit,
+        'total_orders': total_orders,
+        'total_users': total_users,
+        'total_products': total_products,
+        'last_week_profit': last_week_profit,
+        'products': products
+    }
+
+    return render(request,'adminapp/dashboard.html',context)
 
 
 
@@ -198,8 +234,10 @@ def sales_report(request):
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
 
         orders = Order.objects.filter(created_at__date__range=(start_date, end_date))
+        recent_orders = orders.order_by('-created_at')
     else:
-        # If no date range is selected, fetch all orders
+        # If no date range is selected, fetch recent 10 orders
+        recent_orders = Order.objects.order_by('-created_at')[:10]
         orders = Order.objects.all()
 
     # Calculate total sales and total orders
@@ -215,9 +253,6 @@ def sales_report(request):
         'Cancelled': orders.filter(od_status='Cancelled').count(),
         'Return': orders.filter(od_status='Return').count(),
     }
-
-    # Fetch recent orders
-    recent_orders = orders.order_by('-created_at')[:10]
 
     # Prepare data for CSV export
     csv_data = [
@@ -251,6 +286,127 @@ def sales_report(request):
 
 
 
+
+
+def download_sales_csv(request):
+    # Fetch the data from the request's GET parameters
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    # Filter orders based on the selected date range
+    if start_date and end_date:
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+        orders = Order.objects.filter(created_at__date__range=(start_date, end_date))
+    else:
+        # If no date range is selected, fetch all orders
+        orders = Order.objects.all()
+
+    # Prepare data for CSV export
+    csv_data = [
+        ['Order ID', 'Tracking Number', 'Total Price', 'Status', 'Created At']
+    ]
+    for order in orders:
+        csv_data.append([order.id, order.tracking_no, order.total_price, order.od_status, order.created_at])
+
+    # Create the CSV response
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="sales_report_{start_date}_{end_date}.csv"'
+
+    writer = csv.writer(response)
+    for row in csv_data:
+        writer.writerow(row)
+
+    return response
+
+import csv
+from itertools import groupby
+def export_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=Expenses' + \
+        str(datetime.now()) + '.csv'
+
+    writer = csv.writer(response)
+    writer.writerow(['user', 'total_price', 'payment_mode', 'tracking_no', 'Orderd at', 'product_name', 'product_price', 'product_quantity'])
+
+    orders = Order.objects.all()
+    for order in orders:
+        order_items = OrderItem.objects.filter(order=order).select_related('product')  # Use select_related to optimize DB queries
+        grouped_order_items = groupby(order_items, key=lambda x: x.order_id)
+        for order_id, items_group in grouped_order_items:
+            items_list = list(items_group)
+            for order_item in items_list:
+                writer.writerow([
+                    order.user if order_item == items_list[0] else "",
+                    order.total_price if order_item == items_list[0] else "",
+                    order.payment_mode if order_item == items_list[0] else "",
+                    order.tracking_no if order_item == items_list[0] else "",
+                    order.created_at if order_item == items_list[0] else "",  # Only include date in the first row
+                    order_item.product.product_name,  # Replace 'product_name' with the actual attribute in your Product model
+                    order_item.price,
+                    order_item.quantity,
+                ])
+
+    return response
+
+
+
+
+
+def export_pdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=Expenses' + \
+        str(datetime.now()) + '.pdf'
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+
+    elements = []
+
+    styles = getSampleStyleSheet()
+
+    # Header Information
+    elements.append(Paragraph('Order Details Report', styles['Heading1']))
+    elements.append(Paragraph(str(datetime.now()), styles['Normal']))
+
+    # Table Data
+    data = [['User', 'Total Price', 'Payment Mode', 'Tracking No', 'Ordered At', 'Product Name', 'Product Price', 'Product Quantity']]
+
+    orders = Order.objects.all()
+    for order in orders:
+        order_items = OrderItem.objects.filter(order=order).select_related('product')
+        for order_item in order_items:
+            data.append([
+                order.user.username if order_item == order_items[0] else "",
+                order.total_price if order_item == order_items[0] else "",
+                order.payment_mode if order_item == order_items[0] else "",
+                order.tracking_no if order_item == order_items[0] else "",
+                str(order.created_at.date()) if order_item == order_items[0] else "",
+                order_item.product.product_name,
+                order_item.price,
+                order_item.quantity,
+            ])
+
+    # Create Table
+    table = Table(data, hAlign='CENTER')
+    table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, 0), 'grey'),
+                               ('TEXTCOLOR', (0, 0), (-1, 0), 'white'),
+                               ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                               ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                               ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                               ('BACKGROUND', (0, 1), (-1, -1), 'beige'),
+                               ('GRID', (0, 0), (-1, -1), 1, 'black')]))
+
+    elements.append(table)
+    doc.build(elements)
+
+    # Get the value of the BytesIO buffer and write it to the response
+    pdf = buffer.getvalue()
+    buffer.close()
+    response.write(pdf)
+
+    return response
 
 
 

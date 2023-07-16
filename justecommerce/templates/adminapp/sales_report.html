@@ -5,10 +5,13 @@
 {% block title %}Sales Report{% endblock %}
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-REPLACE-WITH-ACTUAL-VALUE" crossorigin="anonymous">
+
 
 
 {% block content %}
-<h1>Sales Report</h1>
+<h2 class="text-dark font-weight-bold"> Sales Report </h2>
 
 <section class="section dashboard">
     <div class="row">
@@ -24,7 +27,14 @@
                                 <input type="date" id="start-date" name="start_date" value="{{ sales_report.start_date }}" required>
                                 <label for="end_date">End Date:</label>
                                 <input type="date" id="end-date" name="end_date" value="{{ sales_report.end_date }}" required>
-                                <button type="submit">Generate Report</button>
+                                <button type="submit" class="btn btn-primary">Generate Report</button>
+                                <a href="{% url 'export_csv' %}" class="btn btn-success">
+                                    Download CSV <i class="fas fa-file-csv"></i>
+                                  </a>
+                                  <a href="{% url 'export_pdf' %}" class="btn btn-danger">
+                                    Download PDF <i class="fas fa-file-pdf"></i>
+                                  </a>
+                                  
                             </form>
                             <p>Total Sales: ₹{{ sales_report.total_sales|floatformat:2 }}</p>
                             <p>Total Orders: {{ sales_report.total_orders }}</p>
@@ -37,8 +47,9 @@
                                 <li>Cancelled: {{ sales_report.sales_by_status.Cancelled }}</li>
                                 <li>Return: {{ sales_report.sales_by_status.Return }}</li>
                             </ul>
-                            <h2>Recent Sales</h2>
-                            <table id="example" class="display nowrap mt-5" style="width:100%">
+                            <h2>{% if sales_report.start_date and sales_report.end_date %}All Orders{% else %}Recent Orders{% endif %}</h2>
+                            <div class="table-responsive">
+                            <table id="example" class="display nowrap mt-5 table" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>Order ID</th>
@@ -46,6 +57,9 @@
                                         <th>Total Price</th>
                                         <th>Status</th>
                                         <th>Created At</th>
+                                        {% if sales_report.start_date and sales_report.end_date %}
+                                        <th>Items</th>
+                                        {% endif %}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -56,12 +70,22 @@
                                         <td>₹{{ order.total_price }}</td>
                                         <td>{{ order.od_status }}</td>
                                         <td>{{ order.created_at }}</td>
+                                        {% if sales_report.start_date and sales_report.end_date %}
+                                        <td>
+                                            <ul>
+                                                {% for item in order.orderitem_set.all %}
+                                                <li>{{ item.product.product_name }} </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </td>
+                                        {% endif %}
                                     </tr>
                                     {% endfor %}
                                 </tbody>
-                                <tfoot>
-                                </tfoot>
                             </table>
+                        </div>
+                            
+                            
                             
                             <script>
                                 const startDate = document.getElementById("start-date");
@@ -81,6 +105,7 @@
         </div>
     </div>
 </section>
+
 
 <script>
     setTimeout(function() {
@@ -103,6 +128,7 @@
  swal("Error!", "{{msg}}", "error");
  {% endfor %}
 </script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
@@ -111,4 +137,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+
 {% endblock %}

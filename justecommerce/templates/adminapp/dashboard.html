@@ -4,7 +4,7 @@
 {% block title %} Dashboard {% endblock %}
 
 
-
+{% load mathfilters %}
 
 
 {% block content %} 
@@ -20,21 +20,17 @@
               <h2 class="text-dark font-weight-bold mb-2"> Overview dashboard </h2>
               <div class="d-sm-flex justify-content-xl-between align-items-center mb-2">
                 <div class="btn-group bg-white p-3" role="group" aria-label="Basic example">
-                  <button type="button" class="btn btn-link text-light py-0 border-right">7 Days</button>
+                  <!-- <button type="button" class="btn btn-link text-light py-0 border-right">7 Days</button>
                   <button type="button" class="btn btn-link text-dark py-0 border-right">1 Month</button>
-                  <button type="button" class="btn btn-link text-light py-0">3 Month</button>
+                  <button type="button" class="btn btn-link text-light py-0">3 Month</button> -->
                 </div>
-                <div class="dropdown ml-0 ml-md-4 mt-2 mt-lg-0">
-                  <button class="btn bg-white dropdown-toggle p-3 d-flex align-items-center" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="mdi mdi-calendar mr-1"></i>24 Mar 2019 - 24 Mar 2019 </button>
-                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton1">
-                    <h6 class="dropdown-header">Settings</h6>
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Separated link</a>
+              
+                  <div class="d-lg-flex">
+                   
+                    <p id="current-date-time" class="text-dark font-weight-bold mb-0"></p>
                   </div>
-                </div>
+            
+               
               </div>
             </div>
             <div class="row">
@@ -65,19 +61,19 @@
                       <div class="col-xl-3 col-lg-6 col-sm-6 grid-margin stretch-card">
                         <div class="card">
                           <div class="card-body text-center">
-                            <h5 class="mb-2 text-dark font-weight-normal">Orders</h5>
-                            <h2 class="mb-4 text-dark font-weight-bold">932.00</h2>
+                            <h5 class="mb-2 text-dark font-weight-normal">Total Profit</h5>
+                            <h2 class="mb-4 text-dark font-weight-bold">₹{{ total_profit|floatformat:2 }}</h2>
                             <div class="dashboard-progress dashboard-progress-1 d-flex align-items-center justify-content-center item-parent"><i class="mdi mdi-lightbulb icon-md absolute-center text-dark"></i></div>
                             <p class="mt-4 mb-0">Completed</p>
-                            <h3 class="mb-0 font-weight-bold mt-2 text-dark">5443</h3>
+                            <h3 class="mb-0 font-weight-bold mt-2 text-dark">{{ total_orders}}</h3>
                           </div>
                         </div>
                       </div>
                       <div class="col-xl-3 col-lg-6 col-sm-6 grid-margin stretch-card">
                         <div class="card">
                           <div class="card-body text-center">
-                            <h5 class="mb-2 text-dark font-weight-normal">Unique Visitors</h5>
-                            <h2 class="mb-4 text-dark font-weight-bold">756,00</h2>
+                            <h5 class="mb-2 text-dark font-weight-normal">Total Orders</h5>
+                            <h2 class="mb-4 text-dark font-weight-bold">{{ total_orders}}</h2>
                             <div class="dashboard-progress dashboard-progress-2 d-flex align-items-center justify-content-center item-parent"><i class="mdi mdi-account-circle icon-md absolute-center text-dark"></i></div>
                             <p class="mt-4 mb-0">Increased since yesterday</p>
                             <h3 class="mb-0 font-weight-bold mt-2 text-dark">50%</h3>
@@ -87,19 +83,19 @@
                       <div class="col-xl-3  col-lg-6 col-sm-6 grid-margin stretch-card">
                         <div class="card">
                           <div class="card-body text-center">
-                            <h5 class="mb-2 text-dark font-weight-normal">Impressions</h5>
-                            <h2 class="mb-4 text-dark font-weight-bold">100,38</h2>
+                            <h5 class="mb-2 text-dark font-weight-normal">Total Products</h5>
+                            <h2 class="mb-4 text-dark font-weight-bold">{{ total_products }}</h2>
                             <div class="dashboard-progress dashboard-progress-3 d-flex align-items-center justify-content-center item-parent"><i class="mdi mdi-eye icon-md absolute-center text-dark"></i></div>
                             <p class="mt-4 mb-0">Increased since yesterday</p>
-                            <h3 class="mb-0 font-weight-bold mt-2 text-dark">35%</h3>
+                            <h3 class="mb-0 font-weight-bold mt-2 text-dark">35</h3>
                           </div>
                         </div>
                       </div>
                       <div class="col-xl-3 col-lg-6 col-sm-6 grid-margin stretch-card">
                         <div class="card">
                           <div class="card-body text-center">
-                            <h5 class="mb-2 text-dark font-weight-normal">Followers</h5>
-                            <h2 class="mb-4 text-dark font-weight-bold">4250k</h2>
+                            <h5 class="mb-2 text-dark font-weight-normal">Total Users</h5>
+                            <h2 class="mb-4 text-dark font-weight-bold">{{ total_users }}</h2>
                             <div class="dashboard-progress dashboard-progress-4 d-flex align-items-center justify-content-center item-parent"><i class="mdi mdi-cube icon-md absolute-center text-dark"></i></div>
                             <p class="mt-4 mb-0">Decreased since yesterday</p>
                             <h3 class="mb-0 font-weight-bold mt-2 text-dark">25%</h3>
@@ -119,46 +115,50 @@
                                     <button class="btn p-0 text-dark dropdown-toggle" type="button" id="dropdownMenuIconButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                       <i class="mdi mdi-dots-vertical"></i>
                                     </button>
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuIconButton1">
+                                    <!-- <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuIconButton1">
                                       <h6 class="dropdown-header">Settings</h6>
                                       <a class="dropdown-item" href="#">Action</a>
                                       <a class="dropdown-item" href="#">Another action</a>
                                       <a class="dropdown-item" href="#">Something else here</a>
                                       <div class="dropdown-divider"></div>
                                       <a class="dropdown-item" href="#">Separated link</a>
-                                    </div>
+                                    </div> -->
                                   </div>
                                 </div>
                               </div>
                               <div class="col-lg-3 col-sm-4 grid-margin  grid-margin-lg-0">
                                 <div class="wrapper pb-5 border-bottom">
                                   <div class="text-wrapper d-flex align-items-center justify-content-between mb-2">
-                                    <p class="mb-0 text-dark">Total Profit</p>
+                                    <p class="mb-0 text-dark">Last Week Sales</p>
                                     <span class="text-success"><i class="mdi mdi-arrow-up"></i>2.95%</span>
                                   </div>
-                                  <h3 class="mb-0 text-dark font-weight-bold">$ 92556</h3>
+                                  <h3 class="mb-0 text-dark font-weight-bold">₹{{last_week_profit|floatformat:2}}</h3>
                                   <canvas id="total-profit"></canvas>
                                 </div>
                                 <div class="wrapper pt-5">
                                   <div class="text-wrapper d-flex align-items-center justify-content-between mb-2">
-                                    <p class="mb-0 text-dark">Expenses</p>
+                                    <p class="mb-0 text-dark">Last week Expense</p>
                                     <span class="text-success"><i class="mdi mdi-arrow-up"></i>52.95%</span>
                                   </div>
-                                  <h3 class="mb-4 text-dark font-weight-bold">$ 59565</h3>
+                                  <h3 class="mb-4 text-dark font-weight-bold">₹ 59512365</h3>
                                   <canvas id="total-expences"></canvas>
                                 </div>
                               </div>
+
+
+                              
                               <div class="col-lg-9 col-sm-8 grid-margin  grid-margin-lg-0">
                                 <div class="pl-0 pl-lg-4 ">
                                   <div class="d-xl-flex justify-content-between align-items-center mb-2">
                                     <div class="d-lg-flex align-items-center mb-lg-2 mb-xl-0">
-                                      <h3 class="text-dark font-weight-bold mr-2 mb-0">Devices sales</h3>
+                                      <h3 class="text-dark font-weight-bold mr-2 mb-0">Product sales</h3>
                                       <h5 class="mb-0">( growth 62% )</h5>
                                     </div>
                                     <div class="d-lg-flex">
-                                      <p class="mr-2 mb-0">Timezone:</p>
-                                      <p class="text-dark font-weight-bold mb-0">GMT-0400 Eastern Delight Time</p>
+                                      <p class="mr-2 mb-0">Time:</p>
+                                      <p id="current-date-time" class="text-dark font-weight-bold mb-0"></p>
                                     </div>
+                                    
                                   </div>
                                   <div class="graph-custom-legend clearfix" id="device-sales-legend"></div>
                                   <canvas id="device-sales"></canvas>
@@ -221,5 +221,36 @@
       <!-- page-body-wrapper ends -->
     </div>
   </div>
+<script>
+  // Function to get the current time
+// Function to get the current date and time
+function getCurrentDateTime() {
+  var date = new Date();
+  var options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: true
+  };
+  var formattedDateTime = date.toLocaleString('en-US', options);
+  return formattedDateTime;
+}
 
+// Update the element with the current date and time
+function updateDateTime() {
+  var dateTimeElement = document.getElementById('current-date-time');
+  if (dateTimeElement) {
+    dateTimeElement.textContent = getCurrentDateTime();
+  }
+}
+
+// Update the date and time every second
+setInterval(updateDateTime, 1000);
+
+
+</script>
   {% endblock %}

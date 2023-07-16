@@ -21,8 +21,8 @@ class Order(models.Model):
         ('Processing','Processing'),
         ('Shipped','Shipped'),
         ('Delivered','Delivered'),
-        ('Cancelled','Cancelled'),
-        ('Return', 'Return')
+        ('Cancelled','Cancelled')
+       
     }
     od_status = models.CharField(max_length=150,choices=orderstatuses, default='Pending')
 

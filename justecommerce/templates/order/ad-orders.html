@@ -69,7 +69,18 @@
           </td>
           <td >
            
-            <span class="badge p-2 my-2 text-secondary" style="font-size: medium;">Pending</span>
+            {% if c.od_status == 'Pending' %}
+            <span class="badge p-2 my-2 text-secondary" style="font-size: medium;">{{c.od_status}}</span>
+            {% elif c.od_status == 'Processing' %}
+            <span class="badge p-2 my-2 text-warning" style="font-size: medium;">{{c.od_status}}</span>
+            {% elif c.od_status == 'Shipped' %}
+            <span class="badge p-2 my-2 text-primary" style="font-size: medium;">{{c.od_status}}</span>
+            {% elif c.od_status == 'Delivered' %}
+            <span class="badge p-2 my-2 text-success" style="font-size: medium;">{{c.od_status}}</span>
+            {% elif c.od_status == 'Cancelled' or 'refunded' %}
+            <span class="badge p-2 my-2 text-danger" style="font-size: medium;">{{c.od_status}}</span>
+            {% endif %}
+    
         </td>
         
           
