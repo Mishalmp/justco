@@ -33,6 +33,7 @@ urlpatterns = [
     path('userprofile/',include('userprofile.urls')),
     path('wishlist/',include('wishlist.urls')),
     path('shop/',include('shop.urls')),
+    path('coupon/',include('coupon.urls')),
 ]+static(settings. MEDIA_URL,document_root=settings.MEDIA_ROOT)
 # handler404 = 'home.views.error_404_view'
 

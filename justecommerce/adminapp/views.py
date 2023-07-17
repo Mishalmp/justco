@@ -28,6 +28,7 @@ import csv
 import io
 from products.models import Product
 import datetime
+from datetime import datetime, timedelta
 
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
@@ -200,9 +201,9 @@ def dashboard(request):
     # Count total products
     total_products = Product.objects.count()
 
-    today = datetime.date.today()
-    last_week_start = today - datetime.timedelta(days=7)
-    last_week_end = today - datetime.timedelta(days=1)
+    today = datetime.today().date()
+    last_week_start = today - timedelta(days=7)
+    last_week_end = today - timedelta(days=1)
     last_week_profit = Order.objects.filter(created_at__range=(last_week_start, last_week_end)).aggregate(last_week_profit=Sum('total_price'))['last_week_profit'] or 0
 
     # Retrieve product names for the graph

@@ -56,9 +56,10 @@ INSTALLED_APPS = [
     'wishlist',
     'userprofile',
     'shop',
+    'coupon',
     'mathfilters',
     'imagekit',
-    'sorl.thumbnail'
+    
     
     
     

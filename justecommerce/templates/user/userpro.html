@@ -95,7 +95,17 @@
               </button>
             </td>
             <td>
-              <span class="badge p-2 my-2 text-warning" style="font-size: medium;">Pending</span>
+              {% if c.od_status == 'Pending' %}
+              <span class="badge badge-secondary" style="font-size: medium;">{{c.od_status}}</span>
+              {% elif c.od_status == 'Processing' %}
+              <span class="badge badge-warning" style="font-size: medium;">{{c.od_status}}</span>
+              {% elif c.od_status == 'Shipped' %}
+              <span class="badge badge-primary" style="font-size: medium;">{{c.od_status}}</span>
+              {% elif c.od_status == 'Delivered' %}
+              <span class="badge badge-success" style="font-size: medium;">{{c.od_status}}</span>
+              {% elif c.od_status == 'Cancelled' or 'refunded' %}
+              <span class="badge badge-danger" style="font-size: medium;">{{c.od_status}}</span>
+              {% endif %}
             </td>
           </tr>
           <tr class="collapse" id="orderDetails{{ forloop.counter }}">
@@ -124,15 +134,15 @@
                       <p class="card-text">Payment id<span>: {{c.payment_id}}</span></p>
                       <p class="card-text">Payment Method<span>: {{c.payment_mode}}</span></p>
                       {% if order.od_status == 'Pending' %}
-                      <span class="badge p-2 my-2 text-warning" style="font-size: medium;">{{c.od_status}}</span>
+                      <span class="badge badge-warning" style="font-size: medium;">{{c.od_status}}</span>
                       {% elif order.od_status == 'Processing' %}
-                      <span class="badge p-2 my-2 text-warning" style="font-size: medium;">{{c.od_status}}</span>
+                      <span class="badge badge-warning" style="font-size: medium;">{{c.od_status}}</span>
                       {% elif order.od_status == 'Shipped' %}
-                      <span class="badge p-2 my-2 text-primary" style="font-size: medium;">{{c.od_status}}</span>
+                      <span class="badge badge-primary" style="font-size: medium;">{{c.od_status}}</span>
                       {% elif order.od_status == 'Delivered' %}
-                      <span class="badge p-2 my-2 text-success" style="font-size: medium;">{{c.od_status}}</span>
+                      <span class="badge badge-success" style="font-size: medium;">{{c.od_status}}</span>
                       {% elif order.od_status == 'Cancelled' or 'refunded' %}
-                      <span class="badge p-2 my-2 text-danger" style="font-size: medium;">{{c.od_status}}</span>
+                      <span class="badge badge-danger" style="font-size: medium;">{{c.od_status}}</span>
                       {% endif %}
                     </div>
                   </div>
@@ -168,15 +178,15 @@
                           <td class="cart__price total">{{ order_item.order.total_price|floatformat:2 }}</td>
                           <td>
                             {% if order_item.status == 'Pending' %}
-                            <span class="badge p-2 my-2 text-warning" style="font-size: medium;">{{ order_item.status }}</span>
+                            <span class="badge badge-warning" style="font-size: medium;">{{ order_item.status }}</span>
                             {% elif order_item.status == 'Processing' %}
-                            <span class="badge p-2 my-2 text-warning" style="font-size: medium;">{{ order_item.status }}</span>
+                            <span class="badge badge-warning" style="font-size: medium;">{{ order_item.status }}</span>
                             {% elif order_item.status == 'Shipped' %}
-                            <span class="badge p-2 my-2 text-primary" style="font-size: medium;">{{ order_item.status }}</span>
+                            <span class="badge badge-primary" style="font-size: medium;">{{ order_item.status }}</span>
                             {% elif order_item.status == 'Delivered' %}
-                            <span class="badge p-2 my-2 text-success" style="font-size: medium;">{{ order_item.status }}</span>
+                            <span class="badge badge-success" style="font-size: medium;">{{ order_item.status }}</span>
                             {% elif order_item.status == 'Cancelled' or 'refunded' %}
-                            <span class="badge p-2 my-2 text-danger" style="font-size: medium;">{{ order_item.status }}</span>
+                            <span class="badge badge-danger" style="font-size: medium;">{{ order_item.status }}</span>
                             {% endif %}
                           </td>
                         </tr>

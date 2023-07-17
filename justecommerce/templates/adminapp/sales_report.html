@@ -28,12 +28,7 @@
                                 <label for="end_date">End Date:</label>
                                 <input type="date" id="end-date" name="end_date" value="{{ sales_report.end_date }}" required>
                                 <button type="submit" class="btn btn-primary">Generate Report</button>
-                                <a href="{% url 'export_csv' %}" class="btn btn-success">
-                                    Download CSV <i class="fas fa-file-csv"></i>
-                                  </a>
-                                  <a href="{% url 'export_pdf' %}" class="btn btn-danger">
-                                    Download PDF <i class="fas fa-file-pdf"></i>
-                                  </a>
+                               
                                   
                             </form>
                             <p>Total Sales: ₹{{ sales_report.total_sales|floatformat:2 }}</p>
@@ -45,9 +40,17 @@
                                 <li>Shipped: {{ sales_report.sales_by_status.Shipped }}</li>
                                 <li>Delivered: {{ sales_report.sales_by_status.Delivered }}</li>
                                 <li>Cancelled: {{ sales_report.sales_by_status.Cancelled }}</li>
-                                <li>Return: {{ sales_report.sales_by_status.Return }}</li>
+                              
                             </ul>
                             <h2>{% if sales_report.start_date and sales_report.end_date %}All Orders{% else %}Recent Orders{% endif %}</h2>
+                            {% if sales_report.start_date and sales_report.end_date %}
+                            <a href="{% url 'export_csv' %}" class="btn btn-success">
+                                Download CSV <i class="mdi mdi-file-excel" style="font-size: x-large;"></i>
+                              </a>
+                              <a href="{% url 'export_pdf' %}" class="btn btn-danger" >
+                                Download PDF <i class="mdi mdi-file-pdf" style="font-size: x-large;"></i>
+                              </a>
+                              {% endif %}
                             <div class="table-responsive">
                             <table id="example" class="display nowrap mt-5 table" style="width:100%">
                                 <thead>
