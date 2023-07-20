@@ -25,21 +25,19 @@ def user_profile(request):
     
     for order in orders:
         all_orderitems_cancelled = all(order_item.status == 'Cancelled' for order_item in order.orderitem_set.all())
-        
+
         if all_orderitems_cancelled:
             order.od_status = 'Cancelled'
+        elif all(order_item.status == 'Delivered' for order_item in order.orderitem_set.all()):
+            order.od_status = 'Delivered'
+        elif all(order_item.status == 'Return' for order_item in order.orderitem_set.all()):
+            order.od_status = 'Return'
+        elif all(order_item.status == 'Processing' for order_item in order.orderitem_set.all()):
+            order.od_status = 'Processing'
         else:
-            # Check if all OrderItems have status 'Delivered'
-            all_orderitems_delivered = all(order_item.status == 'Delivered' for order_item in order.orderitem_set.all())
-            if all_orderitems_delivered:
-                order.od_status = 'Delivered'
-            else:
-                                                                                   
-                    # Check if all OrderItems have status 'Return'
-                    all_orderitems_return = all(order_item.status == 'Return' for order_item in order.orderitem_set.all())
-                    if all_orderitems_return:
-                        order.od_status = 'Return'
-            order.save()
+            order.od_status = 'Pending'
+
+        order.save()
 
     user_info = {
         'address': Address.objects.filter(user=request.user).first(),

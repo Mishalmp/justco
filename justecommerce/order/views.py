@@ -12,6 +12,23 @@ from .models import Orderreturn
 def admin_orders(request):
     orders=Order.objects.all().order_by('-created_at')
     order_item=OrderItem.objects.all()
+    for order in orders:
+        all_orderitems_cancelled = all(order_item.status == 'Cancelled' for order_item in order.orderitem_set.all())
+
+        if all_orderitems_cancelled:
+            order.od_status = 'Cancelled'
+        elif all(order_item.status == 'Delivered' for order_item in order.orderitem_set.all()):
+            order.od_status = 'Delivered'
+        elif all(order_item.status == 'Return' for order_item in order.orderitem_set.all()):
+            order.od_status = 'Return'
+        elif all(order_item.status == 'Processing' for order_item in order.orderitem_set.all()):
+            order.od_status = 'Processing'
+        else:
+            order.od_status = 'Pending'
+
+        order.save()
+
+
     context={
         'orders':orders,
         'order_item':order_item
