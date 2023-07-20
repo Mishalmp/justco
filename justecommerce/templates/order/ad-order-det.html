@@ -161,6 +161,8 @@
                 <span class="badge badge-success" style="font-size: medium;">{{order.od_status}}</span>
                 {% elif order.od_status == 'Cancelled' or 'refunded' %}
                 <span class="badge badge-danger" style="font-size: medium;">{{order.od_status}}</span>
+                {% elif order.od_status == 'Return' %}
+                <span class="badge badge-danger" style="font-size: medium;">{{order.od_status}}</span>
                 {% endif %}
         
                 <input type="hidden" class="order_id" value="{{ order.id }}">
@@ -221,6 +223,8 @@
                 {% elif order_item.status == 'Delivered' %}
                 <span class="badge badge-success" style="font-size: medium;">{{order_item.status}}</span>
                 {% elif order_item.status == 'Cancelled' or 'refunded' %}
+                <span class="badge badge-danger" style="font-size: medium;">{{order_item.status}}</span>
+                {% elif order_item.status == 'Return' %}
                 <span class="badge badge-danger" style="font-size: medium;">{{order_item.status}}</span>
                 {% endif %}
             </td>

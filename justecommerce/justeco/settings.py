@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'userprofile',
     'shop',
     'coupon',
+    'banner',
+    'offer',
     'mathfilters',
     'imagekit',
     
@@ -109,7 +111,7 @@ WSGI_APPLICATION = 'justeco.wsgi.application'
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'justeco',
+       'NAME': 'seconddb',
        'USER': 'postgres',
        'PASSWORD': '12345',
        'HOST': 'localhost',

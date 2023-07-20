@@ -15,6 +15,9 @@ from django.template.loader import render_to_string
 from django.http import HttpRequest
 
 def home(request):
+    if request.user.is_superuser:
+                return redirect('dashboard')
+
 
     
     cate=category.objects.all()
@@ -61,6 +64,8 @@ def is_ajax(request):
 
 
 def shop(request):
+    if request.user.is_superuser:
+                return redirect('dashboard')
 
     
     cat=category.objects.all()

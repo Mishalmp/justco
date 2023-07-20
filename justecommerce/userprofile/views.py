@@ -20,26 +20,41 @@ from django.http import JsonResponse
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='user_login')
 def user_profile(request):
-
-    orders=Order.objects.filter(user=request.user).order_by('-created_at')
-    order_items=OrderItem.objects.filter(order__in=orders).order_by('-order__created_at')
-  
-
-
-    user_info={
-        'address':Address.objects.filter(user=request.user).first(),
-        'user':User.objects.get(username=request.user),
-        'wallets':Wallet.objects.filter(user=request.user),
-        'cart':Cart.objects.filter(user=request.user).order_by('-id'),
-        'wishlist':Wishlist.objects.filter(user=request.user).order_by('-id'),
-        'addresses':Address.objects.filter(user=request.user),
-        'orders':orders,
-        'order_items':order_items,
-      
-        
-    }
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    order_items = OrderItem.objects.filter(order__in=orders).order_by('-order__created_at')
     
-    return render(request,'user/userpro.html',user_info)
+    for order in orders:
+        all_orderitems_cancelled = all(order_item.status == 'Cancelled' for order_item in order.orderitem_set.all())
+        
+        if all_orderitems_cancelled:
+            order.od_status = 'Cancelled'
+        else:
+            # Check if all OrderItems have status 'Delivered'
+            all_orderitems_delivered = all(order_item.status == 'Delivered' for order_item in order.orderitem_set.all())
+            if all_orderitems_delivered:
+                order.od_status = 'Delivered'
+            else:
+                                                                                   
+                    # Check if all OrderItems have status 'Return'
+                    all_orderitems_return = all(order_item.status == 'Return' for order_item in order.orderitem_set.all())
+                    if all_orderitems_return:
+                        order.od_status = 'Return'
+            order.save()
+
+    user_info = {
+        'address': Address.objects.filter(user=request.user).first(),
+        'user': User.objects.get(username=request.user),
+        'wallets': Wallet.objects.filter(user=request.user),
+        'cart': Cart.objects.filter(user=request.user).order_by('-id'),
+        'wishlist': Wishlist.objects.filter(user=request.user).order_by('-id'),
+        'addresses': Address.objects.filter(user=request.user),
+        'orders': orders,
+        'order_items': order_items,
+    }
+
+    return render(request, 'user/userpro.html', user_info)
+
+
 
 
 

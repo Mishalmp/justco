@@ -3,7 +3,7 @@
 {% load static %}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 {% block content %}
-
+{% load mathfilters %}
 
 <main class="main">
   <!-- End .page-header -->
@@ -112,7 +112,7 @@
                     <form action="{% url 'placeorder' %}" method="post" id="orderform">
                         
                         <div class="row">
-                            <div class="col-lg-8" >
+                            <div class="col-lg-6" >
                                 
                                 <br><br>
                                 <!-- <div class="custom-control custom-checkbox">
@@ -313,60 +313,89 @@
 
 
                             </div>
-                        <aside class="col-lg-4" >
-                            <div class="checkout-discount">
-                                <form action="#">
-                                    <input type="text" class="form-control" required id="checkout-discount-input">
-                                    <label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
-                                </form>
-                            </div>
-                            <div class="summary" style="float:right">
+                        <aside class="col-lg-6" >
+                         
+                            <div class="summary " style="float:right">
                              
                                 <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
 
-                                <table class="table table-summary">
-                                    <thead>
-                                        <tr>
-                                            <th>Product</th>
-                                            <th>Quantity</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        {% for i in cartitems %}
-                                        <tr>
-                                            <td><a href="#">{{i.product}}</a></td>
-                                            <td>{{i.product_qty}}</td>
-                                            <td>{{i.product.product_price}}</td>
-                                        </tr>
-                                            {% endfor %}
-                                      
-                                        <tr class="summary-subtotal">
-                                            <td>Subtotal:</td>
-                                            <td></td>
-                                            <td>{{total_price}}</td>
-                                        </tr><!-- End .summary-subtotal -->
-                                        <tr>
-                                            <td>Shipping:</td>
-                                            <td></td>
-
-                                            <td>Free shipping</td>
-                                        </tr>
-                                        <tr class="summary-tax">
-                                            <td>Tax:</td>
-                                            <td></td>
-
-                                            <td>  ₹ {{tax | floatformat:2}}</td>
-                                        </tr>
-                                        <tr class="summary-total">
-                                            <td>Total:</td>
-                                            <td></td>
-
-                                            <td>₹ {{grand_total}}</td>
-                                        </tr><!-- End .summary-total -->
-                                    </tbody>
-                                </table><!-- End .table table-summary -->
+                                <table class="table table-summary col-lg-6 tabledata">
+                                  <thead>
+                                    <tr>
+                                      <th>Product</th>
+                                      <th>Quantity</th>
+                                      <th>Price</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for i in cartitems %}
+                                    <tr>
+                                      <td><a href="#">{{ i.product }}</a></td>
+                                      <td>{{ i.product_qty }}</td>
+                                      <td>{% if i.product.offer %}<del class="text-danger">₹  {{i.product.product_price}}</del> {{i.product.get_offer}}{% else %}₹ {{i.product.product_price}} {% endif %}</td> 
+                                    </tr>
+                                    {% endfor %}
+                                    <tr class="summary-subtotal">
+                                      <td>Subtotal:</td>
+                                      <td></td>
+                                      <td>{{ total_price }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Shipping:</td>
+                                      <td></td>
+                                      <td>Free shipping</td>
+                                    </tr>
+                                    <tr class="summary-coupon">
+                                      {% if applied_coupon %}
+                                        <td>Coupon Applied:</td>
+                                        <td>{{ applied_coupon.coupon_code }}</td>
+                                        <td>
+                                          - ₹ {{ applied_coupon.discount }}
+                                          <a href="{% url 'remove_coupon' %}" class="remove-coupon">[X]</a>
+                                        </td>
+                                      {% else %}
+                                        <td>Coupon:</td>
+                                        <td></td>
+                                        <td>No Coupon Applied</td>
+                                      {% endif %}
+                                    </tr>
+                                    <tr class="summary-tax">
+                                      <td>Tax:</td>
+                                      <td></td>
+                                      <td>(Included in MRP)</td>
+                                    </tr>
+                                   
+                                    {% if applied_coupon %}
+                                    <tr>
+                                      <td>Discount:</td>
+                                      <td></td>
+                                      <td><span id="discount">- ₹{{ coupon_discount }}</span></td>
+                                    </tr>
+                                    <tr class="summary-total">
+                                      <td>Total:</td>
+                                      <td></td>
+                                      <td><span id="discounted_price">₹{{ grand_total }}</span>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                      <td>Total:</td>
+                                      <td></td>
+                                      <td>₹{{ grand_total }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    <input type="hidden" class="grand_total" id="grand_total_display" value="{{ grand_total }}">
+                                    
+                                    
+                                  </tbody>
+                                </table>
+                                <!-- {%if usercoupon%}
+                                <li>Discount <span id="discount">{{ usercoupon.coupon.discount }}</span>%</li>
+                                <li>Total <span id="grand_total">₹{{usercoupon.total_price}}</span></li>
+                                {% else %}
+                                <li>Total <span id="grand_total">₹{{grand_total}}</span></li>
+                                {% endif %}
+                                <input type="hidden" class="grand_total" id="grand_total" value="{{grand_total}}"> -->
+                                
 
                                 <div class="accordion-summary" id="accordion-payment">
                                   <!-- <div class="card">
@@ -395,9 +424,23 @@
                                     <div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
                                         <div class="card-body">
                                             Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum.
-                                        </div><!-- End .card-body -->
-                                    </div><!-- End .collapse -->
+                                        </div>
+                                     </div>
                                 </div><!-- End .card -->
+                                <div class="card">
+                                  <div class="card-header" id="heading-111">
+                                      <h2 class="card-title">
+                                          <a class="collapsed" id="payment" data-payment-method="wallet" role="button" data-toggle="collapse" href="#collapse-111" aria-expanded="false" aria-controls="collapse-111">
+                                             Wallet 
+                                          </a>
+                                      </h2>
+                                  </div><!-- End .card-header -->
+                                  <div id="collapse-111" class="collapse" aria-labelledby="heading-111" data-parent="#accordion-payment">
+                                      <div class="card-body">
+                                          Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum.
+                                      </div>
+                                   </div>
+                              </div><!-- End .card -->
                                 
                                 
                                 <div class="card">
@@ -411,7 +454,7 @@
                                     <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
                                         <div class="card-body">Quisque volutpat mattis eros. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros.
                                         </div><!-- End .card-body -->
-                                    </div><!-- End .collapse -->
+                                    </div>
                                 </div><!-- End .card -->
                                 
                                 
@@ -423,8 +466,53 @@
 
                                   
                               </button>
+                              <br><br>
+                              <a href="{% url 'cancel_order_before' %}" class="btn btn-outline-primary-2 btn-order btn-block"  > cancel order</a>
+                              
                            
                             </div><!-- End .summary -->
+                            
+                            <!-- <h3>Apply Coupon</h3> -->
+                            <div class="form-outline mb-4">
+                              
+                              <div class="input-group">
+                                <select class="form-select form-select-sm input-small-width input-increased-height" style="height: 40px; width:50%; font-size: 13px;" id="checkout-discount-input" aria-label=".form-select-sm example" name="coupon_code">
+                                  {% for c in coupons %}
+                                  <option value="{{ c.coupon_code }}">{{ c.coupon_code }} <span></span></option>
+                                  {% endfor %}
+                                </select>
+                                <button class="btn btn-primary btn-apply-coupon CouponButton" style="width:30px">Apply Coupon</button>
+                              </div>
+                            </div>
+                            
+                         
+                            
+
+                            {% if coupons %}
+                            <h3> Coupons Available</h3>
+                            <div class="accordion accordion-flush" id="accordionFlushExample">
+                              {% for item in coupons %}
+                                <div class="accordion-item">
+                                  <h2 class="accordion-header" id="flush-heading{{ forloop.counter }}">
+                                    <button class="accordion-button collapsed" style="height: 40px;" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="flush-collapse{{ forloop.counter }}">
+                                      <span class="text-dark" style="font-size: 13px;">{{forloop.counter}}.</span> <b>-{{item.discount}}% Off {{item.coupon}} </b>
+                                    </button>
+                                  </h2>
+                                  <div id="flush-collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{ forloop.counter }}" data-bs-parent="#accordionFlushExample">
+                                    <div class="accordion-body">
+                                      <p><b>*</b>Applicable only for order price more than <b>{{item.min_price}}\-</b></p>
+                                  <span class="ml-3">Coupon Code: <b class="text-danger">{{item.coupon_code}}</b></span>
+                                    </div>
+                                  </div>
+                                </div>
+                              {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="mb-2"><h3>No Coupons Available</h3></div>
+                            {% endif %}
+                            
+                            <!-- Coupon options -->
+                       
                         </aside><!-- End .col-lg-3 -->
                     </div><!-- End .row -->
                 </form>
@@ -471,7 +559,7 @@
               console.log(data, '11111111111111111111111');
 
               // Check the selected payment method and execute the corresponding AJAX request
-              if (paymentMethod === "cod") {
+              if (paymentMethod === "wallet") {
                   $.ajax({
                       method: "POST",
                       url: "{% url 'placeorder' %}",
@@ -480,23 +568,53 @@
                   }).done(function(response) {
                       console.log(response);
 
-                      if (response.status === 'cannot place order') {
+                      if (response.status === 'Your wallet amount is very low') {
                           swal("Error!", response.status, "error");
                           $('.placeorder').load(location.href + " .placeorder");
+                          window.location.href = '/checkout/checkout/';
                       } else if (response.status === 'Your order has been placed successfully') {
                           swal("Congratulations!", response.status, "success");
                           $('.placeorder').load(location.href + " .placeorder");
+                          window.location.href = '/';
                       } else {
                           swal("Error!", response.status, "error");
                           $('.placeorder').load(location.href + " .placeorder");
+                          window.location.href = '/';
                       }
-                      window.location.href = '/';
+                      
                   }).fail(function(xhr, errmsg, err) {
                       alert('Error: ' + errmsg);
                       console.log(xhr.responseText);
                       console.log(err);
                   });
-              } else if (paymentMethod === "razorpay") {
+              } else if (paymentMethod === "cod") {
+                $.ajax({
+                    method: "POST",
+                    url: "{% url 'placeorder' %}",
+                    data: data,
+                    dataType: 'json'
+                }).done(function(response) {
+                    console.log(response);
+
+                    if (response.status === 'cannot place order') {
+                        swal("Error!", response.status, "error");
+                        $('.placeorder').load(location.href + " .placeorder");
+                    } else if (response.status === 'Your order has been placed successfully') {
+                        swal("Congratulations!", response.status, "success");
+                        $('.placeorder').load(location.href + " .placeorder");
+                    } else {
+                        swal("Error!", response.status, "error");
+                        $('.placeorder').load(location.href + " .placeorder");
+                    }
+                    window.location.href = '/';
+                }).fail(function(xhr, errmsg, err) {
+                    alert('Error: ' + errmsg);
+                    console.log(xhr.responseText);
+                    console.log(err);
+                });
+            } 
+              
+              else if (paymentMethod === "razorpay") {
                   // The Razorpay code from the second script goes here
                   $.ajax({
                     method:"GET",
@@ -504,6 +622,7 @@
                     success: function(response) {
                      var options = {
                        "key": "rzp_test_4vQTEjTZ9mHK3d", // Enter the Key ID generated from the Dashboard
+                       //"amount": response.total_price*100,// Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                        "amount": 1*100,//response.total_price * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                        "currency": "INR",
                        "name": "JUST Watches",
@@ -565,157 +684,82 @@
   });
 </script>
 
-<!-- <script>
+
+
+<!-- "amount": response.total_price*100, -->
+
+
+<script>
   $(document).ready(function() {
-      $('.purchase').click(function(e) {
-          e.preventDefault();
-
-          var fname = $("[name='first_name']").val();
-          var phone = $("[name='phone']").val();
-          var email = $("[name='email']").val();
-          var order_note = $("[name='ordernote']").val();
-          var paymentMethod = $("a[data-toggle='collapse'][aria-expanded='true']").data('payment-method');
-          console.log(paymentMethod, 'ppppppppppppppppppppppppppppppppppppppppppppppp');
-
-          var token = $("[name='csrfmiddlewaretoken']").val();
-          var selectedAddress = $("input[name='address']:checked").val();
-
-          if (!selectedAddress) {
-              swal("Alert!", "Address field is mandatory!", "error");
-              console.log('Address field is empty');
-              return false;
-          } else {
-              var data = {
-                  "payment_method": paymentMethod,
-                  "order_note": order_note,
-                  "address": selectedAddress,
-                  "csrfmiddlewaretoken": token
-              };
-
-              console.log(data, '11111111111111111111111');
-
-              $.ajax({
-                  method: "POST",
-                  url: "{% url 'placeorder' %}",
-                  data: data,
-                  dataType: 'json'
-              }).done(function(response) {
-                  console.log(response);
-
-                  if (response.status === 'cannot place order') {
-                      swal("Error!", response.status, "error");
-                      $('.placeorder').load(location.href + " .placeorder");
-                  } else if (response.status === 'Your order has been placed successfully') {
-                      swal("Congratulations!", response.status, "success");
-                      $('.placeorder').load(location.href + " .placeorder");
-                  } else {
-                      swal("Error!", response.status, "error");
-                      $('.placeorder').load(location.href + " .placeorder");
-                  }
-                  window.location.href = '/';
-              }).fail(function(xhr, errmsg, err) {
-                  alert('Error: ' + errmsg);
-                  console.log(xhr.responseText);
-                  console.log(err);
-              });
-          }
+    // Existing code...
+    
+    // Add a click event for the remove coupon link
+    $('.remove-coupon').click(function(e) {
+      e.preventDefault();
+      var token = $("[name='csrfmiddlewaretoken']").val();
+      
+      $.ajax({
+        method: "POST",
+        url: "{% url 'remove_coupon' %}",
+        data: { csrfmiddlewaretoken: token },
+        dataType: 'json',
+        success: function(response) {
+          swal("Coupon Removed", "Coupon has been removed.", "success");
+          // Redirect to refresh the page and update the displayed coupon info
+          window.location.href = "{% url 'checkout' %}";
+        },
+        error: function(xhr, errmsg, err) {
+          swal("Error!", "An error occurred.", "error");
+          console.log('AJAX error:', err);
+        }
       });
+    });
   });
 </script>
 
 <script>
-  $(document).ready(function () {
-
-    $('.razorpay').click(function (e) {
+  $(document).ready(function() {
+    $('.CouponButton').click(function(e) {
       e.preventDefault();
 
-      var fname = $("[name='first_name']").val()
-      var phone = $("[name='phone']").val()
-      var email = $("[name='email']").val()
-      var token = $("[name='csrfmiddlewaretoken']").val()
-      var selectedAddress = $("input[name='address']:checked").val();
-      if(!selectedAddress)
-      {
-        swal("Alert!", "Address fields is mandatory!", "error");
-        console.log('All fields are empty');
-        return false;
+      var grand_total = parseFloat($('#grand_total_display').val())
+      var couponCode = $('#checkout-discount-input').val()
+      console.log("Grand Total:", grand_total);
+      console.log("Coupon Code:", couponCode);
 
-      }
-      else
-      {
-        $.ajax({
-           method:"GET",
-           url:"/checkout/proceedtopay/",
-           success: function(response) {
-            var options = {
-              "key": "rzp_test_4vQTEjTZ9mHK3d", // Enter the Key ID generated from the Dashboard
-              "amount": response.total_price*100,//response.total_price * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-              "currency": "INR",
-              "name": "JUST Watches",
-              "description": "Thank you for buying with us",
-              "image": "https://example.com/your_logo",
-              //"order_id": "order_IluGWxBm9U8zJ8", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-              "handler": function (responseb){
-                alert(responseb.razorpay_payment_id);
-                  data = {
-                    
-                    "payment_method" : "Razorpay",
-                    "payment_id" : responseb.razorpay_payment_id,
-                    "address": selectedAddress,
-                    csrfmiddlewaretoken: token
-                    
-                  }
-                    $.ajax({
-                      method:"POST",
-                      url:"/checkout/placeorder/",
-                      data: data,
-                      success: function (responsec) {
-                        console.log(responsec)
-                        swal("Congratulations!", responsec.status,"success").then((value) => {
-                           
-                        });
-                        window.location.href = '/'
-                      }
+      var token = $("[name='csrfmiddlewaretoken']").val();
 
-                  });
-              },
-              "prefill": {
-                  "name": fname,
-                  "email" : email,
-                  'contact' : phone,
-              },
-              
-              "theme": {
-                  "color": "#3399cc"
-              }
-          };
-          var rzp1 = new Razorpay(options);
-          rzp1.on('payment.failed', function (response){
-                  alert(response.error.code);
-                  alert(response.error.description);
-                  alert(response.error.source);
-                  alert(response.error.step);
-                  alert(response.error.reason);
-                  alert(response.error.metadata.order_id);
-                  alert(response.error.metadata.payment_id);
-          });
-          rzp1.open();
-            console.log(responsec);
+      $.ajax({
+        method: "POST",
+        url: "{% url 'apply_coupon' %}",
+        data: {
+          coupon_code: couponCode,
+          grand_total: grand_total,
+          csrfmiddlewaretoken: token
+        },
+        dataType: 'json',
+        success: function(response) {
+          console.log("Server Response:", response);
 
-           }
-        });
-        
- 
-      }
-
-
-
-
-
-      
+          if (response && response.status === 'Coupon added successfully') {
+            swal("Congratulations!", response.status, "success");
+            var formatted_total = parseFloat(response.grand_total).toFixed(2);
+            $('#grand_total_display').text('₹ ' + formatted_total);
+          } else {
+            swal("Error!", response.status || "Unknown error occurred.", "error");
+          }
+        },
+        error: function(xhr, status, error) {
+          console.log("AJAX Error:", error);
+          swal("Error!", "An error occurred during the AJAX request.", "error");
+        }
+      });
     });
-
   });
-</script> -->
+</script>
+
+
+
+
  
 {% endblock %}

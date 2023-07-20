@@ -29,6 +29,8 @@ def user_signup(request):
     if request.user.is_authenticated:
         return redirect('home')
     
+    
+    
     if request.method == 'POST':
 
         get_otp=request.POST.get('otp')
@@ -229,8 +231,11 @@ def validatepassword(password):
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def user_login(request):
 
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and not request.user.is_superuser:
         return redirect('home')
+    
+    if  request.user.is_superuser:
+        return redirect('dashboard')
     
     if request.method == 'POST':
         usname=request.POST['username']

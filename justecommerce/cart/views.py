@@ -11,26 +11,34 @@ from products.models import Product
 
 @login_required(login_url='user_login')
 def cart(request):
+    if request.user.is_superuser:
+                return redirect('dashboard')
 
     cart=Cart.objects.filter(user=request.user).order_by('id')
     single_product_total = [0]
     total_price=0
-    tax=0
+    
     grand_total=0
 
 
     for item in cart:
 
-        total_price=total_price + item.product.product_price * item.product_qty
-        single_product_total.append(item.product.product_price * item.product_qty)
-       
-        tax=total_price * 0.18
-        grand_total=total_price + tax
+        if item.product.offer == None:
+            total_price = total_price + item.product.product_price * item.product_qty
+            single_product_total.append(item.product.product_price * item.product_qty)
+            
+            grand_total = total_price 
+        else:
+            total_price = total_price + item.product.product_price * item.product_qty
+            single_product_total.append((item.product.product_price - item.product.offer.discount_amount) * item.product_qty)
+            total_price = total_price - item.product.offer.discount_amount
+            
+            grand_total = total_price 
 
     context={
         'cart':cart,
         'total_price':total_price,
-        'tax':tax,
+        
         'single_product_total':single_product_total,
         'grand_total':grand_total
     }
@@ -49,6 +57,7 @@ def add_cart(request):
         if request.user.is_authenticated:
            
             prod_id = request.POST.get('prod_id')
+            add_qty= int(request.POST.get('add_qty'))
             try:
                 product_check = Product.objects.get(id=prod_id)
                 
@@ -59,13 +68,13 @@ def add_cart(request):
             if Cart.objects.filter(user=request.user, product_id=prod_id).exists():
                 prod_qty = int(request.POST.get('product_qty'))
                 if product_check.quantity > prod_qty:
-                    Cart.objects.filter(user=request.user, product_id=prod_id).update(product_qty=prod_qty + 1)
+                    Cart.objects.filter(user=request.user, product_id=prod_id).update(product_qty=prod_qty + add_qty)
                     return JsonResponse({'status': 'Product quantity increased'})
                 else:
                     return JsonResponse({'status': "Only few quantity available"})
 
             else:
-                prod_qty = 1
+                prod_qty = add_qty
                 
                 if product_check.quantity >= prod_qty:
                     Cart.objects.create(user=request.user, product_id=prod_id, product_qty=prod_qty)
@@ -106,10 +115,11 @@ def update_cart(request):
                 carts = Cart.objects.filter(user = request.user).order_by('id')
                 total_price = 0
                 for item in carts:
-                    # if item.product.offer == None:
-                    #     total_price = total_price + item.product.product_price * item.product_qty
-                    # else :
-                    total_price = total_price + item.product.product_price * item.product_qty
+                    if item.product.offer == None:
+                        total_price = total_price + item.product.product_price * item.product_qty
+                    else :
+                        total_price = total_price + item.product.product_price * item.product_qty
+                        total_price = total_price - item.product.offer.discount_amount
                        
                 return JsonResponse({'status': 'Updated successfully','sub_total':total_price,'product_price':cart.product.product_price,'quantity':prod_qty})
             else:

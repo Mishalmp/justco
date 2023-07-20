@@ -13,6 +13,8 @@ from products.models import Product
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='user_login')
 def wishlist(request):
+    if request.user.is_superuser:
+                return redirect('dashboard')
     wishlist = Wishlist.objects.filter(user = request.user)
     context = {
         'wishlist' : wishlist,

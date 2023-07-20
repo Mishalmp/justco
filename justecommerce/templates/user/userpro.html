@@ -10,6 +10,8 @@
     alert(message);
   {% endif %}
 </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 {% block content %}
 
@@ -62,6 +64,15 @@
                                 <p>Hello <span class="font-weight-normal text-dark">{{user.first_name}}</span>
                                 <br>
                                 From your account dashboard you can view your <a href="#tab-orders" class="tab-trigger-link link-underline">recent orders</a>, manage your <a href="#tab-address" class="tab-trigger-link">shipping and billing addresses</a>, and <a href="#tab-account" class="tab-trigger-link">edit your password and account details</a>.</p>
+
+                                <h5>..............{% if wallets %}
+                                  {% for wallet in wallets %}
+                                      Wallet Amount: {{ wallet.wallet }}
+                                  {% endfor %}
+                              {% else %}
+                                  No Wallets found for this user.
+                              {% endif %}
+                              .....................</h5>
                             </div><!-- .End .tab-pane -->
 
                             <div class="tab-pane fade" id="tab-orders" role="tabpanel" aria-labelledby="tab-orders-link">
@@ -87,7 +98,7 @@
           {% for c in orders %}
           <tr>
             <td>{{ c.created_at }}</td>
-            <td>{{ c.total_price }}</td>
+            <td>{{ c.total_price |floatformat:2 }}</td>
             <td>{{ c.payment_mode }}</td>
             <td> 
               <button class="btn btn-outline-dark toggle-details productdetails" data-order_id="{{c.id}}" data-toggle="collapse" data-target="#orderDetails{{ forloop.counter }}">
@@ -133,16 +144,24 @@
                       <p class="card-text">Order Date<span>: {{c.created_at}}</span></p>
                       <p class="card-text">Payment id<span>: {{c.payment_id}}</span></p>
                       <p class="card-text">Payment Method<span>: {{c.payment_mode}}</span></p>
-                      {% if order.od_status == 'Pending' %}
+                      <p class="card-text">Total price<span>: {{c.total_price |floatformat:2}}</span></p>
+                      {% if c.od_status == 'Pending' %}
                       <span class="badge badge-warning" style="font-size: medium;">{{c.od_status}}</span>
-                      {% elif order.od_status == 'Processing' %}
+                      {% elif c.od_status == 'Processing' %}
                       <span class="badge badge-warning" style="font-size: medium;">{{c.od_status}}</span>
-                      {% elif order.od_status == 'Shipped' %}
+                      {% elif c.od_status == 'Shipped' %}
                       <span class="badge badge-primary" style="font-size: medium;">{{c.od_status}}</span>
-                      {% elif order.od_status == 'Delivered' %}
+                      {% elif c.od_status == 'Delivered' %}
                       <span class="badge badge-success" style="font-size: medium;">{{c.od_status}}</span>
-                      {% elif order.od_status == 'Cancelled' or 'refunded' %}
+                      {% elif c.od_status == 'Cancelled' or 'refunded' %}
                       <span class="badge badge-danger" style="font-size: medium;">{{c.od_status}}</span>
+                      {% elif c.od_status == 'Return' %}
+                      <span class="badge badge-danger" style="font-size: medium;">{{c.od_status}}</span>
+                      {% endif %}
+
+                      {% if c.od_status == 'Shipped' or c.od_status == 'Processing' or c.od_status == 'Pending' %}
+                     
+                      <a href="#" type="button" class="btn btn-outline-dark">Track Your order</a>
                       {% endif %}
                     </div>
                   </div>
@@ -156,10 +175,14 @@
                         <tr>
                           <th>Product Image</th>
                           <th>Name</th>
+                          
                           <th>Price</th>
+                          
                           <th>Quantity</th>
-                          <th>Total</th>
-                          <th></th>
+                            
+                          <th>Status</th>
+                          
+                          
                         </tr>
                       </thead>
                       <tbody>
@@ -175,7 +198,7 @@
                           </td>
                           <td><h6 >₹ {{ order_item.product.product_price }}</h6></td>
                           <td>{{ order_item.quantity }}</td>
-                          <td class="cart__price total">{{ order_item.order.total_price|floatformat:2 }}</td>
+                        
                           <td>
                             {% if order_item.status == 'Pending' %}
                             <span class="badge badge-warning" style="font-size: medium;">{{ order_item.status }}</span>
@@ -187,8 +210,90 @@
                             <span class="badge badge-success" style="font-size: medium;">{{ order_item.status }}</span>
                             {% elif order_item.status == 'Cancelled' or 'refunded' %}
                             <span class="badge badge-danger" style="font-size: medium;">{{ order_item.status }}</span>
+                            {% elif order_item.status == 'Return' %}
+                            <span class="badge badge-danger" style="font-size: medium;">{{order_item.status}}</span>
                             {% endif %}
                           </td>
+                          
+
+                          {% if order_item.status != 'Cancelled' and order_item.status != 'Delivered' and order_item.status != 'Return'%}
+                          <td>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                              data-bs-target="#exampleModals{{ forloop.counter }}">Cancel</button>
+                            <!-- Modal for deleting the product -->
+                            <div class="modal fade cartdata" id="exampleModals{{ forloop.counter }}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel{{ forloop.counter }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                              <div class="modal-content modal_content1">
+                                <div class="modal-header">
+                                  <h1 class="modal-title fs-5" id="exampleModalLabel{{ forloop.counter }}">Confirm Cancel</h1>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  Cancel Product {{ order_item.product.product_name }}
+                                </div>
+                                <div class="modal-footer">
+                                  {% csrf_token %}
+                                  <input type="hidden" class="order_id" value="{{ order_item.order.id }}">
+                                  <input type="hidden" class="orderitem_id" value="{{ order_item.id }}">
+                                  <button type="submit" class="btn btn-danger ordercancel">Confirm</button>
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                            <!-- Deleting ended -->
+                          </td>
+                          {% endif %}
+                          {% if order_item.status != 'Cancelled' %}
+                          <td>
+                            {% if order_item.status == 'Delivered' %}
+                            <!-- Button trigger modal -->
+                            <a type="button" data-bs-toggle="modal" data-bs-target="#return">
+                              <button class="btn btn-outline-dark">Return</button>
+                            </a>
+                            <!--Reason Modal -->
+                            <div class="modal fade" id="return" tabindex="-1" aria-labelledby="exampleModalLabel{{ forloop.counter }}"
+                              aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h4 class="modal-title fs-5" id="exampleModalLabel{{ forloop.counter }}">Return reason form</h4>
+                                    <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                      <i class="fa fa-times"></i>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <form action="{% url 'orderreturn' order_item.id %}" enctype="multipart/form-data" method="POST">
+                                      {% csrf_token %}
+                                      <div class="form-outline mb-4">
+                                        <select class="form-select mb-1" aria-label="Default select example" name="options">
+                                          <option value="damaged_roduct">Damaged Product</option>
+                                          <option value="itemwrong">Item Wrong</option>
+                                          <option value="nothing">Nothing</option>
+                                        </select>
+                                        <label class="form-label" style="margin-left: 10px;" for="form3Example3cg">Choose issue</label>
+                                      </div>
+                                      <div  class="form-outline mb-4">
+                                        <textarea style="padding-left: 5px; padding-right: 5px;"  class="form-control"  id="exampleFormControlTextarea1" rows="3" name="reason"></textarea>
+                                        <label class="form-label" for="form3Example3cg">Reason</label>
+                                      </div>
+                                      <div class="d-flex justify-content-center">
+                                        <button type="submit"
+                                          class="btn btn-danger btn-lg gradient-custom-4 w-50 text-light">Return</button>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            </div>
+                           
+                            {% endif %}
+                          </td>
+                          {% endif %}
+
                         </tr>
                         {% endfor %}
                       </tbody>
@@ -556,7 +661,7 @@
                                                                
                                                                 <!-- Modal -->
                                                                 <div class="modal fade" id="viewaddress{{forloop.counter}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                                                  <div class="modal-dialog">
+                                                                  <div class="modal-dialog modal-dialog-centered modal-lg">
                                                                     <div class="modal-content">
                                                                       <div class="modal-header">
                                                                         <h4 class="modal-title fs-6" id="staticBackdropLabel">View address</h4>
@@ -658,7 +763,7 @@
                                                             
                                                                           <!--Delete Modal -->
                                                                           <div class="modal fade" id="deletaddress{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                                            <div class="modal-dialog">
+                                                                            <div class="modal-dialog modal-dialog-centered modal-lg">
                                                                               <div class="modal-content">
                                                                                 <div class="modal-header">
                                                                                   <h5 class="" id="exampleModalLabel">Delete</h5>
@@ -687,7 +792,7 @@
                                                         </div>
                                                         <!--edit address modal2 -->
                              <div class="modal fade" id="editModal2{{forloop.counter}}" tabindex="-1"  aria-labelledby="editModal2Label" aria-hidden="true">
-                                <div class="modal-dialog" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
+                                <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
                                   <div class="modal-content">
                                     <div class="modal-header">
                                       <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">Billing Details</h5>
@@ -807,7 +912,7 @@
 
                                 <!--edit profile modal -->
                              <div class="modal fade" id="editproModal" tabindex="-1"  aria-labelledby="editproModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
+                                <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
                                   <div class="modal-content">
                                     <div class="modal-header">
                                       <h5 class="modal-title" id="editproModalLabel" style="font-weight: bold;">Your profile</h5>
@@ -851,7 +956,7 @@
                 
                                 <!--edit password modal -->
                                 <div class="modal fade" id="editpassModal" tabindex="-1"  aria-labelledby="editpassModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
                                       <div class="modal-content">
                                         <div class="modal-header">
                                           <h5 class="modal-title" id="editpassModalLabel" style="font-weight: bold;">Change Password</h5>
@@ -943,5 +1048,39 @@
 
       <script src="{% static ' js/main.js' %}"></script>
 	
-  
+      <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+      
+      <script>
+        $(document).ready(function() {
+            $('.ordercancel').click(function(e) {
+              e.preventDefault();
+              var order_ids = $(this).closest('.modal-content').find('.order_id').val();
+              var orderitem_ids = $(this).closest('.modal-content').find('.orderitem_id').val();
+              console.log(order_ids,orderitem_ids,'ooooooooooooooooooooooooooooooooo')
+              var token = $("[name='csrfmiddlewaretoken']").val();
+              
+              $.ajax({
+                method: "POST",
+                url: "/order/ordercancel/",
+                data: {
+                  'order_id': order_ids,
+                  'orderitem_id': orderitem_ids,
+                  csrfmiddlewaretoken: token
+                },
+                success: function(response) {
+                  console.log(response);
+                  alertify.success(response.status);
+          
+                  location.reload();
+                },
+                error: function(xhr, status, error) {
+                  console.log(xhr.responseText);
+                  // Handle error case
+                }
+              });
+            });
+          });
+          
+      </script>
 {% endblock %}

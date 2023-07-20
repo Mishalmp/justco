@@ -88,7 +88,7 @@
 						</h4>
 
 						<span class="mtext-106 cl2">
-							{{pro_detail.product_price}}
+							{% if pro_detail.offer %}<del class="text-danger">₹  {{pro_detail.product_price}}</del> {{pro_detail.get_offer}}{% else %}₹ {{pro_detail.product_price}} {% endif %}
 						</span>
 
 						<p class="stext-102 cl3 p-t-23">
@@ -151,27 +151,17 @@
 							<div class="flex-w flex-r-m p-b-10 product_data">
 								<div class="size-204 flex-w flex-m respon6-next ">
 
-									<!-- <div class="wrap-num-product flex-w m-r-20 ">
+									<div class="wrap-num-product flex-w m-r-20 m-tb-10">
 										<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-										   <i class="fa fa-minus"></i>
+											<i class="fs-16 zmdi zmdi-minus"></i>
 										</div>
-			
-										<input class="form.control mtext-104 cl3 txt-center num-product qty-input" type="number" name="num-product " value="1"id="quantityInput">
-			
+
+										<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product" value="1" id="qty-input">
+
 										<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-										   <i class="fa fa-plus"></i>
+											<i class="fs-16 zmdi zmdi-plus"></i>
 										</div>
-									 </div>
-									  -->
-
-									<!-- <div class="cartdata">
-										<input type="hidden" value="{{product.id}}" class="prod_id" >
-
-									<button type="submit" class="addToCartBtn flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
-										Add to cart
-									</button>
-
-								</div> -->
+									</div>
 
 								{% if pro_detail.quantity %}
 								
@@ -579,9 +569,18 @@
 
 								<div class="flex-w flex-r-m p-b-10">
 									<div class="size-204 flex-w flex-m respon6-next">
-									
-										
-
+										<div class="wrap-num-product flex-w m-r-20 m-tb-10">
+											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+												<i class="fs-16 zmdi zmdi-minus"></i>
+											</div>
+	
+											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product" value="1">
+	
+											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+												<i class="fs-16 zmdi zmdi-plus"></i>
+											</div>
+										</div>
+	
 										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
 											Add to cart
 										</button>
@@ -635,14 +634,17 @@
 			  e.preventDefault();
 			 
 			  var product_id = $(this).data('product_id');
+			  var add_qty = $('#qty-input').val()
+			  
 			  var quantity = $('#pro_qty' + product_id).val()
-			  console.log(product_id,quantity,'111111111111111111111111111111')
+			  console.log(product_id,quantity,add_qty,'yyyyyyyyyyyyyyyyyyyyyyy1')
 			  $.ajax({
 				method: "POST",
 				url: "{% url 'add_cart' %}",
 				data: {
 				  'product_qty': quantity,
 				  'prod_id': product_id,
+				  'add_qty':add_qty,
 				  csrfmiddlewaretoken: '{{ csrf_token }}'
 				},
 				 success: function(response) {

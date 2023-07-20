@@ -2,7 +2,7 @@ from tkinter import Image
 from django.shortcuts import render,redirect
 from categories.models import category
 from django.contrib import messages
-from .models import Product as products, PriceFilter
+from .models import Product as products, PriceFilter,Offer
 from brand.models import brand
 import logging
 from django.contrib.auth.decorators import login_required
@@ -37,6 +37,7 @@ def product(request):
         'category' : category.objects.all(),
         'brand': brand.objects.all(),
         'price_range' : PriceFilter.objects.all(),
+        'offer' : Offer.objects.all(),
        
     }
     return render(request ,'product/product.html',dict_list)
@@ -70,6 +71,11 @@ def createproduct(request):
         quantity = request.POST['quantity']
 
         # Validation
+        offer = request.POST.get('offer')
+        if offer == 'No offer':
+            offer_id = None
+        else:
+            offer_id = Offer.objects.get(id=offer)
         if products.objects.filter(product_name=name).exists():
             return JsonResponse({'message': 'Product name already exists'})
 
@@ -107,7 +113,8 @@ def createproduct(request):
             brand=brand_obj,
             category=category_obj,
             price_range=price_range_obj,
-            quantity=quantity
+            quantity=quantity,
+            offer = offer_id
         )
         product.save()
 
@@ -134,6 +141,11 @@ def editproduct(request,editproduct_id):
         quantity = request.POST.get('quantity')
 
 # validation
+        offer = request.POST.get('offer')
+        if offer == 'No offer':
+            offer_id = None
+        else:
+            offer_id = Offer.objects.get(id=offer)
         try:
             pro = products.objects.get(slug=editproduct_id)
             image = request.FILES.get('product_image')
@@ -179,6 +191,7 @@ def editproduct(request,editproduct_id):
         cat.quantity=quantity
         cat.brand = produc
         cat.category = cates
+        cat.offer = offer_id
        
         cat.save()
         return redirect('product')

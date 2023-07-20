@@ -9,7 +9,9 @@ from justeco.settings import *
 # from imagekit.models import ImageSpecField
 # from imagekit.processors import ResizeToFill
 # from sorl.thumbnail import ImageField, get_thumbnail
-
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.utils import timezone
 from PIL import Image
 
 
@@ -31,6 +33,29 @@ class PriceFilter(models.Model):
     
     def __str__(self):
         return self.price_range
+    
+class Offer(models.Model):
+    offer_name = models.CharField(max_length=100)
+    discount_amount = models.PositiveIntegerField()
+    start_date = models.DateField(default=timezone.now)  # Use DateField instead of DateTimeField
+    end_date = models.DateField(default=timezone.now)
+
+    def __str__(self):
+        return self.offer_name
+
+    def is_offer_expired(self):
+        return timezone.now().date() >= self.end_date
+
+
+# Signal handler to update start_date and end_date before saving the Offer model
+# @receiver(pre_save, sender=Offer)
+# def update_offer_time(sender, instance, **kwargs):
+#     if instance.start_date and instance.end_date:
+#         # Ensure the end_date is later than the start_date
+#         if instance.start_date >= instance.end_date:
+#             raise ValueError("End date must be later than the start date.")
+#     else:
+#         raise ValueError("Start date and end date must be specified.")
 
 
 # product
@@ -50,6 +75,7 @@ class Product(models.Model):
     is_available = models.BooleanField(default=False)
     slug = models.SlugField(max_length=250,unique=True)
     quantity = models.IntegerField(default=10)
+    offer = models.ForeignKey(Offer, on_delete=models.SET_NULL, null=True )
 
   
 
@@ -65,8 +91,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
-    # def get_offer(self):
-    #     return self.product_price - self.offer.discount_amount
+    
+    def get_offer(self):
+        return self.product_price - self.offer.discount_amount
 
 
 

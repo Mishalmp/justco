@@ -96,6 +96,15 @@
               <label class="form-label" for="form3Example3cg">Category</label>
             </div>
             <div class="form-outline mb-4">
+              <select class="form-select form-select-sm mt-3" aria-label=".form-select-sm example" name="offer">
+                <option >No offer</option>
+                {% for c in offer %}
+                <option value="{{ c.id }}">{{ c.offer_name }}</option>
+                {% endfor %}
+            </select>
+            <label class="form-label" for="form3Example3cg">Offer</label>
+              </div>
+            <div class="form-outline mb-4">
               <input name='product_description' value="{{c.product_description}}"  type="text" id="form3Example3cg" class="form-control form-control-lg" required/>
               <label class="form-label" for="form3Example3cg">Description</label>
             </div>
@@ -154,8 +163,9 @@
               <th scope="col">product price</th>
               <th scope="col">product image</th>
               <th scope="col">Price Range</th>
-              <th scope="col">category</th>
+              <!-- <th scope="col">category</th> -->
               <th scope="col">brand</th>
+              <th scope="col">offer</th>
               <!-- <th scope="col">product description</th> -->
               <!-- <th scope="col">is_available</th> -->
               <th scope="col">Quantity</th>
@@ -168,16 +178,19 @@
         <tr>
           <td>  {{c.id}}  </td>
           <td>  {{c.product_name}} </td>
-         
-          <td>₹  {{c.product_price}}</td>
+          <td>{% if c.offer %}<del class="text-danger">₹  {{c.product_price}}</del> {{c.get_offer}}{% else %}₹ {{c.product_price}} {% endif %}</td>
+          
           <td> 
-            <div style="width: 60px;" class="overflow-hidden">
+            <div style="width: 60px; height: 60px; object-fit: contain; border-radius: 0%;" class="overflow-hidden">
               <img class="w-100" src=" {{c.product_image.url}}" alt="">
             </div></td>
           
           <td>  {{c.price_range}} </td>
-          <td>  {{c.category}} </td>
+          <!-- <td>  {{c.category}} </td> -->
           <td>  {{c.brand}} </td>
+          <td>  {{c.offer.offer_name}} </td>
+          
+
           <!-- <td>  {{c.product_description}} </td> -->
           <!-- {% if c.is_available and c.quantity > 0 %}
           <td> Yes</td>
@@ -254,6 +267,15 @@
                       </select>
                         <label class="form-label" for="form3Example3cg">Category</label>
                       </div>
+                      <div class="form-outline mb-4">
+                        <select class="form-select form-select-sm mt-3" aria-label=".form-select-sm example" name="offer">
+                          <option >No offer</option>
+                          {% for c in offer %}
+                          <option value="{{ c.id }}">{{ c.offer_name }}</option>
+                          {% endfor %}
+                      </select>
+                      <label class="form-label" for="form3Example3cg">Offer</label>
+                        </div>
                     <div class="form-outline mb-4">
                       <input name='product_description' value="{{c.product_description}}"  type="text" id="form3Example3cg" class="form-control form-control-lg" />
                       <label class="form-label" for="form3Example3cg">Description</label>

@@ -8,7 +8,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Product,ProductAdmin)
-
+# admin.site.register(Offer)
 admin.site.register(PriceFilter)
 admin.site.register(Variations)
 admin .site.register(Color)

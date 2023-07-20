@@ -30,8 +30,10 @@ class Coupon(models.Model):
 
 class CouponUsage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
+    coupon  = models.ForeignKey(Coupon, on_delete=models.CASCADE)
+    total_price = models.BigIntegerField(default=0)
+    used = models.BooleanField(default=False)
     usage_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.coupon.coupon_code}"
+        return f"{self.user.username} - {self.coupon .coupon_code}"
