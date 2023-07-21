@@ -12,7 +12,7 @@ from cart.models import Cart
 from wishlist.models import Wishlist
 from checkout.models import Address
 from checkout.models import Order,OrderItem
-
+from datetime import timedelta
 from django.http import JsonResponse
 
 
@@ -38,7 +38,8 @@ def user_profile(request):
             order.od_status = 'Pending'
 
         order.save()
-
+        
+        
     user_info = {
         'address': Address.objects.filter(user=request.user).first(),
         'user': User.objects.get(username=request.user),

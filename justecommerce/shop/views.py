@@ -6,6 +6,7 @@ from django.views.decorators.cache import cache_control
 from django.http.response import JsonResponse
 from cart.models import Cart
 # Create your views here.
+from django.contrib.auth.models import User
 
 
 
@@ -17,7 +18,7 @@ def product_detail(request, product_id):
     try:
         prod = Product.objects.get(slug=product_id)
     except Product.DoesNotExist:
-        return render(request, 'error/index.html')
+        return redirect('shop')
 
     if request.method == 'POST':
         prod_id = request.POST.get('prod_id')
@@ -37,7 +38,7 @@ def product_detail(request, product_id):
         'pro_detail': prod,
         'cart': cart
     }
-
+    
     return render(request, 'product-detail.html', context)
 
 

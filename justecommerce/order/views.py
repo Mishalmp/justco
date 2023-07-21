@@ -7,11 +7,13 @@ from django.contrib import messages
 # Create your views here.
 from products.models import Product
 from .models import Orderreturn
-
+from datetime import timedelta
 # ...................admin section.............
 def admin_orders(request):
     orders=Order.objects.all().order_by('-created_at')
     order_item=OrderItem.objects.all()
+
+    
     for order in orders:
         all_orderitems_cancelled = all(order_item.status == 'Cancelled' for order_item in order.orderitem_set.all())
 
@@ -27,6 +29,7 @@ def admin_orders(request):
             order.od_status = 'Pending'
 
         order.save()
+
 
 
     context={
@@ -48,7 +51,8 @@ def ad_order_detail(request,order_id):
     context={
         'order':od_details,
         'address':ord.address,
-        'order_item':order_item
+        'order_item':order_item,
+        
         
     }
     return render(request,'order/ad-order-det.html',context)

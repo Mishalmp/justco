@@ -1,37 +1,38 @@
 from django.shortcuts import render,redirect
-
+from django.template.loader import render_to_string
 # Create your views here.
 from cart.models import Cart
 from userprofile.models import Address
-
+from xhtml2pdf import pisa
 from django.http import JsonResponse
 
 from userprofile.models import Address
 from django.contrib import messages
 from products.models import Product
 from checkout.models import Order, OrderItem
-
+from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 import random
 import razorpay
 import string
 from coupon.models import Coupon,CouponUsage
 from userprofile.models import Wallet
+from django.contrib.auth.models import User
+from django.core.mail import send_mail, EmailMessage
+from django.conf import settings
+import os
+from django.http import HttpResponse
 
 def checkout(request):
     cartitems = Cart.objects.filter(user=request.user)
     total_price = 0
 
     for item in cartitems:
-        if item.product.offer == None:
-            total_price = total_price + item.product.product_price * item.product_qty
-        
-            grand_total = total_price 
+        if item.product.offer is None:
+            total_price += item.product.product_price * item.product_qty
         else:
-            total_price = total_price + item.product.product_price * item.product_qty
-            total_price = total_price - item.product.offer.discount_amount
-           
-            grand_total = total_price 
+            total_price += item.product.product_price * item.product_qty
+            total_price -= item.product.offer.discount_amount
 
     coupons = Coupon.objects.filter(is_active=True)
     applied_coupon = None
@@ -55,9 +56,11 @@ def checkout(request):
         'applied_coupon': applied_coupon,
         'address': address,
         'coupons': coupons,
+        'CouponUsage': CouponUsage.objects.filter(user=request.user).last()
     }
 
     return render(request, 'checkout/proceed.html', context)
+
 
 
 # def placeorder(request):
@@ -122,7 +125,7 @@ def placeorder(request):
     if request.method == 'POST':
         # Retrieve the current user
         user = request.user
-
+        usr=User.objects.get(username=request.user)
         # Retrieve the address ID from the form data
         address_id = request.POST.get('address')
         if address_id is None:
@@ -201,13 +204,59 @@ def placeorder(request):
         cart_items.delete()
 
         payment_mode = request.POST.get('payment_method')
-        if payment_mode == "cod" or payment_mode == 'razorpay':
+        if payment_mode == "cod" or payment_mode == 'razorpay' or payment_mode == 'wallet':
+            
+
+            generate_invoice_pdf(request, neworder.id)
             return JsonResponse({'status': "Your order has been placed successfully"})
         
-        if payment_mode == "wallet":
-            return JsonResponse({'status': "Your order has been placed successfully"})
+        
 
     return redirect('checkout')
+
+def generate_invoice_pdf(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)  # Use get() instead of filter()
+        order_items = OrderItem.objects.filter(order=order)
+    except Order.DoesNotExist:
+        # Handle the case if the order does not exist
+        return HttpResponse("Order not found", status=404)
+
+    # Render the XHTML template with dynamic data
+    context = {
+        'order': order,
+        'order_items': order_items,
+    }
+    rendered_template = render_to_string('order/invoice_template.html', context)
+
+    # Convert the XHTML content to PDF
+    pdf_file = os.path.join(settings.BASE_DIR, 'invoice.pdf')
+    with open(pdf_file, 'wb') as pdf:
+        pisa.CreatePDF(rendered_template, dest=pdf)
+
+    # Send the email with both the PDF attachment and the order confirmation
+    subject = "Welcome to Just Watches, Order Placed!!!"
+    message = f'''
+        Your order has been placed successfully.
+        Hello {order.user.username},
+        Your Order has been placed successfully.
+        Thank you for choosing JUST Watches!
+        Payment mode: {order.payment_mode}
+        Your Payment ID is {order.payment_id}
+        Your Order Tracking ID: {order.tracking_no}
+        Expected Delivery Date: {order.expected_delivery}
+    '''
+    from_email = settings.EMAIL_HOST_USER
+    to_email = [order.user.email]
+
+    email = EmailMessage(subject, message, from_email, to_email)
+    email.attach_file(pdf_file)  # Attach the PDF to the email
+    email.send()
+
+    # Delete the temporary PDF file
+    os.remove(pdf_file)
+    return redirect('placeorder')
+
 
 
 
@@ -219,6 +268,9 @@ def apply_coupon(request):
         
         if coupon_code.strip() == '':
             return JsonResponse({'status': 'Field is blank'})
+        
+        if coupon_code == 'No Coupon Applied':
+            return JsonResponse({'status': 'No Coupon Applied'})
         
         try:
             coupon = Coupon.objects.get(coupon_code=coupon_code, is_active=True)
@@ -256,10 +308,36 @@ def apply_coupon(request):
 #     return JsonResponse({'status': 'Invalid request'})
 
 def remove_coupon(request):
-    if 'applied_coupon_id' in request.session:
-        del request.session['applied_coupon_id']
-    return redirect('checkout')
+    if request.method == 'POST':
+        coupon_code = request.POST.get('coupon_code')
 
+        if coupon_code.strip() == '':
+            return JsonResponse({'status': 'Field is blank'})
+
+        if coupon_code == 'No Coupon Applied':
+            return JsonResponse({'status': 'No Coupon Applied'})
+
+        try:
+            coupon = get_object_or_404(Coupon, coupon_code=coupon_code, is_active=True)
+        except Coupon.DoesNotExist:
+            return JsonResponse({'status': 'Coupon does not exist'})
+
+        existing_coupon_usage = CouponUsage.objects.filter(user=request.user, coupon=coupon)
+        if existing_coupon_usage.exists():
+            existing_coupon_usage = existing_coupon_usage.first()
+            grand_total = float(request.POST.get('grand_total', 0))
+            # Add the discount of the existing coupon back to the grand_total
+            grand_total += (grand_total * (existing_coupon_usage.coupon.discount / 100))
+            existing_coupon_usage.delete()
+
+            return JsonResponse({
+                'status': 'Coupon removed successfully',
+                'grand_total': grand_total,
+            })
+        else:
+            return JsonResponse({'status': 'Coupon is not applied'})
+
+    return JsonResponse({'status': 'Invalid request'})
 # def apply_coupon(request):
 #     coupon_code = request.POST.get('coupon_code')
 #     user = request.user

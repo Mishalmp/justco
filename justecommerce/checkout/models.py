@@ -3,6 +3,7 @@ from userprofile.models import Address
 from products.models import Product
 from django.contrib.auth.models import User
 from coupon.models import Coupon
+from datetime import timedelta
 # # Create your models here.
 
 
@@ -27,6 +28,9 @@ class Order(models.Model):
        
     }
     od_status = models.CharField(max_length=150,choices=orderstatuses, default='Pending')
+    @property
+    def expected_delivery(self):
+        return self.created_at + timedelta(days=7)
 
     def __str__(self):
         return f"{self.id, self.tracking_no}"

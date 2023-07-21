@@ -313,7 +313,7 @@
 
 
                             </div>
-                        <aside class="col-lg-6" >
+                        <aside class="col-lg-6 product_data" >
                          
                             <div class="summary " style="float:right">
                              
@@ -345,49 +345,61 @@
                                       <td></td>
                                       <td>Free shipping</td>
                                     </tr>
+                                    <div class="cartdata">
                                     <tr class="summary-coupon">
-                                      {% if applied_coupon %}
-                                        <td>Coupon Applied:</td>
-                                        <td>{{ applied_coupon.coupon_code }}</td>
-                                        <td>
-                                          - ₹ {{ applied_coupon.discount }}
-                                          <a href="{% url 'remove_coupon' %}" class="remove-coupon">[X]</a>
-                                        </td>
+                                      {% if CouponUsage %}
+                                          <td>Coupon Applied:</td>
+                                          <td>{{ CouponUsage.coupon.coupon }}</td>
+                                          <td>
+                                               -{{ CouponUsage.coupon.discount }}%
+                                              <a href="#" class="remove-coupon" data-coupon-code="{{ CouponUsage.coupon.coupon_code }}">X</a>
+                                          </td>
                                       {% else %}
-                                        <td>Coupon:</td>
-                                        <td></td>
-                                        <td>No Coupon Applied</td>
+                                          <td>Coupon:</td>
+                                          <td></td>
+                                          <td>No Coupon Applied</td>
                                       {% endif %}
-                                    </tr>
+                                  </tr>
                                     <tr class="summary-tax">
                                       <td>Tax:</td>
                                       <td></td>
-                                      <td>(Included in MRP)</td>
+                                      <td contenteditable="true">(Included in MRP)</td>
                                     </tr>
                                    
-                                    {% if applied_coupon %}
+                                    {% if CouponUsage %}
                                     <tr>
-                                      <td>Discount:</td>
+                                      <td >Discount:</td>
                                       <td></td>
                                       <td><span id="discount">- ₹{{ coupon_discount }}</span></td>
                                     </tr>
                                     <tr class="summary-total">
                                       <td>Total:</td>
                                       <td></td>
-                                      <td><span id="discounted_price">₹{{ grand_total }}</span>
+                                      <td><span id="discounted_price">₹{{ CouponUsage.total_price }}</span>
                                     </tr>
                                     {% else %}
                                     <tr>
                                       <td>Total:</td>
                                       <td></td>
-                                      <td>₹{{ grand_total }}</td>
+                                      <td >₹{{ grand_total }}</td>
                                     </tr>
                                     {% endif %}
                                     <input type="hidden" class="grand_total" id="grand_total_display" value="{{ grand_total }}">
-                                    
+                                  </div>
                                     
                                   </tbody>
                                 </table>
+                                <!-- <div class="cartdata">
+                                  <ul class="checkout__total__all">
+                                      <li>Subtotal <span>₹{{total_price}}</span></li>
+                                      {%if usercoupon%}
+                                      <li>Discount <span id="discount">{{ usercoupon.coupon.discount }}</span>%</li>
+                                      <li>Total <span id="grand_total">₹{{usercoupon.total_price}}</span></li>
+                                      {% else %}
+                                      <li>Total <span id="grand_total">₹{{grand_total}}</span></li>
+                                      {% endif %}
+                                      <input type="hidden" class="grand_total" id="grand_total" value="{{grand_total}}">
+                                  </ul></div> -->
                                 <!-- {%if usercoupon%}
                                 <li>Discount <span id="discount">{{ usercoupon.coupon.discount }}</span>%</li>
                                 <li>Total <span id="grand_total">₹{{usercoupon.total_price}}</span></li>
@@ -423,7 +435,7 @@
                                     </div><!-- End .card-header -->
                                     <div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
                                         <div class="card-body">
-                                            Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum.
+                                            Nullam malesuada erat ut turpis. Suspendis.
                                         </div>
                                      </div>
                                 </div><!-- End .card -->
@@ -437,7 +449,7 @@
                                   </div><!-- End .card-header -->
                                   <div id="collapse-111" class="collapse" aria-labelledby="heading-111" data-parent="#accordion-payment">
                                       <div class="card-body">
-                                          Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum.
+                                          Nullam malesuada erat ut turpis. Suspendisse urna ni
                                       </div>
                                    </div>
                               </div><!-- End .card -->
@@ -452,7 +464,7 @@
                                         </h2>
                                     </div><!-- End .card-header -->
                                     <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
-                                        <div class="card-body">Quisque volutpat mattis eros. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros.
+                                        <div class="card-body">Quisque volutpat mattis e
                                         </div><!-- End .card-body -->
                                     </div>
                                 </div><!-- End .card -->
@@ -474,14 +486,14 @@
                             
                             <!-- <h3>Apply Coupon</h3> -->
                             <div class="form-outline mb-4">
-                              
                               <div class="input-group">
-                                <select class="form-select form-select-sm input-small-width input-increased-height" style="height: 40px; width:50%; font-size: 13px;" id="checkout-discount-input" aria-label=".form-select-sm example" name="coupon_code">
+                                <select class="form-select form-select-sm input-small-width input-increased-height couponCode" style="height: 40px; width:50%; font-size: 13px;" id="checkout-discount-input" aria-label=".form-select-sm example" name="coupon_code">
+                                  <option >No Coupon Applied</option>
                                   {% for c in coupons %}
                                   <option value="{{ c.coupon_code }}">{{ c.coupon_code }} <span></span></option>
                                   {% endfor %}
                                 </select>
-                                <button class="btn btn-primary btn-apply-coupon CouponButton" style="width:30px">Apply Coupon</button>
+                                <button class="btn btn-primary btn-apply-coupon CouponButton coupon-form" style="width:30px">Apply Coupon</button>
                               </div>
                             </div>
                             
@@ -633,18 +645,19 @@
                          alert(responseb.razorpay_payment_id);
                            data = {
                              
-                             "payment_method" : "Razorpay",
+                             "payment_method" : "razorpay",
                              "payment_id" : responseb.razorpay_payment_id,
                              "address": selectedAddress,
                              csrfmiddlewaretoken: token
                              
                            }
+
                              $.ajax({
                                method:"POST",
                                url:"{% url 'placeorder' %}",
                                data: data,
                                success: function (responsec) {
-                                 console.log(responsec)
+                                 
                                  swal("Congratulations!", responsec.status,"success").then((value) => {
                                     
                                  });
@@ -692,16 +705,20 @@
 <script>
   $(document).ready(function() {
     // Existing code...
-    
+
     // Add a click event for the remove coupon link
     $('.remove-coupon').click(function(e) {
       e.preventDefault();
       var token = $("[name='csrfmiddlewaretoken']").val();
-      
+      var couponCode = $(this).data('coupon-code'); // Assuming you have a data attribute to store the coupon code
+      console.log(couponCode,'daxooooooooo')
       $.ajax({
         method: "POST",
         url: "{% url 'remove_coupon' %}",
-        data: { csrfmiddlewaretoken: token },
+        data: {
+          csrfmiddlewaretoken: token,
+          coupon_code: couponCode // Pass the coupon code to remove
+        },
         dataType: 'json',
         success: function(response) {
           swal("Coupon Removed", "Coupon has been removed.", "success");
@@ -717,46 +734,48 @@
   });
 </script>
 
+
 <script>
-  $(document).ready(function() {
-    $('.CouponButton').click(function(e) {
+  $(function() {
+    $('.coupon-form').click(function(e) {
       e.preventDefault();
+ 
+    var grand_total = $(this).closest('.product_data').find('.grand_total').val();
+    var couponCode = $(this).closest('.product_data').find('.couponCode').val();
 
-      var grand_total = parseFloat($('#grand_total_display').val())
-      var couponCode = $('#checkout-discount-input').val()
-      console.log("Grand Total:", grand_total);
-      console.log("Coupon Code:", couponCode);
-
-      var token = $("[name='csrfmiddlewaretoken']").val();
-
-      $.ajax({
-        method: "POST",
-        url: "{% url 'apply_coupon' %}",
-        data: {
-          coupon_code: couponCode,
-          grand_total: grand_total,
-          csrfmiddlewaretoken: token
-        },
-        dataType: 'json',
-        success: function(response) {
-          console.log("Server Response:", response);
-
-          if (response && response.status === 'Coupon added successfully') {
-            swal("Congratulations!", response.status, "success");
-            var formatted_total = parseFloat(response.grand_total).toFixed(2);
-            $('#grand_total_display').text('₹ ' + formatted_total);
-          } else {
-            swal("Error!", response.status || "Unknown error occurred.", "error");
-          }
-        },
-        error: function(xhr, status, error) {
-          console.log("AJAX Error:", error);
-          swal("Error!", "An error occurred during the AJAX request.", "error");
-        }
-      });
+    var token = $('input[name=csrfmiddlewaretoken]').val();
+    console.log(grand_total,couponCode,'daxooooooooooooooooo')
+    $.ajax({
+      method: "POST",
+      url: "{%url 'apply_coupon'%}", 
+      data: {
+        'coupon_code': couponCode,
+        'grand_total' :grand_total,
+      
+        csrfmiddlewaretoken: '{{csrf_token}}',
+        
+      },
+      success: function (response){
+        console.log(response)
+      if (response.status === 'Field is blank' || response.status === 'Coupon does not exist' || response.status === 'Coupon already used!' || response.status === 'You are not eligible for this coupon') {
+          swal("Error!", response.status, "error")
+          $('.cartdata').load(location.href + " .cartdata");
+      }else if (response.status === 'Coupon added successfully'){
+        swal("Congratulations!.", response.status, "success")
+          $('.cartdata').load(location.href + " .cartdata");
+      }else{
+        swal("Error!", response.status, "error")
+        $('.cartdata').load(location.href + " .cartdata");
+      }
+      var discounted_price = document.getElementById('discounted_price').value
+      discounted_price.textContent=response.grand_total
+    }
     });
   });
-</script>
+  });
+  
+  </script> 
+
 
 
 

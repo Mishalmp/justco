@@ -233,6 +233,9 @@ def sales_report(request):
         # Filter orders based on the selected date range
         start_date = datetime.strptime(start_date, '%Y-%m-%d')
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        if start_date >= end_date:
+            messages.error(request, "Start date must be before end date.")
+            return redirect('adminoffer')
 
         orders = Order.objects.filter(created_at__date__range=(start_date, end_date))
         recent_orders = orders.order_by('-created_at')
@@ -464,27 +467,6 @@ def searchuser(request):
 
 
 
-def download_csv(request):
-    # Assuming you have the 'data' containing your CSV content as a list of dictionaries
-    data = [
-        {'Name': 'John Doe', 'Age': 30, 'Country': 'USA'},
-        {'Name': 'Jane Smith', 'Age': 25, 'Country': 'Canada'},
-        # Add more data rows as needed
-    ]
 
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="data.csv"'
-
-    # CSV header
-    header = data[0].keys()
-    writer = csv.DictWriter(response, fieldnames=header)
-
-    writer.writeheader()
-
-    # CSV data rows
-    for row in data:
-        writer.writerow(row)
-
-    return response
 
 

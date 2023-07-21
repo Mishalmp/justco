@@ -13,15 +13,25 @@ from brand.models import brand
 from django.http.response import JsonResponse
 from django.template.loader import render_to_string
 from django.http import HttpRequest
+from cart.models import Cart
+from wishlist.models import Wishlist
+from django.db.models import Sum,Count
 
 def home(request):
     if request.user.is_superuser:
-                return redirect('dashboard')
+        return redirect('dashboard')
 
+    if request.user.is_authenticated:
 
+        cartcount = Cart.objects.filter(user=request.user).aggregate(cartcount=Count('id'))['cartcount']
+        wishcount=Wishlist.objects.filter(user=request.user).aggregate(wishcount=Count('id'))['wishcount']
+    else:
+        cartcount=0
+        wishcount=0
     
     cate=category.objects.all()
     brands=brand.objects.all()
+    print(cartcount,wishcount,'ccccccccccccccccccccccccccccccccc')
 
     sort_option = request.GET.get('sort')
     search_query = request.GET.get('search')
@@ -46,9 +56,9 @@ def home(request):
       
     # Render the updated product list HTML or return as JSON response
     if is_ajax(request=request):
-        return JsonResponse({'html': render_to_string('index.html',{'products_list':sorted_products,'cat':cate,'brand':brands})})
+        return JsonResponse({'html': render_to_string('index.html',{'products_list':sorted_products,'cat':cate,'brand':brands,'cartcount':cartcount,'wishcount':wishcount})})
     else:
-        return render(request,'index.html',{'products_list':sorted_products,'cat':cate,'brand':brands})
+        return render(request,'index.html',{'products_list':sorted_products,'cat':cate,'brand':brands,'cartcount':cartcount,'wishcount':wishcount})
 
    
 
