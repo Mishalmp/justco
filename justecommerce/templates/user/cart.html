@@ -91,7 +91,15 @@
                                     </div>
                                 </td>
                                 <td class="column-2">{{item.product.product_name}}</td>
-                                <td class="column-3"> {% if item.product.offer %}<del class="text-danger">₹  {{item.product.product_price}}</del> {{item.product.get_offer}}{% else %}₹ {{item.product.product_price}} {% endif %} </td>
+                                <td class="column-3">
+                                    {% if item.product.offer or item.product.brand.offer %}
+                                        <del class="text-danger">₹ {{ item.product.product_price }}</del>
+                                        ₹ {{ item.product.get_offer }}
+                                    {% else %}
+                                        ₹ {{ item.product.product_price }}
+                                    {% endif %}
+                                </td>
+                                
                                 <td class="column-4">
                                     <div class="wrap-num-product  flex-w m-l-auto m-r-0">
                                         <div data-productid="{{item.product.id}}" data-price="{{item.product.price}}" class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m changeQuantity">
@@ -266,7 +274,7 @@
                     $("a.primary-btn").replaceWith(checkoutLink);
                     }
                     sub_total = parseInt(response.sub_total)
-                    gtotal = sub_total+(sub_total *0.18)
+                    gtotal = sub_total
                     console.log(gtotal)
                     document.getElementById('sub_total').textContent = sub_total.toFixed(2)
                     

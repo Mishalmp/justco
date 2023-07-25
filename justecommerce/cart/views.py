@@ -8,6 +8,7 @@ from wishlist.models import Wishlist
 from django.views.decorators.cache import cache_control
 from django.http.response import JsonResponse
 from products.models import Product
+# from offer.models import Offer
 
 @login_required(login_url='user_login')
 def cart(request):
@@ -20,26 +21,42 @@ def cart(request):
     
     grand_total=0
 
-
+    a=0
     for item in cart:
+        product_price = item.product.product_price
+        product_offer = item.product.offer
+        brand_offer = item.product.brand.offer
 
-        if item.product.offer == None:
-            total_price = total_price + item.product.product_price * item.product_qty
-            single_product_total.append(item.product.product_price * item.product_qty)
-            
-            grand_total = total_price 
+        if product_offer is None and brand_offer is None:
+            total_price += product_price * item.product_qty
+            single_product_total.append(product_price * item.product_qty)
+            a=product_price * item.product_qty
         else:
-            total_price = total_price + item.product.product_price * item.product_qty
-            single_product_total.append((item.product.product_price - item.product.offer.discount_amount) * item.product_qty)
-            total_price = total_price - item.product.offer.discount_amount
+            if product_offer and brand_offer:
+                # If both product and brand have offers, choose the maximum discount
+                max_discount = max(product_offer.discount_amount, brand_offer.discount_amount)
+            elif product_offer:
+                max_discount = product_offer.discount_amount
+            else:
+                max_discount = brand_offer.discount_amount
+
+            discount = (max_discount / 100) * product_price
+           
+            discounted_price = product_price - discount
+
+            total_price += discounted_price * item.product_qty
+            single_product_total.append(discounted_price * item.product_qty)
+            a=discounted_price * item.product_qty
+
+        grand_total = total_price
+           
             
-            grand_total = total_price 
+          
 
     context={
         'cart':cart,
         'total_price':total_price,
-        
-        'single_product_total':single_product_total,
+        'product_price':a,
         'grand_total':grand_total
     }
 
@@ -114,14 +131,36 @@ def update_cart(request):
 
                 carts = Cart.objects.filter(user = request.user).order_by('id')
                 total_price = 0
+                single_product_total = [0]
                 for item in carts:
-                    if item.product.offer == None:
-                        total_price = total_price + item.product.product_price * item.product_qty
-                    else :
-                        total_price = total_price + item.product.product_price * item.product_qty
-                        total_price = total_price - item.product.offer.discount_amount
+                    product_price = item.product.product_price
+                    product_offer = item.product.offer
+                    brand_offer = item.product.brand.offer
+
+                    if product_offer is None and brand_offer is None:
+                        total_price += product_price * item.product_qty
+                        single_product_total.append(product_price * item.product_qty)
+                        a=product_price * item.product_qty
                        
-                return JsonResponse({'status': 'Updated successfully','sub_total':total_price,'product_price':cart.product.product_price,'quantity':prod_qty})
+                    else:
+                        if product_offer and brand_offer:
+                            # If both product and brand have offers, choose the maximum discount
+                            max_discount = max(product_offer.discount_amount, brand_offer.discount_amount)
+                        elif product_offer:
+                            max_discount = product_offer.discount_amount
+                        else:
+                            max_discount = brand_offer.discount_amount
+
+                        discount = (max_discount / 100) * product_price
+           
+                        discounted_price = product_price - discount
+
+                        total_price += discounted_price * item.product_qty
+                        single_product_total.append(discounted_price * item.product_qty)
+                        a=discounted_price * item.product_qty
+                        
+                                
+                return JsonResponse({'status': 'Updated successfully','sub_total':total_price,'product_price':a,'quantity':prod_qty})
             else:
                 return JsonResponse({'status': 'Not allowed this Quantity'})
     return JsonResponse('something went wrong, reload page',safe=False)

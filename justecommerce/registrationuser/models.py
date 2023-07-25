@@ -11,4 +11,7 @@ class UserOTP(models.Model):
     time_st=models.DateTimeField(auto_now=True)
     otp=models.IntegerField()
 
-    
+class Mobile_Otp(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    time_st=models.DateTimeField(auto_now=True)
+    otp=models.IntegerField()

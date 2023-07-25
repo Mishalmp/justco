@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'banner',
     'offer',
     'mathfilters',
-    'imagekit',
+    'twilio',
     
     
     
@@ -97,6 +97,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'home.context_processors.cart_and_wishlist_counts',
             ],
         },
     },
@@ -109,15 +110,22 @@ WSGI_APPLICATION = 'justeco.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'seconddb',
-       'USER': 'postgres',
-       'PASSWORD': '12345',
-       'HOST': 'localhost',
-       'PORT': '5432',
-   }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'seconddb',
+#        'USER': 'postgres',
+#        'PASSWORD': '12345',
+#        'HOST': 'localhost',
+#        'PORT': '5432',
+#    }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -166,6 +174,8 @@ STATICFILES_DIRS=[
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # settings.py
 
+TWILIO_ACCOUNT_SID = 'AC85eaedafa42150fcc6f8b1acda27c129'
+TWILIO_AUTH_TOKEN = 'e1d2862ca859b58300947e6a3981e9a2'
 
 
 # Email Configuration

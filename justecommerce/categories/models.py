@@ -10,6 +10,7 @@ class category(models.Model):
     categories_image = models.ImageField(upload_to='photos/categories',default='No image available')
     categories_discription = models.TextField(max_length=200)
     slug = models.SlugField(max_length=250,unique=True)
+   
 
     def save(self, *args, **kwargs):
         # generate slug field from name field if slug is empty

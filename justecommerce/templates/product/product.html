@@ -178,7 +178,14 @@
         <tr>
           <td>  {{c.id}}  </td>
           <td>  {{c.product_name}} </td>
-          <td>{% if c.offer %}<del class="text-danger">₹  {{c.product_price}}</del> {{c.get_offer}}{% else %}₹ {{c.product_price}} {% endif %}</td>
+          <td>
+            {% if c.offer or c.brand.offer %}
+                <del class="text-danger">₹ {{ c.product_price }}</del>
+                ₹ {{ c.get_offer }}
+            {% else %}
+                ₹ {{ c.product_price }}
+            {% endif %}
+        </td>
           
           <td> 
             <div style="width: 60px; height: 60px; object-fit: contain; border-radius: 0%;" class="overflow-hidden">

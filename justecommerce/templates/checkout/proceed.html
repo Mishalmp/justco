@@ -323,6 +323,7 @@
                                   <thead>
                                     <tr>
                                       <th>Product</th>
+                                      <th></th>
                                       <th>Quantity</th>
                                       <th>Price</th>
                                     </tr>
@@ -331,8 +332,17 @@
                                     {% for i in cartitems %}
                                     <tr>
                                       <td><a href="#">{{ i.product }}</a></td>
+                                      <td></td>
                                       <td>{{ i.product_qty }}</td>
-                                      <td>{% if i.product.offer %}<del class="text-danger">₹  {{i.product.product_price}}</del> {{i.product.get_offer}}{% else %}₹ {{i.product.product_price}} {% endif %}</td> 
+                                      <td class="column-3">
+                                        {% if i.product.offer or i.product.brand.offer %}
+                                            <del class="text-danger">₹ {{ i.product.product_price }}</del>
+                                            ₹ {{ i.product.get_offer }}
+                                        {% else %}
+                                            ₹ {{ i.product.product_price }}
+                                        {% endif %}
+                                    </td>
+                                    
                                     </tr>
                                     {% endfor %}
                                     <tr class="summary-subtotal">

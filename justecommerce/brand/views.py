@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from categories.models import category
-from .models import brand
+from .models import Brand
+from products.models import Offer
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 # .......................brand....................................
@@ -9,8 +10,9 @@ from django.contrib.auth.decorators import login_required
 def brands(request):
     if not request.user.is_superuser:
         return redirect('admin_login')
-    brand_data = brand.objects.all().order_by('id')
-    return render(request, 'brand/brand.html',{'brand' : brand_data})
+    brand_data = Brand.objects.all().order_by('id')
+    
+    return render(request, 'brand/brand.html',{'brand' : brand_data,'offer' : Offer.objects.all(),})
 
 # Create brand
 @login_required(login_url='admin_login')
@@ -22,7 +24,11 @@ def createbrands(request):
         eimage = request.FILES.get('brand_image', None)
        
         cdescription = request.POST['brand_discription']
-
+        offer = request.POST.get('offer')
+        if offer == 'No offer':
+            offer_id = None
+        else:
+            offer_id = Offer.objects.get(id=offer)
         # Validation
         if cname.strip() == '':
             messages.error(request, "Name Field empty")
@@ -32,15 +38,16 @@ def createbrands(request):
             messages.error(request, "Image not uploaded")
             return redirect('brands')
         
-        if brand.objects.filter(brand_name=cname).exists():
+        if Brand.objects.filter(brand_name=cname).exists():
             messages.error(request, 'brand name already exists')
             return redirect('brands')
 
-        bran = brand(
+        bran = Brand(
             brand_name=cname,
             brand_image=eimage,
        
             brand_discription=cdescription,
+            offer = offer_id
         )
         bran.save()
         return redirect('brands')
@@ -57,12 +64,17 @@ def editbrands(request, editbrands_id):
         cname = request.POST['brand_name']
      
         cdescription = request.POST['brand_discription']
+        offer = request.POST.get('offer')
+        if offer == 'No offer':
+            offer_id = None
+        else:
+            offer_id = Offer.objects.get(id=offer)
 # validation
         if cname.strip() == '':
             messages.error(request, "Name Field empty")
             return redirect('brands')
-        if brand.objects.filter(brand_name=cname).exists():
-            check = brand.objects.get(slug = editbrands_id)
+        if Brand.objects.filter(brand_name=cname).exists():
+            check = Brand.objects.get(slug = editbrands_id)
             if cname == check.brand_name:
                 pass
             else:
@@ -70,27 +82,28 @@ def editbrands(request, editbrands_id):
                 return redirect('brands')
 
         try:
-            cat = brand.objects.get(slug=editbrands_id)
+            cat = Brand.objects.get(slug=editbrands_id)
             eimage = request.FILES['brand_image']
             cat.brand_image = eimage
             cat.save()
         except:
             pass 
 
-        cat = brand.objects.get(slug=editbrands_id)
+        cat = Brand.objects.get(slug=editbrands_id)
         cat.brand_name = cname
       
         cat.brand_discription = cdescription
+        cat.offer = offer_id
         cat.save()
         return redirect('brands')
-    cate = brand.objects.filter(slug=editbrands_id)       
+    cate = Brand.objects.filter(slug=editbrands_id)       
     return render(request, 'brand/editbrands.html', {'catego': cate})
 
 # Delete brand
 def deletebrands(request,deletebrands_id):
     if not request.user.is_superuser:
         return redirect('admin_login')
-    bran = brand.objects.get(id=deletebrands_id)
+    bran = Brand.objects.get(id=deletebrands_id)
     bran.delete()
     return redirect('brands')
 
@@ -102,10 +115,10 @@ def search_brand(request):
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
         if keyword:
-            Brand = brand.objects.filter(brand_name__icontains=keyword).order_by('id')
-            if Brand.exists():
+            brand = Brand.objects.filter(brand_name__icontains=keyword).order_by('id')
+            if brand.exists():
                 context = {
-                    'brand': Brand,
+                    'brand': brand,
                 }
                 return render(request, 'brand/brand.html', context)
             else:

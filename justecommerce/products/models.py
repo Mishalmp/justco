@@ -1,6 +1,5 @@
 from django.db import models
 from django.urls import reverse
-from brand.models import brand
 from categories.models import category
 from django.utils.text import slugify
 from justeco.settings import *
@@ -60,6 +59,9 @@ class Offer(models.Model):
 
 # product
 class Product(models.Model):
+    from brand.models import Brand
+
+    
     product_name = models.CharField(unique=True,max_length=50)
     product_price = models.IntegerField()
     product_image = models.ImageField(upload_to='photos/product',default='No image available')
@@ -68,7 +70,7 @@ class Product(models.Model):
     
     
     price_range = models.ForeignKey(PriceFilter, on_delete=models.CASCADE)
-    brand = models.ForeignKey(brand,on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand,on_delete=models.CASCADE)
     category = models.ForeignKey(category,on_delete=models.CASCADE)
     product_description = models.TextField(blank=True)
    
@@ -93,7 +95,30 @@ class Product(models.Model):
         return self.product_name
     
     def get_offer(self):
-        return self.product_price - self.offer.discount_amount
+        product_offer = self.offer
+        brand_offer = self.brand.offer
+
+        if product_offer and brand_offer:
+            # If both product and brand have offers, choose the maximum discount
+            max_discount = max(product_offer.discount_amount, brand_offer.discount_amount)
+            percentage_discount = (max_discount / 100) * self.product_price
+
+            discounted=self.product_price-percentage_discount
+            return discounted
+        elif product_offer:
+            # If only product has an offer
+            percentage_discount = (product_offer.discount_amount / 100) * self.product_price
+            discounted=self.product_price-percentage_discount
+            return discounted
+        elif brand_offer:
+            # If only brand has an offer
+            percentage_discount = (brand_offer.discount_amount / 100) * self.product_price
+
+            discounted=self.product_price-percentage_discount
+            return discounted
+        else:
+            # If neither product nor brand has an offer, return the original price
+            return self.product_price
 
 
 

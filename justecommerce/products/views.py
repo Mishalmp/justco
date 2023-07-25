@@ -3,7 +3,8 @@ from django.shortcuts import render,redirect
 from categories.models import category
 from django.contrib import messages
 from .models import Product as products, PriceFilter,Offer
-from brand.models import brand
+# from offer.models import Offer
+from brand.models import Brand
 import logging
 from django.contrib.auth.decorators import login_required
 
@@ -35,7 +36,7 @@ def product(request):
     dict_list={
         'prod' : prodec,
         'category' : category.objects.all(),
-        'brand': brand.objects.all(),
+        'brand': Brand.objects.all(),
         'price_range' : PriceFilter.objects.all(),
         'offer' : Offer.objects.all(),
        
@@ -98,7 +99,7 @@ def createproduct(request):
             return JsonResponse({'message': 'Image not uploaded'})
 
         category_obj = category.objects.get(id=category_id)
-        brand_obj = brand.objects.get(brand_name=brandname)
+        brand_obj = Brand.objects.get(brand_name=brandname)
         price_range_obj = PriceFilter.objects.get(id=price_range)
 
         # Save the product
@@ -179,7 +180,7 @@ def editproduct(request,editproduct_id):
                 return redirect('product')
         
         cates = category.objects.get(id=category_id)
-        produc = brand.objects.get(brand_name=brandname)
+        produc = Brand.objects.get(brand_name=brandname)
         prange = PriceFilter.objects.get(id=price_range)
 # Save       
         cat = products.objects.get(slug=editproduct_id)

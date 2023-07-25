@@ -88,7 +88,14 @@
 						</h4>
 
 						<span class="mtext-106 cl2">
-							{% if pro_detail.offer %}<del class="text-danger">₹  {{pro_detail.product_price}}</del> {{pro_detail.get_offer}}{% else %}₹ {{pro_detail.product_price}} {% endif %}
+							<td>
+								{% if pro_detail.offer or pro_detail.brand.offer %}
+									<del class="text-danger">₹ {{ pro_detail.product_price }}</del>
+									₹ {{ pro_detail.get_offer }}
+								{% else %}
+									₹ {{ pro_detail.product_price }}
+								{% endif %}
+							</td>
 						</span>
 
 						<p class="stext-102 cl3 p-t-23">
@@ -165,9 +172,10 @@
 
 								{% if pro_detail.quantity %}
 								
-
-								<button class="add-to-cart-btn flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 " data-product_id="{{ pro_detail.id }}">Add to Cart</button>
-
+								<div class="buttooons" style="display: flex; margin-top: 10px; justify-content: space-between;">
+								<button  class="add-to-cart-btn flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 " data-product_id="{{ pro_detail.id }}">Add to Cart</button>
+								<button class="buynow-btn flex-c-m stext-101 cl0 size-101 bg-dark bor1 hov-btn1 p-lr-15 trans-04 " data-product_id="{{ pro_detail.id }}">Buy Now</button>
+							</div>
 								{% else %}
 								<h4 class="text-danger" >Out of stock</h4> 
 
@@ -584,6 +592,8 @@
 										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
 											Add to cart
 										</button>
+
+										
 									</div>
 								</div>	
 							</div>
@@ -686,7 +696,7 @@
 				  if (response.status === 'Product already in wishlist' ||  response.status === 'Only few quantity available') {
 					swal("Error!", response.status, "error");
 					$('.cartdata').load(location.href + " .cartdata");
-				  } else if (response.status === 'Product added successfully') {
+				  } else if (response.status === 'Product Added to in wishlist') {
 					swal("Congratulations!", response.status, "success");
 					$('.cartdata').load(location.href + " .cartdata");
 				  } else {
@@ -697,7 +707,44 @@
 			  });
 			});
 		  </script> 
-		  
+		  <script>
+			$('.buynow-btn').click(function(e) {
+			  e.preventDefault();
+			 
+			  var product_id = $(this).data('product_id');
+			  var add_qty = $('#qty-input').val()
+			  
+			  var quantity = $('#pro_qty' + product_id).val()
+			  console.log(product_id,quantity,add_qty,'yyyyyyyyyyyyyyyyyyyyyyy1')
+			  $.ajax({
+				method: "POST",
+				url: "{% url 'add_buynow' %}",
+				data: {
+				  'product_qty': quantity,
+				  'prod_id': product_id,
+				  'add_qty':add_qty,
+				  csrfmiddlewaretoken: '{{ csrf_token }}'
+				},
+				 success: function(response) {
+					
+				  console.log(response);
+				 
+				  
+				  if (response.status === 'No such product found' || response.status === 'Only few quantity available') {
+					swal("Error!", response.status, "error");
+					$('.cartdata').load(location.href + " .cartdata");
+				  } else if (response.status === 'Product added successfully' ) {
+					swal("Congratulations!", response.status, "success");
+					$('.cartdata').load(location.href + " .cartdata");
+					window.location.href = '/checkout/buynow_checkout/'
+				  } else {
+					swal("Error!", response.status, "error");
+					$('.cartdata').load(location.href + " .cartdata");
+				  }
+				} 
+			  });
+			});
+		  </script>
 
 <!--===============================================================================================-->	
 	

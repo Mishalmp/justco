@@ -26,14 +26,14 @@ import re
 from django.core.exceptions import ValidationError
 import csv
 import io
-from products.models import Product
+from products.models import Product,Offer
 import datetime
 from datetime import datetime, timedelta
 
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
-
+# from offer.models import Offer
 
 # Create your views here.
 def admin_login(request):
@@ -225,24 +225,29 @@ def dashboard(request):
 
 @login_required(login_url='admin_login')
 def sales_report(request):
-    # Handle form submission
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
 
-    if start_date and end_date:
-        # Filter orders based on the selected date range
-        start_date = datetime.strptime(start_date, '%Y-%m-%d')
-        end_date = datetime.strptime(end_date, '%Y-%m-%d')
-        if start_date >= end_date:
-            messages.error(request, "Start date must be before end date.")
-            return redirect('adminoffer')
-
-        orders = Order.objects.filter(created_at__date__range=(start_date, end_date))
-        recent_orders = orders.order_by('-created_at')
-    else:
-        # If no date range is selected, fetch recent 10 orders
-        recent_orders = Order.objects.order_by('-created_at')[:10]
+    if 'all_sales' in request.GET:
+        # Get all orders without specifying a date range
         orders = Order.objects.all()
+    else:
+    # Handle form submission
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+
+        if start_date and end_date:
+            # Filter orders based on the selected date range
+            start_date = datetime.strptime(start_date, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+            if start_date >= end_date:
+                messages.error(request, "Start date must be before end date.")
+                return redirect('adminoffer')
+
+            orders = Order.objects.filter(created_at__date__range=(start_date, end_date))
+            recent_orders = orders.order_by('-created_at')
+        else:
+            # If no date range is selected, fetch recent 10 orders
+            recent_orders = Order.objects.order_by('-created_at')[:10]
+            orders = Order.objects.all()
 
     # Calculate total sales and total orders
     total_sales = sum(order.total_price for order in orders)
@@ -292,37 +297,7 @@ def sales_report(request):
 
 
 
-def download_sales_csv(request):
-    # Fetch the data from the request's GET parameters
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
 
-    # Filter orders based on the selected date range
-    if start_date and end_date:
-        start_date = datetime.strptime(start_date, '%Y-%m-%d')
-        end_date = datetime.strptime(end_date, '%Y-%m-%d')
-
-        orders = Order.objects.filter(created_at__date__range=(start_date, end_date))
-    else:
-        # If no date range is selected, fetch all orders
-        orders = Order.objects.all()
-
-    # Prepare data for CSV export
-    csv_data = [
-        ['Order ID', 'Tracking Number', 'Total Price', 'Status', 'Created At']
-    ]
-    for order in orders:
-        csv_data.append([order.id, order.tracking_no, order.total_price, order.od_status, order.created_at])
-
-    # Create the CSV response
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = f'attachment; filename="sales_report_{start_date}_{end_date}.csv"'
-
-    writer = csv.writer(response)
-    for row in csv_data:
-        writer.writerow(row)
-
-    return response
 
 import csv
 from itertools import groupby

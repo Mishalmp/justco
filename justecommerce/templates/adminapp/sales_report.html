@@ -27,10 +27,15 @@
                                 <input type="date" id="start-date" name="start_date" value="{{ sales_report.start_date }}" required>
                                 <label for="end_date">End Date:</label>
                                 <input type="date" id="end-date" name="end_date" value="{{ sales_report.end_date }}" required>
+
+                                <!-- <button type="submit" name="all_sales" class="btn btn-primary">All Sales</button> -->
                                 <button type="submit" class="btn btn-primary">Generate Report</button>
-                               
+                                
+
                                   
                             </form>
+
+                          
                             <p>Total Sales: ₹{{ sales_report.total_sales|floatformat:2 }}</p>
                             <p>Total Orders: {{ sales_report.total_orders }}</p>
                             <h2>Sales by Status</h2>

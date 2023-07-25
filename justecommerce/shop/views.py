@@ -4,7 +4,7 @@ from products.models import Product
 from wishlist.models import Wishlist
 from django.views.decorators.cache import cache_control
 from django.http.response import JsonResponse
-from cart.models import Cart
+from cart.models import Cart,Buynow
 # Create your views here.
 from django.contrib.auth.models import User
 
@@ -40,6 +40,34 @@ def product_detail(request, product_id):
     }
     
     return render(request, 'product-detail.html', context)
+
+
+def add_buynow(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+           
+            prod_id = request.POST.get('prod_id')
+            add_qty= int(request.POST.get('add_qty'))
+            try:
+                product_check = Product.objects.get(id=prod_id)
+                
+
+            except Product.DoesNotExist:
+                return JsonResponse({'status': 'No such product found'})
+            
+        
+            prod_qty = add_qty
+            
+            if product_check.quantity >= prod_qty:
+                Buynow.objects.create(user=request.user, product_id=prod_id, product_qty=prod_qty)
+                
+                return JsonResponse({'status': 'Product added successfully'})
+            else:
+                return JsonResponse({'status': "Only few quantity available"})
+        else:
+            return JsonResponse({'status': 'Login to continue'})
+    return redirect('product_detail')
+
 
 
 

@@ -9,13 +9,16 @@ from django.contrib.auth import authenticate,login,logout as dj_logout
 from products.models import Product
 from categories.models import category
 from django.contrib.auth.models import User
-from brand.models import brand
+from brand.models import Brand
 from django.http.response import JsonResponse
 from django.template.loader import render_to_string
 from django.http import HttpRequest
 from cart.models import Cart
 from wishlist.models import Wishlist
 from django.db.models import Sum,Count
+
+
+
 
 def home(request):
     if request.user.is_superuser:
@@ -30,7 +33,7 @@ def home(request):
         wishcount=0
     
     cate=category.objects.all()
-    brands=brand.objects.all()
+    brands=Brand.objects.all()
     print(cartcount,wishcount,'ccccccccccccccccccccccccccccccccc')
 
     sort_option = request.GET.get('sort')
@@ -79,7 +82,7 @@ def shop(request):
 
     
     cat=category.objects.all()
-    bra=brand.objects.all()
+    bra=Brand.objects.all()
 
     sort_option = request.GET.get('sort')
     search_query = request.GET.get('search')
