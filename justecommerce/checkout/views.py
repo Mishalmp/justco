@@ -23,6 +23,7 @@ from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 import os
 from django.http import HttpResponse
+from django.contrib.sessions.backends.db import SessionStore
 
 # from weasyprint import HTML
 def checkout(request):
@@ -54,7 +55,7 @@ def checkout(request):
             total_price += discounted_price * item.product_qty
             
            
-
+    
         
     coupons = Coupon.objects.filter(is_active=True)
     applied_coupon = None
@@ -203,7 +204,45 @@ def placeorder(request):
 
     return redirect('checkout')
 
+def apply_coupon(request):
+    if request.method == 'POST':
+        coupon_code = request.POST.get('coupon_code')
+        grand_total = float(request.POST.get('grand_total', 0))  # Convert to float
+        print(grand_total, 'oooooooooooooooooooooooooooooo')
+        
+        if coupon_code.strip() == '':
+            return JsonResponse({'status': 'Field is blank'})
+        
+        if coupon_code == 'No Coupon Applied':
+            return JsonResponse({'status': 'No Coupon Applied'})
+        
+        try:
+            coupon = Coupon.objects.get(coupon_code=coupon_code, is_active=True)
+        except Coupon.DoesNotExist:
+            return JsonResponse({'status': 'Coupon does not exist'})
 
+        # Check if the user has already used the coupon
+        existing_coupon_usage = CouponUsage.objects.filter(user=request.user, coupon=coupon)
+        if existing_coupon_usage.exists():
+            existing_coupon_usage = existing_coupon_usage.first()
+            # Remove the discount of the existing coupon from the grand_total
+            grand_total += (grand_total * (existing_coupon_usage.coupon.discount / 100))
+            existing_coupon_usage.delete()
+
+        if grand_total > coupon.min_price:
+            coupon_discount = coupon.discount
+            grand_total = grand_total - (grand_total * (coupon.discount / 100))
+            usercoupon = CouponUsage.objects.create(user=request.user, coupon=coupon, used=True, total_price=grand_total)
+            usercoupon.save()
+            return JsonResponse({
+                'status': 'Coupon added successfully',
+                'coupon_discount': coupon_discount,
+                'grand_total': grand_total,
+            })
+        else:
+            return JsonResponse({'status': 'You are not eligible for this coupon'})
+            
+    return JsonResponse({'status': 'Invalid request'})
 
 
 
@@ -257,45 +296,7 @@ def generate_invoice_pdf(request, order_id):
 
 
 
-def apply_coupon(request):
-    if request.method == 'POST':
-        coupon_code = request.POST.get('coupon_code')
-        grand_total = float(request.POST.get('grand_total', 0))  # Convert to float
-        print(grand_total, 'oooooooooooooooooooooooooooooo')
-        
-        if coupon_code.strip() == '':
-            return JsonResponse({'status': 'Field is blank'})
-        
-        if coupon_code == 'No Coupon Applied':
-            return JsonResponse({'status': 'No Coupon Applied'})
-        
-        try:
-            coupon = Coupon.objects.get(coupon_code=coupon_code, is_active=True)
-        except Coupon.DoesNotExist:
-            return JsonResponse({'status': 'Coupon does not exist'})
 
-        # Check if the user has already used the coupon
-        existing_coupon_usage = CouponUsage.objects.filter(user=request.user, coupon=coupon)
-        if existing_coupon_usage.exists():
-            existing_coupon_usage = existing_coupon_usage.first()
-            # Remove the discount of the existing coupon from the grand_total
-            grand_total += (grand_total * (existing_coupon_usage.coupon.discount / 100))
-            existing_coupon_usage.delete()
-
-        if grand_total > coupon.min_price:
-            coupon_discount = coupon.discount
-            grand_total = grand_total - (grand_total * (coupon.discount / 100))
-            usercoupon = CouponUsage.objects.create(user=request.user, coupon=coupon, used=True, total_price=grand_total)
-            usercoupon.save()
-            return JsonResponse({
-                'status': 'Coupon added successfully',
-                'coupon_discount': coupon_discount,
-                'grand_total': grand_total,
-            })
-        else:
-            return JsonResponse({'status': 'You are not eligible for this coupon'})
-            
-    return JsonResponse({'status': 'Invalid request'})
 
 # def update_grand_total(request):
 #     if request.method == 'POST':

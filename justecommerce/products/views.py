@@ -20,7 +20,8 @@ from PIL import Image
 import base64
 from io import BytesIO
 
-
+from .forms import ProductImageForm
+from django.shortcuts import render, get_object_or_404
 
 
 # Rest of your code.
@@ -43,17 +44,67 @@ def product(request):
     }
     return render(request ,'product/product.html',dict_list)
 
-# def main_view(request):
-#     form = ImageForm(request.POST or None, request.FILES or None)
-#     if form.is_valid():
-#         form.save()
-#         return JsonResponse({'message': 'works'})
-#     context = {'form': form}
-#     return render(request, 'templates/main.html', context)
+
+def product_view(request,prod_id):
+    if not request.user.is_superuser:
+        return redirect('admin_login')
+    
+    try:
+        prod = products.objects.get(slug=prod_id)
+    except products.DoesNotExist:
+        return redirect('product')
+    context={
+        'pro':prod
+    }
+    return render(request,'product/product_view.html',context)
+
+
+def product_image_view(request, product_id):
+    product = products.objects.get(id=product_id)
+
+    if request.method == 'POST':
+        form = ProductImageForm(request.POST, request.FILES)
+        print(request.POST,'daxooooooooooo')
+      
+        if form.is_valid():
+            print("Form is valid")
+            locate = 'photos/product/'
+           
+            
+            product.product_image = locate+request.POST.get('product_image')
+            product.product_image2 = locate+request.POST.get('product_image2')
+            product.product_image3 = 'photos/product/'+request.POST.get('product_image3')
+
+            try:
+                # Save the images
+                product.save()
+                print("Images saved successfully!")
+                return JsonResponse({'message': 'Images saved successfully!', 'product_id': product_id})
+            except Exception as e:
+                print("Error saving images:", e)
+        else:
+            print("Form is not valid:", form.errors)
+
+    else:
+        form = ProductImageForm()
+
+    context = {'form': form, 'product_id': product_id}
+    return render(request, 'product/image_add.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Add Product
 @login_required(login_url='admin_login')
-
 
 def createproduct(request):
     if not request.user.is_superuser:

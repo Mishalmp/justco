@@ -165,10 +165,11 @@
               <th scope="col">Price Range</th>
               <!-- <th scope="col">category</th> -->
               <th scope="col">brand</th>
-              <th scope="col">offer</th>
+              <!-- <th scope="col">offer</th> -->
               <!-- <th scope="col">product description</th> -->
               <!-- <th scope="col">is_available</th> -->
               <th scope="col">Quantity</th>
+              <th scope="col">View</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
@@ -195,7 +196,7 @@
           <td>  {{c.price_range}} </td>
           <!-- <td>  {{c.category}} </td> -->
           <td>  {{c.brand}} </td>
-          <td>  {{c.offer.offer_name}} </td>
+          <!-- <td>  {{c.offer.offer_name}} </td> -->
           
 
           <!-- <td>  {{c.product_description}} </td> -->
@@ -205,6 +206,11 @@
           <td> No</td>
            {% endif %} -->
           <td>{{c.quantity}}</td> 
+          <td><a href="{% url 'product_view' c.slug %}"  class="btn btn "
+            style="background-color: rgb(86, 168, 255); color:rgb(255, 255, 255)">
+            <i class="ti ti-photo"></i>
+            View
+        </a></td> 
          <td>
           <!-- edit -->
 
@@ -295,7 +301,7 @@
                     <!-- one here -->
 
                     <div class="form-outline mb-4">
-                      <label class="form-label">Is Availble</label>
+                      <label class="form-label">Is Available</label>
                       <input type="checkbox" name='checkbox'>
                     </div> 
                   </div>

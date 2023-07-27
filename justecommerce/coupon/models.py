@@ -37,3 +37,5 @@ class CouponUsage(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.coupon .coupon_code}"
+    
+  

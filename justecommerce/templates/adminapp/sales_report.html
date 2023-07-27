@@ -11,18 +11,20 @@
 
 
 {% block content %}
-<h2 class="text-dark font-weight-bold"> Sales Report </h2>
+<div>
+    <br><br>
+<h2 class="text-dark font-weight-bold" style="margin-left: 10px;"> Sales Report </h2>
 
-<section class="section dashboard">
+<section class="section dashboard" >
     <div class="row">
         <!-- Left side columns -->
-        <div class="col-lg-12">
+        <div class="col-lg-12" >
             <div class="row">
                 <!-- Recent Sales -->
                 <div class="col-12">
                     <div class="card recent-sales overflow-auto">
                         <div class="card-body">
-                            <form method="get" action="{% url 'sales_report' %}">
+                            <form style="margin-left: 20%; font-size: large; " method="get" action="{% url 'sales_report' %}">
                                 <label for="start_date">Start Date:</label>
                                 <input type="date" id="start-date" name="start_date" value="{{ sales_report.start_date }}" required>
                                 <label for="end_date">End Date:</label>
@@ -35,11 +37,13 @@
                                   
                             </form>
 
-                          
-                            <p>Total Sales: ₹{{ sales_report.total_sales|floatformat:2 }}</p>
-                            <p>Total Orders: {{ sales_report.total_orders }}</p>
-                            <h2>Sales by Status</h2>
-                            <ul>
+                            <div style="display: flex;  padding:5%; justify-content: space-evenly;">
+                            <h4>Total Sales: ₹{{ sales_report.total_sales|floatformat:2 }}</h4>
+                            <h4>Total Orders: {{ sales_report.total_orders }}</h4>
+                        </div>
+                            <h2 style="margin-left: 40%;">Sales by Status</h2>
+                            <div >
+                            <ul style="display: flex;justify-content: space-evenly; font-weight: bold; margin-top: 5%; ">
                                 <li>Pending: {{ sales_report.sales_by_status.Pending }}</li>
                                 <li>Processing: {{ sales_report.sales_by_status.Processing }}</li>
                                 <li>Shipped: {{ sales_report.sales_by_status.Shipped }}</li>
@@ -47,7 +51,8 @@
                                 <li>Cancelled: {{ sales_report.sales_by_status.Cancelled }}</li>
                               
                             </ul>
-                            <h2>{% if sales_report.start_date and sales_report.end_date %}All Orders{% else %}Recent Orders{% endif %}</h2>
+                        </div>
+                            <h2 style="margin-top: 5%;">{% if sales_report.start_date and sales_report.end_date %}All Orders{% else %}Recent Orders{% endif %}</h2>
                             {% if sales_report.start_date and sales_report.end_date %}
                             <a href="{% url 'export_csv' %}" class="btn btn-success">
                                 Download CSV <i class="mdi mdi-file-excel" style="font-size: x-large;"></i>
@@ -114,7 +119,7 @@
     </div>
 </section>
 
-
+</div>
 <script>
     setTimeout(function() {
         $('#message').fadeOut('slow');

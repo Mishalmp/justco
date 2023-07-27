@@ -1,4 +1,4 @@
-{% extends 'registration/base1.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Log in{% endblock title %}
 {% block content %}
@@ -33,7 +33,7 @@
     </div> <!-- card .// -->
     <div class="text-dark">
      <p class="text-center mt-4">Don't have account? <a  href="{% url 'user_signup' %}" class="text-primary">Sign up</a></p>
-     <br><br>
+     <br>
      <p class="text-center mt-4">Mobile OTP Login? <a  href="{% url 'mobile_login' %}" class="text-primary">Log in</a></p>
     </div>
 <!-- ============================ COMPONENT LOGIN  END.// ================================= -->

@@ -28,6 +28,18 @@ def product_detail(request, product_id):
 
     related = Product.objects.all()
     cart = None  # Set cart as None by default
+    product = get_object_or_404(Product, slug=product_id)
+    recently_viewed_products = request.session.get('recently_viewed_products', [])
+
+    if product.id in recently_viewed_products:
+        recently_viewed_products.remove(product.id)
+    recently_viewed_products.insert(0, product.id)
+
+    # Limit the list to store only the last 5 viewed products
+    recently_viewed_products = recently_viewed_products[:5]
+
+    # Update the session variable with the updated list
+    request.session['recently_viewed_products'] = recently_viewed_products
 
     # Check if the user is authenticated and not anonymous
     if request.user.is_authenticated and not isinstance(request.user, AnonymousUser):

@@ -5,9 +5,13 @@
 
 {% block content %}
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
-
+<section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url('{% static 'images/bg-01.jpg' %}');">
+	<h2 class="ltext-105 cl0 txt-center">
+	  Wishlist
+	</h2>
+  </section>	
 <br><br>
 <br><br>
 <!-- breadcrumb -->
@@ -44,69 +48,129 @@
 </div>
 <br>
 <br>
-<br>
+<br><br>
+<br><br>
 {% else %}
 
-
-
-
-<!-- Shoping Cart -->
-<form class="bg0 p-t-75 p-b-85">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
-                <div class="m-l-60 m-r--90 m-lr-0-xl">
-                    <div class="wrap-table-shopping-cart">
-                        <table class="table-shopping-cart">
-                            <tr class="table_head">
-                                <th class="column-1">Product</th>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+            <div class="m-l-25 m-r--38 m-lr-0-xl">
+                <div class="wrap-table-shopping-cart">
+                    <table class="table-shopping-cart">
+                        <tr class="table_head">
+                            <th class="column-1">Product</th>
                                 <th class="column-2"></th>
                                 <th class="column-3">Price</th>
 							
 
-                                <th class="column-5">stock status</th>
+                                <th class="column-4">stock status</th>
+                                <!-- <th class="column-5">stock status</th> -->
                                 
-								<th class="column-6"></th>
-								<th class="column-7"></th>
-                            </tr>
+								<th class="column-5"></th>
+								
+                        </tr>
+                        {% for i in wishlist %}
+                        <tr class="table_row" id="product-div{{item.product.id}}">
+                            <td class="column-1">
+                                <div class="how-itemcart1">
+                                    <img src="{{i.product.product_image.url}}" alt="IMG">
+                                </div>
+                            </td>
+                            <td class="column-2">{{i.product.product_name}}</td>
+                            <td class="column-3">
+                                {% if i.product.offer or i.product.brand.offer %}
+                                    <del class="text-danger">₹ {{ i.product.product_price }}</del>
+                                    ₹ {{ i.product.get_offer }}
+                                {% else %}
+                                    ₹ {{ i.product.product_price }}
+                                {% endif %}
+                            </td>
+                            
+                            <td class="column-4">
+                                <span class="in-stock">In stock</span>
+                
+                    
+                            </td>
 
-                            {% for i in wishlist %}
-
-                            <tr class="table_row">
-                                <td class="column-1">
-                                    <div class="how-itemcart1">
-                                        <img src="{{i.product.product_image.url}}" alt="IMG">
-                                    </div>
-                                </td>
-                                <td class="column-2">{{i.product.product_name}}</td>
-                                <td class="column-3">{{i.product.product_price}}</td>
-                                <td class="column-5"><span class="in-stock">In stock</span></td>
-								<td class="column-6">
-									<button  class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i><a href="add_cart">Add to Cart</a></button>
-								</td>
-								<td class="column-7"><a class="text-danger" href="{% url 'delete_wishlist' i.product.id %}"> <i class="icon-close"></i></a></td>
-                            </tr>
-                            {% endfor %}
                            
-                        </table>
-                    </div>
+                            <!-- <td class="column-5" >
+                                <button  class="add-to-cart flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 " data-product_id="{{ i.id }}">Add to Cart</button>
+                                {% for item in cart %}
 
-                    <div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
-                      
+								<input readonly id="pro_qty{{i.product.id}}" class="mtext-104 cl3 txt-center num-product" type="hidden" name="num-product1" value="{{i.product_qty}}">
 
-                        <div class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
-                            Update Cart
-                        </div>
-                    </div>
+								{% endfor %}
+                            </td> -->
+
+                          
+                            <td class="column-5">
+                                <a class="text-danger" href="{% url 'delete_wishlist' i.id %}">  <i style="font-size: 28px; margin-right: 5px;" class="mdi mdi-close"></i></a> 
+                            </td>
+                        </tr>                                                                           
+                        {% endfor %}
+                    
+                    </table>
                 </div>
-            </div>
 
           
+            </div>
         </div>
     </div>
-</form>
+</div>
+
+
 
 {% endif %}
+
+
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+
+
+
+<script>
+    $('.add-to-cart').click(function(e) {
+      e.preventDefault();
+     
+      var product_id = $(this).data('product_id');
+      var add_qty = 1
+      
+      var quantity = $('#pro_qty' + product_id).val()
+      console.log(product_id,quantity,add_qty,'yyyyyyyyyyyyyyyyyyyyyyy1')
+      $.ajax({
+        method: "POST",
+        url: "{% url 'add_cart' %}",
+        data: {
+          'product_qty': quantity,
+          'prod_id': product_id,
+          'add_qty':add_qty,
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+         success: function(response) {
+            
+          console.log(response);
+         
+          
+          if (response.status === 'No such product found' || response.status === 'Only few quantity available') {
+            swal("Error!", response.status, "error");
+            $('.cartdata').load(location.href + " .cartdata");
+          } else if (response.status === 'Product added successfully' || response.status === 'Product quantity increased') {
+            swal("Congratulations!", response.status, "success");
+            $('.cartdata').load(location.href + " .cartdata");
+          } else {
+            swal("Error!", response.status, "error");
+            $('.cartdata').load(location.href + " .cartdata");
+          }
+        } 
+      });
+    });
+  </script>
 
 {% endblock %}
 

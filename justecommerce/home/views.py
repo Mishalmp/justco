@@ -16,7 +16,7 @@ from django.http import HttpRequest
 from cart.models import Cart
 from wishlist.models import Wishlist
 from django.db.models import Sum,Count
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 
@@ -24,18 +24,14 @@ def home(request):
     if request.user.is_superuser:
         return redirect('dashboard')
 
-    if request.user.is_authenticated:
-
-        cartcount = Cart.objects.filter(user=request.user).aggregate(cartcount=Count('id'))['cartcount']
-        wishcount=Wishlist.objects.filter(user=request.user).aggregate(wishcount=Count('id'))['wishcount']
-    else:
-        cartcount=0
-        wishcount=0
+  
     
     cate=category.objects.all()
     brands=Brand.objects.all()
-    print(cartcount,wishcount,'ccccccccccccccccccccccccccccccccc')
-
+    recent_products = Product.objects.all().order_by('-created_at')[:8]
+  
+    recently_viewed_products = request.session.get('recently_viewed_products', [])
+    recently_viewed_products = Product.objects.filter(id__in=recently_viewed_products)
     sort_option = request.GET.get('sort')
     search_query = request.GET.get('search')
     products = Product.objects.all()  # Fetch your product list from the database
@@ -59,9 +55,11 @@ def home(request):
       
     # Render the updated product list HTML or return as JSON response
     if is_ajax(request=request):
-        return JsonResponse({'html': render_to_string('index.html',{'products_list':sorted_products,'cat':cate,'brand':brands,'cartcount':cartcount,'wishcount':wishcount})})
+        return JsonResponse({'html': render_to_string('index.html',{'products_list':sorted_products,'cat':cate,'brand':brands,'recent_products':recent_products,'recently_viewed_products': recently_viewed_products})})
+        
+
     else:
-        return render(request,'index.html',{'products_list':sorted_products,'cat':cate,'brand':brands,'cartcount':cartcount,'wishcount':wishcount})
+        return render(request,'index.html',{'products_list':sorted_products,'cat':cate,'brand':brands,'recent_products':recent_products,'recently_viewed_products': recently_viewed_products})
 
    
 
@@ -78,15 +76,16 @@ def is_ajax(request):
 
 def shop(request):
     if request.user.is_superuser:
-                return redirect('dashboard')
+        return redirect('dashboard')
 
     
     cat=category.objects.all()
     bra=Brand.objects.all()
-
+    page_number = request.GET.get('page')
     sort_option = request.GET.get('sort')
     search_query = request.GET.get('search')
-    products = Product.objects.all()  # Fetch your product list from the database
+    products = Product.objects.all() 
+                                         
 
     if sort_option == 'atoz':
         sorted_products = products.order_by('product_name')  # Sort products by name in ascending order
@@ -104,12 +103,29 @@ def shop(request):
         sorted_products = products  # Default case, no sorting applied
     if search_query:
         sorted_products = sorted_products.filter(product_name__icontains=search_query)
-      
+
+       # Create a Paginator object with the sorted product list and the number of items per page
+    items_per_page = 4  # You can adjust this number as needed
+    paginator = Paginator(sorted_products, items_per_page)
+
+    try:
+        # Get the products for the requested page number
+        products_page = paginator.page(page_number)
+    except PageNotAnInteger:
+        # If the page number is not an integer, show the first page
+        products_page = paginator.page(1)
+    except EmptyPage:
+        # If the page number is out of range, show the last page
+        products_page = paginator.page(paginator.num_pages)
+
     # Render the updated product list HTML or return as JSON response
     if is_ajax(request=request):
-        return JsonResponse({'html': render_to_string('product.html',{'products_list':sorted_products,'cat':cat,'brand':bra})})
+
+        html = render_to_string('product.html', {'products_list':sorted_products,'cat':cat,'brand':bra,'products_page': products_page,})
+        return JsonResponse({'html': html})
+    
     else:
-        return render(request,'product.html',{'products_list':sorted_products,'cat':cat,'brand':bra})
+        return render(request,'product.html',{'products_list':sorted_products,'cat':cat,'brand':bra,'products_page': products_page,})
 
     
     
@@ -137,7 +153,7 @@ def about(request):
     return render(request,'about.html')
 
 
-def blog(request):
+def contact(request):
 
-    return render(request,'blog.html')
+    return render(request,'contact.html')
 

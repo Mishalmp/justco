@@ -7,7 +7,11 @@
 
 
 {% block content %}
-
+<section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url('{% static 'images/bg-01.jpg' %}');">
+	<h2 class="ltext-105 cl0 txt-center">
+	  Shop
+	</h2>
+  </section>	
 
 <br><br><br><br>
 	
@@ -169,7 +173,8 @@
 			</div>
 
 			<div class="row isotope-grid " id="sorting-part">
-				{% for i in products_list  %}
+				{% for i in products_page  %}
+				<!--  for i in products_list  -->
 
 				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item {{i.category}} {{i.brand}} " >
 					<!-- Block2 -->
@@ -210,12 +215,35 @@
 
 			</div>
 
-	<!-- Load more -->
-	<div class="flex-c-m flex-w w-full p-t-45">
-		<a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
-			All Products
-		</a>
-	</div>
+<!-- Display the products -->
+
+
+<!-- Pagination links -->
+<div class="pagination" style="margin-left: 45%;margin-top: 10%;">
+    <span class="step-links">
+        {% if products_page.has_previous %}
+            <a href="?page=1{% if sort_option %}&sort={{ sort_option }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                &laquo; first
+            </a>
+            <a href="?page={{ products_page.previous_page_number }}{% if sort_option %}&sort={{ sort_option }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                previous
+            </a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ products_page.number }} of {{ products_page.paginator.num_pages }}.
+        </span>
+
+        {% if products_page.has_next %}
+            <a href="?page={{ products_page.next_page_number }}{% if sort_option %}&sort={{ sort_option }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                next
+            </a>
+            <a href="?page={{ products_page.paginator.num_pages }}{% if sort_option %}&sort={{ sort_option }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
+                last &raquo;
+            </a>
+        {% endif %}
+    </span>
+</div> 
 
 	
 
@@ -425,10 +453,10 @@ $(document).ready(function() {
 			data: { sort: sortOption, search: searchQuery },
 			success: function(response) {
 				// Update the product list with the sorted/searched data
-				$('.abcd').replaceWith(response.html);
+				//$('.isotope-grid').replaceWith(response.html);
 				//$('#sorting-part').html(response.html);
 				//$('#sorting-part').html(response);
-				//$('.abcd').replaceWith(response.html);
+				$('.abcd').replaceWith(response.html);
 			},
 			error: function(xhr, status, error) {
 				// Handle error if necessary

@@ -64,9 +64,9 @@ class Product(models.Model):
     
     product_name = models.CharField(unique=True,max_length=50)
     product_price = models.IntegerField()
-    product_image = models.ImageField(upload_to='photos/product',default='No image available')
-    product_image2 = models.ImageField(upload_to='photos/product',default='No image available')
-    product_image3 = models.ImageField(upload_to='photos/product',default='No image available')
+    product_image = models.ImageField(upload_to='photos/product',default='No image available',null=True)
+    product_image2 = models.ImageField(upload_to='photos/product',default='No image available',null=True)
+    product_image3 = models.ImageField(upload_to='photos/product',default='No image available',null=True)
     
     
     price_range = models.ForeignKey(PriceFilter, on_delete=models.CASCADE)
@@ -78,6 +78,7 @@ class Product(models.Model):
     slug = models.SlugField(max_length=250,unique=True)
     quantity = models.IntegerField(default=10)
     offer = models.ForeignKey(Offer, on_delete=models.SET_NULL, null=True )
+    created_at = models.DateTimeField(auto_now_add=True,null=True)
 
   
 

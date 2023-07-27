@@ -63,7 +63,7 @@
                           <div class="card-body text-center">
                             <h5 class="mb-2 text-dark font-weight-normal">Total Sales</h5>
                             <h2 class="mb-4 text-dark font-weight-bold">₹{{ total_profit|floatformat:2 }}</h2>
-                            <div class="dashboard-progress dashboard-progress-1 d-flex align-items-center justify-content-center item-parent"><i class="mdi mdi-lightbulb icon-md absolute-center text-dark"></i></div>
+                            <div class="dashboard-progress dashboard-progress-1 d-flex align-items-center justify-content-center item-parent"><i class="mdi mdi-square-inc-cash icon-md absolute-center text-dark"></i></div>
                             <p class="mt-4 mb-0">Completed</p>
                             <h3 class="mb-0 font-weight-bold mt-2 text-dark">{{ total_orders}}</h3>
                           </div>
@@ -74,7 +74,7 @@
                           <div class="card-body text-center">
                             <h5 class="mb-2 text-dark font-weight-normal">Total Orders</h5>
                             <h2 class="mb-4 text-dark font-weight-bold">{{ total_orders}}</h2>
-                            <div class="dashboard-progress dashboard-progress-2 d-flex align-items-center justify-content-center item-parent"><i class="mdi mdi-account-circle icon-md absolute-center text-dark"></i></div>
+                            <div class="dashboard-progress dashboard-progress-2 d-flex align-items-center justify-content-center item-parent"><i class="mdi mdi-truck-delivery icon-md absolute-center text-dark"></i></div>
                             <p class="mt-4 mb-0">Increased since yesterday</p>
                             <h3 class="mb-0 font-weight-bold mt-2 text-dark">50%</h3>
                           </div>
@@ -85,7 +85,7 @@
                           <div class="card-body text-center">
                             <h5 class="mb-2 text-dark font-weight-normal">Total Products</h5>
                             <h2 class="mb-4 text-dark font-weight-bold">{{ total_products }}</h2>
-                            <div class="dashboard-progress dashboard-progress-3 d-flex align-items-center justify-content-center item-parent"><i class="mdi mdi-eye icon-md absolute-center text-dark"></i></div>
+                            <div class="dashboard-progress dashboard-progress-3 d-flex align-items-center justify-content-center item-parent"><i class="mdi mdi-store icon-md absolute-center text-dark"></i></div>
                             <p class="mt-4 mb-0">Increased since yesterday</p>
                             <h3 class="mb-0 font-weight-bold mt-2 text-dark">35</h3>
                           </div>
@@ -96,7 +96,7 @@
                           <div class="card-body text-center">
                             <h5 class="mb-2 text-dark font-weight-normal">Total Users</h5>
                             <h2 class="mb-4 text-dark font-weight-bold">{{ total_users }}</h2>
-                            <div class="dashboard-progress dashboard-progress-4 d-flex align-items-center justify-content-center item-parent"><i class="mdi mdi-cube icon-md absolute-center text-dark"></i></div>
+                            <div class="dashboard-progress dashboard-progress-4 d-flex align-items-center justify-content-center item-parent"><i class="mdi mdi-account-circle icon-md absolute-center text-dark"></i></div>
                             <p class="mt-4 mb-0">Decreased since yesterday</p>
                             <h3 class="mb-0 font-weight-bold mt-2 text-dark">25%</h3>
                           </div>
@@ -126,28 +126,50 @@
                                   </div>
                                 </div>
                               </div>
-                              <div class="col-lg-3 col-sm-4 grid-margin  grid-margin-lg-0">
+                              <div class="card-body bg-white pt-4">
+                                <div class="row pt-4">
+                                  <div class="col-sm-4">
+                                    <div class="text-center border-right border-md-0">
+                                      <h4>Success</h4>
+                                      <h1 class="text-dark font-weight-bold mb-md-3">₹{{other_orders_price}}</h1>
+                                    </div>
+                                  </div>
+                                  <div class="col-sm-4">
+                                    <div class="text-center">
+                                      <h4>Cancellation</h4>
+                                      <h1 class="text-dark font-weight-bold">₹{{cancelled_return_price}}</h1>
+                                    </div>
+                                  </div>
+                                  <div class="col-sm-4">
+                                    <div class="text-center">
+                                      <h4>Last Week Profit</h4>
+                                      <h1 class="text-dark font-weight-bold">₹{{last_week_profit}}</h1>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-lg-4 col-sm-4 grid-margin  grid-margin-lg-0">
                                 <div class="wrapper pb-5 border-bottom">
                                   <div class="text-wrapper d-flex align-items-center justify-content-between mb-2">
-                                    <p class="mb-0 text-dark">Last Week Sales</p>
+                                    <h5 class="mb-0 text-dark">Sales Status</h5>
                                     <span class="text-success"><i class="mdi mdi-arrow-up"></i>2.95%</span>
                                   </div>
-                                  <h3 class="mb-0 text-dark font-weight-bold">₹{{last_week_profit|floatformat:2}}</h3>
-                                  <canvas id="total-profit"></canvas>
+                                  
+                                  <canvas id="sales-status"></canvas>
                                 </div>
                                 <div class="wrapper pt-5">
                                   <div class="text-wrapper d-flex align-items-center justify-content-between mb-2">
-                                    <p class="mb-0 text-dark">Last week Expense</p>
+                                    <h5 class="mb-0 text-dark">Category Sales</h5>
                                     <span class="text-success"><i class="mdi mdi-arrow-up"></i>52.95%</span>
                                   </div>
-                                  <h3 class="mb-4 text-dark font-weight-bold">₹ 59512365</h3>
-                                  <canvas id="total-expences"></canvas>
+                                 
+                                  <canvas id="category-sales-chart"></canvas>
                                 </div>
                               </div>
 
 
                               
-                              <div class="col-lg-9 col-sm-8 grid-margin  grid-margin-lg-0">
+                              <div class="col-lg-8 col-sm-8 grid-margin  grid-margin-lg-0">
                                 <div class="pl-0 pl-lg-4 ">
                                   <div class="d-xl-flex justify-content-between align-items-center mb-2">
                                     <div class="d-lg-flex align-items-center mb-lg-2 mb-xl-0">
@@ -160,8 +182,8 @@
                                     </div>
                                     
                                   </div>
-                                  <div class="graph-custom-legend clearfix" id="device-sales-legend"></div>
-                                  <canvas id="device-sales"></canvas>
+                                  <div class="graph-custom-legend clearfix" id="brand-sales-legend"></div>
+                                  <canvas id="brand-sales-chart"></canvas>
                                 </div>
                               </div>
                             </div>
@@ -171,37 +193,27 @@
                     </div>
                     <div class="row">
                       <div class="col-sm-4 grid-margin stretch-card">
-                        <div class="card card-danger-gradient">
-                          <div class="card-body mb-4">
-                            <h4 class="card-title text-white">Account Retention</h4>
-                            <canvas id="account-retension"></canvas>
-                          </div>
-                          <div class="card-body bg-white pt-4">
-                            <div class="row pt-4">
-                              <div class="col-sm-6">
-                                <div class="text-center border-right border-md-0">
-                                  <h4>Conversion</h4>
-                                  <h1 class="text-dark font-weight-bold mb-md-3">$306</h1>
-                                </div>
-                              </div>
-                              <div class="col-sm-6">
-                                <div class="text-center">
-                                  <h4>Cancellation</h4>
-                                  <h1 class="text-dark font-weight-bold">$1,520</h1>
-                                </div>
-                              </div>
+                        <div class="card ">
+                          <div class="wrapper pb-5 border-bottom">
+                            <div class="text-wrapper d-flex align-items-center justify-content-between mb-2">
+                              <h5 class="mb-0 text-dark">Payment Modes</h5>
+                              <span class="text-success"><i class="mdi mdi-arrow-up"></i>2.95%</span>
                             </div>
+                           
+                            <canvas id="payment-mode-chart"></canvas>
+                            <div class="graph-custom-legend clearfix" id="payment-mode-legend"></div>
                           </div>
+                   
                         </div>
                       </div>
                       <div class="col-sm-8  grid-margin stretch-card">
                         <div class="card">
                           <div class="card-body">
                             <div class="d-xl-flex justify-content-between mb-2">
-                              <h4 class="card-title">Page views analytics</h4>
-                              <div class="graph-custom-legend primary-dot" id="pageViewAnalyticLengend"></div>
+                              <h4 class="card-title">Sales analytics</h4>
+                              <div class="graph-custom-legend primary-dot" id="salesAnalyticsLengend"></div>
                             </div>
-                            <canvas id="page-view-analytic"></canvas>
+                            <canvas id="sales-analytics-chart"></canvas>
                           </div>
                         </div>
                       </div>
@@ -253,4 +265,303 @@ setInterval(updateDateTime, 1000);
 
 
 </script>
+<!-- Add this script section in your HTML template -->
+
+
+<script>
+  const categorySalesData = {
+    labels: [{% for name in category_names %}'{{ name }}',{% endfor %}],
+    datasets: [{
+      label: 'Category Sales',
+      data: [{% for value in category_sales_data %}{{ value }},{% endfor %}],
+      backgroundColor: [
+      'rgb(255, 99, 132)',    // Red
+      'rgb(54, 162, 235)',    // Blue
+      'rgb(255, 205, 86)',    // Yellow
+      'rgb(75, 192, 192)',    // Green
+      'rgb(153, 102, 255)',   // Purple
+
+        // Add more colors as needed based on the number of categories
+      ],
+      hoverOffset: 4
+    }]
+  };
+
+  const categorySalesConfig = {
+    type: 'polarArea',
+    data: categorySalesData,
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('category-sales-chart').getContext('2d');
+    new Chart(ctx, categorySalesConfig);
+  });
+</script>
+
+
+
+
+<script>
+  const statusData = {
+    labels: [{% for label in status_labels %}'{{ label }}',{% endfor %}],
+    datasets: [{
+      label: 'My First Dataset',
+      data: [{% for value in status_data %}{{ value }},{% endfor %}],
+      backgroundColor: [
+      'rgb(75, 192, 192)',    // Green
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)',
+        // Add more colors as needed based on the number of status
+      ],
+      hoverOffset: 4
+    }]
+  };
+
+  const statusConfig = {
+    type: 'pie',
+    data: statusData,
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const statusCtx = document.getElementById('sales-status').getContext('2d');
+    new Chart(statusCtx, statusConfig);
+  });
+</script>
+
+<script>
+  const paymentData = {
+    labels: [{% for label in labels %}'{{ label }}',{% endfor %}],
+    datasets: [{
+      label: 'My First Dataset',
+      data: [{% for value in data %}{{ value }},{% endfor %}],
+      backgroundColor: [
+        'rgb(255, 99, 132)',
+        'rgb(54, 162, 235)',
+        'rgb(255, 205, 86)'
+      ],
+      hoverOffset: 4
+    }]
+  };
+
+  const paymentConfig = {
+    type: 'doughnut',
+    data: paymentData,
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const paymentCtx = document.getElementById('payment-mode-chart').getContext('2d');
+    new Chart(paymentCtx, paymentConfig);
+
+    const paymentModeLegend = document.getElementById('payment-mode-legend');
+    paymentModeLegend.innerHTML = paymentConfig.data.labels.map((label, index) => {
+      const backgroundColor = paymentConfig.data.datasets[0].backgroundColor[index];
+      return `<li><span class="legend-box" style="background:${backgroundColor};"></span><span class="legend-label text-dark">${label}</span></li>`;
+    }).join('');
+  });
+</script>
+
+
+         
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    if ($("#brand-sales-chart").length) {
+        var watchSalesData = {
+            labels: [{% for pro in pro %}"{{ pro.product_name }}",{% endfor %}],
+            datasets: [
+                {
+                    label: 'Demand',
+                    data: [450, 500, 300, 350, 200, 320, 310, 700],
+                    backgroundColor: '#a461d8',
+                    borderColor: '#a461d8',
+                    borderWidth: 1,
+                    fill: false
+                },
+                {
+                    label: 'Supply',
+                    data: [250, 100, 310, 75, 290, 100, 500, 260],
+                    backgroundColor: '#fc5a5a',
+                    borderColor: '#fc5a5a',
+                    borderWidth: 1,
+                    fill: false
+                }
+            ]
+        };
+        var watchSalesOptions = {
+            scales: {
+                xAxes: [{
+                    stacked: false,
+                    barPercentage: .5,
+                    categoryPercentage: 0.4,
+                    position: 'bottom',
+                    display: true,
+                    gridLines: {
+                        display: false,
+                        drawBorder: false,
+                        drawTicks: false
+                    },
+                    ticks: {
+                        display: true,
+                        fontColor: "#a7afb7",
+                        fontSize: 14,
+                        padding: 10,
+                    }
+                }],
+                yAxes: [{
+                    stacked: false,
+                    display: true,
+                    gridLines: {
+                        drawBorder: false,
+                        display: true,
+                        color: "#eef0fa",
+                        drawTicks: false,
+                        zeroLineColor: 'rgba(90, 113, 208, 0)',
+                    },
+                    ticks: {
+                        display: true,
+                        beginAtZero: true,
+                        stepSize: 200,
+                        fontColor: "#a7afb7",
+                        fontSize: 14,
+                        callback: function(value, index, values) {
+                            return value + 'k';
+                        },
+                    },
+                }]
+            },
+            legend: {
+                display: false
+            },
+            legendCallback: function(chart) {
+                var text = [];
+                text.push('<ul class="' + chart.id + '-legend">');
+                for (var i = 0; i < chart.data.datasets.length; i++) {
+                    text.push('<li><span class="legend-box" style="background:' + chart.data.datasets[i].backgroundColor[i] + ';"></span><span class="legend-label text-dark">');
+                    if (chart.data.datasets[i].label) {
+                        text.push(chart.data.datasets[i].label);
+                    }
+                    text.push('</span></li>');
+                }
+                text.push('</ul>');
+                return text.join("");
+            },
+            tooltips: {
+                backgroundColor: 'rgba(0, 0, 0, 1)',
+            },
+            plugins: {
+                datalabels: {
+                    display: false,
+                    align: 'center',
+                    anchor: 'center'
+                }
+            }
+        };
+        var barChartCanvas = document.getElementById("brand-sales-chart").getContext("2d");
+        var barChart = new Chart(barChartCanvas, {
+            type: 'bar',
+            data: watchSalesData,
+            options: watchSalesOptions
+        });
+        document.getElementById('brand-sales-legend').innerHTML = barChart.generateLegend();
+    }
+});
+</script>
+
+
+
+<script>
+  const salesData = {
+    labels: [{% for date in dates %}'{{ date }}',{% endfor %}],
+    datasets: [{
+      label: 'Sales',
+      data: [{% for sales in total_sales %}{{ sales }},{% endfor %}],
+      backgroundColor: [
+        'rgba(216,247,234, 0.19)',
+      ],
+      borderColor: [
+        '#3dd597'
+      ],
+      borderWidth: 2,
+      fill: true,
+      pointBorderColor: "#fff",
+      pointBackgroundColor: "#3dd597",
+      pointBorderWidth: 2,
+      pointRadius: 4,
+    }]
+  };
+
+  const salesOptions = {
+    scales: {
+      yAxes: [{
+        display: true,
+        gridLines: {
+          drawBorder: false,
+          display: true,
+          drawTicks: false,
+          color: '#eef0fa',
+          zeroLineColor: 'rgba(90, 113, 208, 0)',
+        },
+        ticks: {
+          beginAtZero: true,
+          stepSize: 50,
+          display: true,
+          padding: 10,
+        }
+      }],
+      xAxes: [{
+        display: true,
+        position: 'bottom',
+        gridLines: {
+          drawBorder: false,
+          display: false,
+          drawTicks: false,
+        },
+        ticks: {
+          beginAtZero: true,
+          stepSize: 10,
+          fontColor: "#a7afb7",
+          padding: 10,
+        }
+      }],
+    },
+    legend: {
+      display: false,
+    },
+    legendCallback: function(chart) {
+      var text = [];
+      text.push('<ul class="' + chart.id + '-legend">');
+      for (var i = 0; i < chart.data.datasets.length; i++) {
+        text.push('<li><span class="legend-box" style="background:' + chart.data.datasets[i].borderColor[i] + ';"></span><span class="legend-label text-dark">');
+        if (chart.data.datasets[i].label) {
+          text.push(chart.data.datasets[i].label);
+        }
+        text.push('</span></li>');
+      }
+      text.push('</ul>');
+      return text.join("");
+    },
+    elements: {
+      point: {
+        radius: 1
+      },
+      line: {
+        tension: 0
+      }
+    },
+    tooltips: {
+      backgroundColor: 'rgba(2, 171, 254, 1)',
+    },
+  };
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const ctx = document.getElementById('sales-analytics-chart').getContext('2d');
+    const salesChart = new Chart(ctx, {
+      type: 'line',
+      data: salesData,
+      options: salesOptions,
+    });
+    document.getElementById('salesAnalyticsLengend').innerHTML = salesChart.generateLegend();
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js" ></script>
   {% endblock %}

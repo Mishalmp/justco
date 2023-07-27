@@ -162,6 +162,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 STATIC_ROOT = 'justwatches/justecommerce/static/'
 
+# Set session engine to use database-backed sessions
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+# Set the session age (optional)
+# Set the session age to None to use the default session age set in settings.SESSION_COOKIE_AGE
+
+SESSION_COOKIE_AGE = 7 * 24 * 60 * 60
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS=[

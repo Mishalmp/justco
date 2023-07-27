@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from categories.models import category
 
 from django.utils import timezone
-from django.db.models import Sum
+from django.db.models import Sum,Count,Q
 from django.db.models.functions import TruncDay
 from django.db.models import DateField
 from django.db.models.functions import Cast
@@ -29,12 +29,13 @@ import io
 from products.models import Product,Offer
 import datetime
 from datetime import datetime, timedelta
-
+from brand.models import Brand
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 # from offer.models import Offer
-
+from categories.models import category as Category
+from django.db.models.functions import TruncMonth
 # Create your views here.
 def admin_login(request):
     if request.method == "POST":
@@ -197,15 +198,55 @@ def dashboard(request):
 
     # Count total users
     total_users = User.objects.count()
+    brands = Brand.objects.all()
 
     # Count total products
     total_products = Product.objects.count()
+    categories = Category.objects.all()
+
+    order_status_data = Order.objects.filter(Q(od_status='Cancelled') | Q(od_status='Return')).aggregate(total_price=Sum('total_price'))
+    cancelled_return_price = order_status_data['total_price'] or 0
+
+    # Calculate the sum of prices for all other orders
+    other_orders_price = Order.objects.exclude(Q(od_status='Cancelled') | Q(od_status='Return')).aggregate(total_price=Sum('total_price'))['total_price'] or 0
+
+
+    # Initialize lists to store category names and sales data
+    category_names = []
+    category_sales_data = []  # Renamed to avoid conflicts
+
+    # Loop through each category and calculate the total sales
+    for category in categories:
+        total_sales = Product.objects.filter(category=category).aggregate(total_sales=Sum('orderitem__price'))['total_sales'] or 0
+        category_names.append(category.categories)
+        category_sales_data.append(total_sales)  # Renamed to avoid conflicts
+  
+    pro = Product.objects.all()
+    payment_mode_counts = Order.objects.values('payment_mode').annotate(count=Count('id'))
+
+    # Extract the labels and data for the chart
+    labels = [pm['payment_mode'] for pm in payment_mode_counts]
+    data = [pm['count'] for pm in payment_mode_counts]
+    
+    order_status_counts = Order.objects.values('od_status').annotate(count=Count('id'))
+
+    # Extract the labels and data for the pie chart
+    status_labels = [status['od_status'] for status in order_status_counts]
+    status_data = [status['count'] for status in order_status_counts]
+
+    sales_data = Order.objects.values('created_at').annotate(total_sales=Sum('total_price'))
+
+    # Separate the dates and total sales into two lists for the chart
+    dates = [data['created_at'].strftime('%Y-%m-%d') for data in sales_data]
+    total_sales = [data['total_sales'] for data in sales_data]
 
     today = datetime.today().date()
     last_week_start = today - timedelta(days=7)
     last_week_end = today - timedelta(days=1)
     last_week_profit = Order.objects.filter(created_at__range=(last_week_start, last_week_end)).aggregate(last_week_profit=Sum('total_price'))['last_week_profit'] or 0
 
+     # Calculate monthly income
+ 
     # Retrieve product names for the graph
     products = Product.objects.all()
 
@@ -215,10 +256,24 @@ def dashboard(request):
         'total_users': total_users,
         'total_products': total_products,
         'last_week_profit': last_week_profit,
-        'products': products
+        'products': products,
+        'brands': brands,
+        'pro': pro,
+        'labels': labels,
+        'data': data,
+        'status_labels': status_labels,
+        'status_data': status_data,
+        'category_names': category_names,
+        'category_sales_data': category_sales_data,  # Renamed to avoid conflicts
+        'dates': dates,
+        'total_sales': total_sales,
+        'cancelled_return_price':cancelled_return_price,
+        'other_orders_price':other_orders_price
+
+      
     }
 
-    return render(request,'adminapp/dashboard.html',context)
+    return render(request, 'adminapp/dashboard.html', context)
 
 
 

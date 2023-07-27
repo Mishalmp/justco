@@ -8,16 +8,22 @@ from wishlist.models import Wishlist
 from django.views.decorators.cache import cache_control
 from django.http.response import JsonResponse
 from products.models import Product
-
+# from django.contrib.auth.models import AnonymousUser
+from cart.models import Cart
 # Create your views here.
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='user_login')
 def wishlist(request):
     if request.user.is_superuser:
                 return redirect('dashboard')
+  
+    
     wishlist = Wishlist.objects.filter(user = request.user)
+    cart = Cart.objects.filter(user=request.user)
+
     context = {
         'wishlist' : wishlist,
+        'cart':cart
     }
     return render(request, 'user/wishlist.html',context)
 

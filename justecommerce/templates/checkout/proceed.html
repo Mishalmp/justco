@@ -324,6 +324,7 @@
                                     <tr>
                                       <th>Product</th>
                                       <th></th>
+                                  
                                       <th>Quantity</th>
                                       <th>Price</th>
                                     </tr>
@@ -332,7 +333,7 @@
                                     {% for i in cartitems %}
                                     <tr>
                                       <td><a href="#">{{ i.product }}</a></td>
-                                      <td></td>
+                                      <td></td> 
                                       <td>{{ i.product_qty }}</td>
                                       <td class="column-3">
                                         {% if i.product.offer or i.product.brand.offer %}
@@ -348,10 +349,12 @@
                                     <tr class="summary-subtotal">
                                       <td>Subtotal:</td>
                                       <td></td>
+                                      <td></td>
                                       <td>{{ total_price }}</td>
                                     </tr>
                                     <tr>
                                       <td>Shipping:</td>
+                                      <td></td>
                                       <td></td>
                                       <td>Free shipping</td>
                                     </tr>
@@ -359,19 +362,22 @@
                                     <tr class="summary-coupon">
                                       {% if CouponUsage %}
                                           <td>Coupon Applied:</td>
+                                          <td></td>
                                           <td>{{ CouponUsage.coupon.coupon }}</td>
                                           <td>
                                                -{{ CouponUsage.coupon.discount }}%
-                                              <a href="#" class="remove-coupon" data-coupon-code="{{ CouponUsage.coupon.coupon_code }}">X</a>
+                                              <a href="#" class="remove-coupon" data-coupon-code="{{ CouponUsage.coupon.coupon_code }}"><i style="font-size: 20px; margin-right: 5px;" class="mdi mdi-close"></i></a>
                                           </td>
                                       {% else %}
                                           <td>Coupon:</td>
+                                          <td></td>
                                           <td></td>
                                           <td>No Coupon Applied</td>
                                       {% endif %}
                                   </tr>
                                     <tr class="summary-tax">
                                       <td>Tax:</td>
+                                      <td></td>
                                       <td></td>
                                       <td contenteditable="true">(Included in MRP)</td>
                                     </tr>
@@ -380,16 +386,19 @@
                                     <tr>
                                       <td >Discount:</td>
                                       <td></td>
+                                      <td></td>
                                       <td><span id="discount">- ₹{{ coupon_discount }}</span></td>
                                     </tr>
                                     <tr class="summary-total">
                                       <td>Total:</td>
+                                      <td></td>
                                       <td></td>
                                       <td><span id="discounted_price">₹{{ CouponUsage.total_price }}</span>
                                     </tr>
                                     {% else %}
                                     <tr>
                                       <td>Total:</td>
+                                      <td></td>
                                       <td></td>
                                       <td >₹{{ grand_total }}</td>
                                     </tr>
@@ -399,42 +408,11 @@
                                     
                                   </tbody>
                                 </table>
-                                <!-- <div class="cartdata">
-                                  <ul class="checkout__total__all">
-                                      <li>Subtotal <span>₹{{total_price}}</span></li>
-                                      {%if usercoupon%}
-                                      <li>Discount <span id="discount">{{ usercoupon.coupon.discount }}</span>%</li>
-                                      <li>Total <span id="grand_total">₹{{usercoupon.total_price}}</span></li>
-                                      {% else %}
-                                      <li>Total <span id="grand_total">₹{{grand_total}}</span></li>
-                                      {% endif %}
-                                      <input type="hidden" class="grand_total" id="grand_total" value="{{grand_total}}">
-                                  </ul></div> -->
-                                <!-- {%if usercoupon%}
-                                <li>Discount <span id="discount">{{ usercoupon.coupon.discount }}</span>%</li>
-                                <li>Total <span id="grand_total">₹{{usercoupon.total_price}}</span></li>
-                                {% else %}
-                                <li>Total <span id="grand_total">₹{{grand_total}}</span></li>
-                                {% endif %}
-                                <input type="hidden" class="grand_total" id="grand_total" value="{{grand_total}}"> -->
+                           
                                 
 
                                 <div class="accordion-summary" id="accordion-payment">
-                                  <!-- <div class="card">
-                                    <div class="card-header" id="heading-1">
-                                        <h2 class="card-title">
-                                            <a role="button" data-toggle="collapse" data-payment-method="banktransfer" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
-                                                Net Banking
-                                            </a>
-                                        </h2>
-                                    </div>
-                                    <div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment">
-                                        <div class="card-body">
-                                            Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.
-                                        </div>
-                                    </div>
-                                </div> -->
-                                
+                            
                                 <div class="card">
                                     <div class="card-header" id="heading-4">
                                         <h2 class="card-title">
@@ -445,7 +423,7 @@
                                     </div><!-- End .card-header -->
                                     <div id="collapse-4" class="collapse" aria-labelledby="heading-4" data-parent="#accordion-payment">
                                         <div class="card-body">
-                                            Nullam malesuada erat ut turpis. Suspendis.
+                                            Nullam malesuada erat ut turpis.
                                         </div>
                                      </div>
                                 </div><!-- End .card -->
@@ -459,7 +437,7 @@
                                   </div><!-- End .card-header -->
                                   <div id="collapse-111" class="collapse" aria-labelledby="heading-111" data-parent="#accordion-payment">
                                       <div class="card-body">
-                                          Nullam malesuada erat ut turpis. Suspendisse urna ni
+                                          Nullam malesuada erat ut turpis.
                                       </div>
                                    </div>
                               </div><!-- End .card -->
@@ -479,7 +457,7 @@
                                     </div>
                                 </div><!-- End .card -->
                                 
-                                
+                                <img src="{% static 'images/payments.png' %}" alt="">
                               </div><!-- End .accordion -->
                               
                               <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block purchase placeorder" id="orderform">
