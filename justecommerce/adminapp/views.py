@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from categories.models import category
-
+from django.core.paginator import Paginator, EmptyPage
 from django.utils import timezone
 from django.db.models import Sum,Count,Q
 from django.db.models.functions import TruncDay
@@ -27,7 +27,9 @@ from django.core.exceptions import ValidationError
 import csv
 import io
 from products.models import Product,Offer
+from collections import Counter
 import datetime
+from datetime import datetime, date
 from datetime import datetime, timedelta
 from brand.models import Brand
 from reportlab.lib.pagesizes import letter
@@ -221,7 +223,7 @@ def dashboard(request):
         category_names.append(category.categories)
         category_sales_data.append(total_sales)  # Renamed to avoid conflicts
   
-    pro = Product.objects.all()
+    pro = Product.objects.all()[:5]
     payment_mode_counts = Order.objects.values('payment_mode').annotate(count=Count('id'))
 
     # Extract the labels and data for the chart
@@ -250,6 +252,15 @@ def dashboard(request):
     # Retrieve product names for the graph
     products = Product.objects.all()
 
+    order_items=OrderItem.objects.all()
+
+    product_sales_counter = Counter(item.product for item in order_items)
+    top_5_selling_products = product_sales_counter.most_common(5)
+    top_selling_products_data = [{
+        'product_name': product.product_name,
+        'sales_quantity': sales_quantity,
+    } for product, sales_quantity in top_5_selling_products]
+
     context = {
         'total_profit': total_profit,
         'total_orders': total_orders,
@@ -268,7 +279,8 @@ def dashboard(request):
         'dates': dates,
         'total_sales': total_sales,
         'cancelled_return_price':cancelled_return_price,
-        'other_orders_price':other_orders_price
+        'other_orders_price':other_orders_price,
+        'top_selling_products_data': top_selling_products_data,
 
       
     }
@@ -291,11 +303,14 @@ def sales_report(request):
 
         if start_date and end_date:
             # Filter orders based on the selected date range
-            start_date = datetime.strptime(start_date, '%Y-%m-%d')
-            end_date = datetime.strptime(end_date, '%Y-%m-%d')
+            start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
             if start_date >= end_date:
                 messages.error(request, "Start date must be before end date.")
-                return redirect('adminoffer')
+                return redirect('sales_report')
+            if end_date > date.today():
+                messages.error(request, "End date cannot be in the future.")
+                return redirect('sales_report')
 
             orders = Order.objects.filter(created_at__date__range=(start_date, end_date))
             recent_orders = orders.order_by('-created_at')
@@ -303,7 +318,7 @@ def sales_report(request):
             # If no date range is selected, fetch recent 10 orders
             recent_orders = Order.objects.order_by('-created_at')[:10]
             orders = Order.objects.all()
-
+  
     # Calculate total sales and total orders
     total_sales = sum(order.total_price for order in orders)
     total_orders = orders.count()

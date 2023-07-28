@@ -6,6 +6,11 @@
 {% load mathfilters %}
 
 <main class="main">
+  <section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url('{% static 'images/banner-1_1200x360.jpg' %}');">
+    <h2 class="ltext-105 cl0 txt-center">
+    Checkout
+    </h2>
+  </section>	
   <!-- End .page-header -->
     <div class="container">
         <br>
@@ -314,21 +319,28 @@
 
                             </div>
                         <aside class="col-lg-6 product_data" >
+                          {% for m in messages %}
+                          <div class="alert alert-info" id="message" role="alert">
+                      {{ m }}
+                              </div>
+                        {% endfor %}
+                                           
                          
-                            <div class="summary " style="float:right">
+                            <div class="table " style="float:right">
                              
-                                <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
+                                <h3 class="summary-title" style="margin-top: 10px;">Your Order</h3><!-- End .summary-title -->
 
-                                <table class="table table-summary col-lg-6 tabledata">
-                                  <thead>
+                                <table class="table  col-lg-12 tabledata" style="font-weight: bolder;" >
+                                  <thead >
                                     <tr>
                                       <th>Product</th>
                                       <th></th>
                                       <th>Quantity</th>
                                       <th>Price</th>
+                                      <th></th>
                                     </tr>
                                   </thead>
-                                  <tbody>
+                                  <tbody >
                                     {% for i in cartitems %}
                                     <tr>
                                       <td><a href="#">{{ i.product }}</a></td>
@@ -341,9 +353,10 @@
                                             ₹ {{ i.product.get_offer }}
                                         {% else %}
                                         
-                                            ₹ {{ i.product.product_price }}
+                                            ₹ {{ i.product.product_price }} 
                                         {% endif %}
                                     </td>
+                                    <td><a href="{% url 'deletebuyitem' i.product.id %}"><i style="font-size: 20px; margin-right: 5px;" class="mdi mdi-close"></i></a></td>
                                     
                                     </tr>
                                     {% endfor %}
@@ -363,11 +376,14 @@
                                     <tr class="summary-coupon">
                                       {% if CouponUsage %}
                                           <td>Coupon Applied:</td>
+                                          <td></td>
                                           <td>{{ CouponUsage.coupon.coupon }}</td>
                                           <td>
                                                -{{ CouponUsage.coupon.discount }}%
-                                              <a href="#" class="remove-buy-coupon" data-coupon-code="{{ CouponUsage.coupon.coupon_code }}">X</a>
                                           </td>
+                                          <td>
+                                          <a href="#" class="remove-buy-coupon" data-coupon-code="{{ CouponUsage.coupon.coupon_code }}"><i style="font-size: 20px; margin-right: 5px;" class="mdi mdi-close"></i></a>
+                                           </td>
                                       {% else %}
                                           <td>Coupon:</td>
                                           <td></td>
@@ -383,12 +399,12 @@
                                     </tr>
                                    
                                     {% if CouponUsage %}
-                                    <tr>
+                                    <!-- <tr>
                                       <td >Discount:</td>
                                       <td></td>
                                       <td></td>
                                       <td><span id="discount">- ₹{{ coupon_discount }}</span></td>
-                                    </tr>
+                                    </tr> -->
                                     <tr class="summary-total">
                                       <td>Total:</td>
                                       <td></td>
@@ -512,7 +528,7 @@
                                   <option value="{{ c.coupon_code }}">{{ c.coupon_code }} <span></span></option>
                                   {% endfor %}
                                 </select>
-                                <button class="btn btn-primary btn-apply-coupon CouponButton coupon-buy-form" style="width:30px">Apply Coupon</button>
+                                <button class="btn btn-dark btn-apply-coupon CouponButton coupon-buy-form" style="width:30px">Apply Coupon</button>
                               </div>
                             </div>
                             
@@ -766,7 +782,7 @@
     console.log(grand_total,couponCode,'daxooooooooooooooooo')
     $.ajax({
       method: "POST",
-      url: "{%url 'apply_coupon'%}", 
+      url: "{%url 'apply_buy_coupon'%}", 
       data: {
         'coupon_code': couponCode,
         'grand_total' :grand_total,

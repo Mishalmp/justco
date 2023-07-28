@@ -9,6 +9,7 @@ urlpatterns = [
     # path('update_grand_total/', views.update_grand_total, name='update_grand_total'),
     path('remove_coupon/', views.remove_coupon, name='remove_coupon'),
     path('cancel_order_before/', views.cancel_order_before, name='cancel_order_before'),
+    path('deletebuyitem/<int:product_id>', views.deletebuyitem, name='deletebuyitem'),
 
     
     path('buynow_checkout/', views.buynow_checkout, name='buynow_checkout'),
@@ -16,6 +17,8 @@ urlpatterns = [
     path('buynow_placeorder/', views.buynow_placeorder, name='buynow_placeorder'),
     path('add_buy_checkout_address/', views.add_buy_checkout_address, name='add_buy_checkout_address'),
     path('cancel_buy_before/', views.cancel_buy_before, name='cancel_buy_before'),
+    path('apply_buy_coupon/',views.apply_buy_coupon,name='apply_buy_coupon'),
+
     
 
 ]

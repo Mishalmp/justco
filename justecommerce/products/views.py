@@ -1,5 +1,6 @@
 from tkinter import Image
 from django.shortcuts import render,redirect
+from django.urls import reverse
 from categories.models import category
 from django.contrib import messages
 from .models import Product as products, PriceFilter,Offer
@@ -64,22 +65,25 @@ def product_image_view(request, product_id):
 
     if request.method == 'POST':
         form = ProductImageForm(request.POST, request.FILES)
-        print(request.POST,'daxooooooooooo')
-      
         if form.is_valid():
             print("Form is valid")
-            locate = 'photos/product/'
-           
-            
-            product.product_image = locate+request.POST.get('product_image')
-            product.product_image2 = locate+request.POST.get('product_image2')
-            product.product_image3 = 'photos/product/'+request.POST.get('product_image3')
+
+            product_image = request.FILES.get('product_image')
+            product_image2 = request.FILES.get('product_image2')
+            product_image3 = request.FILES.get('product_image3')
+
+            if product_image:
+                product.product_image.save(product_image.name, product_image)
+            if product_image2:
+                product.product_image2.save(product_image2.name, product_image2)
+            if product_image3:
+                product.product_image3.save(product_image3.name, product_image3)
 
             try:
-                # Save the images
                 product.save()
                 print("Images saved successfully!")
-                return JsonResponse({'message': 'Images saved successfully!', 'product_id': product_id})
+                messages.success(request, 'Images saved successfully!', {'product_id': product_id})
+                return redirect(reverse('product_view', args=[product.slug]))
             except Exception as e:
                 print("Error saving images:", e)
         else:
@@ -88,9 +92,8 @@ def product_image_view(request, product_id):
     else:
         form = ProductImageForm()
 
-    context = {'form': form, 'product_id': product_id}
+    context = {'form': form, 'product_id': product_id,'product_slug':product.slug}
     return render(request, 'product/image_add.html', context)
-
 
 
 
@@ -129,8 +132,8 @@ def createproduct(request):
         else:
             offer_id = Offer.objects.get(id=offer)
         if products.objects.filter(product_name=name).exists():
-            return JsonResponse({'message': 'Product name already exists'})
-
+            messages.error(request,'Name already Exists')
+            return redirect('product')
         try:
             is_availables = request.POST.get('checkbox', False)
             if is_availables == 'on':
@@ -140,14 +143,24 @@ def createproduct(request):
         except:
             is_availables = False
 
-        if name == '' or price == '':
-            return JsonResponse({'message': 'Name or Price field is empty'})
+        if name.strip() == '' or price.strip() == '':
+            messages.error(request,'Fields cannot be empty')
+            return redirect('product')
 
         if name.strip() == '':
             return JsonResponse({'message': 'Image Not Found'})
 
         if not image:
-            return JsonResponse({'message': 'Image not uploaded'})
+            messages.error(request,'Image not found')
+            return redirect('product')
+        
+        if int(price) <= 0:
+            messages.error(request,'price cannot less than zero')
+            return redirect('product')
+        
+        if int(quantity)<0:
+            messages.error(request,'quantity cannot less than zero')
+            return redirect('product')
 
         category_obj = category.objects.get(id=category_id)
         brand_obj = Brand.objects.get(brand_name=brandname)
@@ -170,7 +183,8 @@ def createproduct(request):
         )
         product.save()
 
-        return JsonResponse({'message': 'Product created successfully'})
+        messages.success(request,'Product Added Successfully')
+        return redirect('product')
 
     return render(request, 'product/product.html')
 
@@ -229,6 +243,14 @@ def editproduct(request,editproduct_id):
             else:
                 messages.error(request, 'Product name already exists')
                 return redirect('product')
+        if int(pprice) <= 0:
+            messages.error(request,'price cannot less than zero')
+            return redirect('product')
+        
+        if int(quantity)<0:
+            messages.error(request,'quantity cannot less than zero')
+            return redirect('product')
+
         
         cates = category.objects.get(id=category_id)
         produc = Brand.objects.get(brand_name=brandname)

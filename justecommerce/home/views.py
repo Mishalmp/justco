@@ -28,7 +28,7 @@ def home(request):
     
     cate=category.objects.all()
     brands=Brand.objects.all()
-    recent_products = Product.objects.all().order_by('-created_at')[:8]
+    recent_products = Product.objects.all().order_by('-created_at')[:4]
   
     recently_viewed_products = request.session.get('recently_viewed_products', [])
     recently_viewed_products = Product.objects.filter(id__in=recently_viewed_products)

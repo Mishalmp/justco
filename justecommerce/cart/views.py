@@ -16,7 +16,7 @@ def cart(request):
                 return redirect('dashboard')
 
     cart=Cart.objects.filter(user=request.user).order_by('id')
-    single_product_total = [0]
+
     total_price=0
     
     grand_total=0
@@ -29,7 +29,7 @@ def cart(request):
 
         if product_offer is None and brand_offer is None:
             total_price += product_price * item.product_qty
-            single_product_total.append(product_price * item.product_qty)
+        
             a=product_price * item.product_qty
         else:
             if product_offer and brand_offer:
@@ -45,7 +45,7 @@ def cart(request):
             discounted_price = product_price - discount
 
             total_price += discounted_price * item.product_qty
-            single_product_total.append(discounted_price * item.product_qty)
+         
             a=discounted_price * item.product_qty
 
         grand_total = total_price
@@ -124,6 +124,9 @@ def update_cart(request):
         if (Cart.objects.filter(user=request.user, product_id=product_id)):
             prod_qty = request.POST.get('product_qty')
             cart = Cart.objects.get(product_id=product_id, user=request.user)
+
+            
+            single_total = cart.product.get_offer()
             cartes = cart.product.quantity
             if int(cartes) >= int(prod_qty):
                 cart.product_qty = prod_qty
@@ -131,7 +134,8 @@ def update_cart(request):
 
                 carts = Cart.objects.filter(user = request.user).order_by('id')
                 total_price = 0
-                single_product_total = [0]
+   
+                # a = cart.product.get_offer() * cart.product_qty
                 for item in carts:
                     product_price = item.product.product_price
                     product_offer = item.product.offer
@@ -139,8 +143,8 @@ def update_cart(request):
 
                     if product_offer is None and brand_offer is None:
                         total_price += product_price * item.product_qty
-                        single_product_total.append(product_price * item.product_qty)
-                        a=product_price * item.product_qty
+                    
+                       
                        
                     else:
                         if product_offer and brand_offer:
@@ -156,11 +160,11 @@ def update_cart(request):
                         discounted_price = product_price - discount
 
                         total_price += discounted_price * item.product_qty
-                        single_product_total.append(discounted_price * item.product_qty)
-                        a=discounted_price * item.product_qty
+                     
+                        
                         
                                 
-                return JsonResponse({'status': 'Updated successfully','sub_total':total_price,'product_price':a,'quantity':prod_qty})
+                return JsonResponse({'status': 'Updated successfully','sub_total':total_price,'product_price':single_total,'quantity':prod_qty})
             else:
                 return JsonResponse({'status': 'Not allowed this Quantity'})
     return JsonResponse('something went wrong, reload page',safe=False)

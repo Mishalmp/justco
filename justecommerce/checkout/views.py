@@ -69,6 +69,7 @@ def checkout(request):
                 grand_total = total_price - (total_price * (applied_coupon.discount / 100))
             except Coupon.DoesNotExist:
                 pass
+          
 
     address = Address.objects.filter(user=request.user)
 
@@ -79,7 +80,8 @@ def checkout(request):
         'applied_coupon': applied_coupon,
         'address': address,
         'coupons': coupons,
-        'CouponUsage': CouponUsage.objects.filter(user=request.user).last()
+        'CouponUsage': CouponUsage.objects.filter(user=request.user).last(),
+       
     }
 
     return render(request, 'checkout/proceed.html', context)
@@ -143,6 +145,10 @@ def placeorder(request):
 
                 cart_total_price += discounted_price * item.product_qty
 
+        if cart_total_price == 0:
+            messages.error(request,'cannot place order')
+            return redirect('home')
+        
         payment_mode = request.POST.get('payment_method')
         if (payment_mode == "wallet"):
             try:
@@ -222,22 +228,20 @@ def apply_coupon(request):
             return JsonResponse({'status': 'Coupon does not exist'})
 
         # Check if the user has already used the coupon
-        existing_coupon_usage = CouponUsage.objects.filter(user=request.user, coupon=coupon)
-        if existing_coupon_usage.exists():
-            existing_coupon_usage = existing_coupon_usage.first()
-            # Remove the discount of the existing coupon from the grand_total
-            grand_total += (grand_total * (existing_coupon_usage.coupon.discount / 100))
-            existing_coupon_usage.delete()
+        if CouponUsage.objects.filter(user=request.user).exists():
+            return JsonResponse({'status': 'Coupon already used!'})
 
         if grand_total > coupon.min_price:
             coupon_discount = coupon.discount
             grand_total = grand_total - (grand_total * (coupon.discount / 100))
+            discount=coupon.discount/100 * grand_total
             usercoupon = CouponUsage.objects.create(user=request.user, coupon=coupon, used=True, total_price=grand_total)
             usercoupon.save()
             return JsonResponse({
                 'status': 'Coupon added successfully',
                 'coupon_discount': coupon_discount,
                 'grand_total': grand_total,
+                'discount':discount
             })
         else:
             return JsonResponse({'status': 'You are not eligible for this coupon'})
@@ -245,7 +249,7 @@ def apply_coupon(request):
     return JsonResponse({'status': 'Invalid request'})
 
 
-
+            
 
 
 
@@ -421,13 +425,19 @@ def add_checkout_address(request):
 #.........................................buynow...................................................... 
 
 def buynow_checkout(request):
+
+    
     cartitems = Buynow.objects.filter(user=request.user)
     total_price = 0
+
+   
 
     for item in cartitems:
         product_price = item.product.product_price
         product_offer = item.product.offer
         brand_offer = item.product.brand.offer
+
+       
 
         if product_offer is None and brand_offer is None:
             total_price += product_price * item.product_qty
@@ -478,6 +488,43 @@ def buynow_checkout(request):
 
     return render(request, 'checkout/buynow.html', context)
 
+def apply_buy_coupon(request):
+    if request.method == 'POST':
+        coupon_code = request.POST.get('coupon_code')
+        grand_total = float(request.POST.get('grand_total', 0))  # Convert to float
+        print(grand_total, 'oooooooooooooooooooooooooooooo')
+        
+        if coupon_code.strip() == '':
+            return JsonResponse({'status': 'Field is blank'})
+        
+        if coupon_code == 'No Coupon Applied':
+            return JsonResponse({'status': 'No Coupon Applied'})
+        
+        try:
+            coupon = Coupon.objects.get(coupon_code=coupon_code, is_active=True)
+        except Coupon.DoesNotExist:
+            return JsonResponse({'status': 'Coupon does not exist'})
+
+        # Check if the user has already used the coupon
+        if CouponUsage.objects.filter(user=request.user).exists():
+            return JsonResponse({'status': 'Coupon already used!'})
+
+        if grand_total > coupon.min_price:
+            coupon_discount = coupon.discount
+            grand_total = grand_total - (grand_total * (coupon.discount / 100))
+            discount=coupon.discount/100 * grand_total
+            usercoupon = CouponUsage.objects.create(user=request.user, coupon=coupon, used=True, total_price=grand_total)
+            usercoupon.save()
+            return JsonResponse({
+                'status': 'Coupon added successfully',
+                'coupon_discount': coupon_discount,
+                'grand_total': grand_total,
+                'discount':discount
+            })
+        else:
+            return JsonResponse({'status': 'You are not eligible for this coupon'})
+            
+    return JsonResponse({'status': 'Invalid request'})
 #buynow order
 def buynow_placeorder(request):
     if request.method == 'POST':
@@ -500,6 +547,8 @@ def buynow_placeorder(request):
 
         # Calculate the cart total price and tax
         cart_items = Buynow.objects.filter(user=user)
+
+
         cart_total_price = 0
         
         for item in cart_items:
@@ -525,6 +574,10 @@ def buynow_placeorder(request):
                 discounted_price = product_price - discount
 
                 cart_total_price += discounted_price * item.product_qty
+        
+        if cart_total_price == 0:
+            messages.error(request,'cannot place order')
+            return redirect('home')
 
         payment_mode = request.POST.get('payment_method')
         if (payment_mode == "wallet"):
@@ -657,6 +710,15 @@ def cancel_buy_before(request):
 
     return redirect('home')
 
+def deletebuyitem(request,product_id):
+    
+
+    
+    product_id = product_id
+    cart_items = Buynow.objects.filter(user=request.user, product=product_id)
+    if cart_items.exists():
+        cart_items.delete()
+    return redirect('buynow_checkout')
 
 
 def add_buy_checkout_address(request):

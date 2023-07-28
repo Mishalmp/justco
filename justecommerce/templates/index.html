@@ -117,8 +117,12 @@
 			</div>
 		</div>
 	</section>
+	<div style="width: 100%;height: 3px; background-color: grey;"></div>
+	<div class="bg6 flex-c-m flex-w size-302  p-tb-25">
 
-    <div class="brands-border owl-carousel owl-simple" style="margin-top: 30px; display: flex; justify-content: space-around;" data-toggle="owl" 
+	
+
+    <div class="brands-border owl-carousel owl-simple" style=" display: flex; justify-content: space-around; " data-toggle="owl" 
 	data-owl-options='{
         "nav": false, 
         "dots": true,
@@ -174,120 +178,117 @@
                     <img src="{% static 'assets/images/brands/7.png' %}" alt="Brand Name">
                 </a>
             </div><!-- End .owl-carousel -->
+		</div>
 
-			<div class="sec-banner bg0 p-t-80 p-b-50">
-				<div class="container-fluid">
-					<div class="p-b-10" style="margin-top: 10px;">
-						<h3 class="ltext-103 cl5">
+			<div style="width: 100%;height: 1px; background-color: grey;"></div>
+
+			<section class="sec-relate-product bg0 p-t-45 " style="background-color: rgb(255, 255, 255); height: max-content;margin-top: 20px;">
+				<div class="container" >
+					<div class="p-b-45">
+						<h3 class="ltext-106 cl5 ">
 							Categories
 						</h3>
 					</div>
-			
-					<div class="carousel-wrapper overflow-auto">
-						<div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" style="display: flex;" data-toggle="owl" 
-							data-owl-options='{
-								"nav": false, 
-								"dots": true,
-								"margin": 20,
-								"loop": false,
-								"responsive": {
-									"0": {
-										"items": 1
-									},
-									"576": {
-										"items": 2
-									},
-									"768": {
-										"items": 3
-									},
-									"992": {
-										"items": 3
-									},
-									"1200": {
-										"items": 3
-									},
-									"1600": {
-										"items": 3,
-										"nav": true
-									}
-								}
-							}'>
-							{% for i in cat %}
-							<div class="product product-11 text-center">
-								<div class="block1 wrap-pic-w">
-									<img src="{{i.categories_image.url}}" style="height: 300px; width:600px" alt="IMG-BANNER">
-									<a href="{% url 'shop' %}" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
-										<div class="block1-txt-child1 flex-col-l">
-											<span class="block1-name ltext-102 trans-04 p-b-8 text-light">
-												{{i.categories}}
-											</span>
-											<span class="block1-info stext-102 trans-04 text-light">
-												{{i.categories_discription}}
-											</span>
-										</div>
-										<div class="block1-txt-child2 p-b-4 trans-05">
-											<div class="block1-link stext-101 cl0 trans-09 text-light">
-												Shop Now
-											</div>
-										</div>
-									</a>
-								</div>
-							</div><!-- End .product -->
-							{% endfor %}
-						</div><!-- End .owl-carousel -->
-					</div><!-- End .carousel-wrapper -->
-				</div>
-			</div>
-			
-	
-	<!-- brands -->
-	<div class="sec-banner bg0 p-t-80 p-b-50">
-		<div class="container-fluid" style="background-color: rgb(235, 231, 231);">
-			<div class="row">
-				<div class="p-b-10" style="margin-top: 10px;">
-					<h3 class="ltext-103 cl5">
-						Brands
-					</h3>
-				</div>
-				{% for i in brand %}
-				<div class="col-md-6 col-xl-4 p-b-30 m-lr-auto">
-
-					
-					<!-- Block1 -->
-					<div class="block1 wrap-pic-w">
-						<img src="{{i.brand_image.url}}" style="height: 300px; width:600px" alt="IMG-BANNER">
-
-						<a href="{% url 'shop' %}" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
-							<div class="block1-txt-child1 flex-col-l">
-								<span class="block1-name ltext-102 trans-04 p-b-8 text-light">
-									{{i.brand_name}}
-								</span>
-
-								<span class="block1-info stext-102 trans-04 text-light">
-									{{i.brand_discription}}
-								</span>
-							</div>
-
-							<div class="block1-txt-child2 p-b-4 trans-05">
-								<div class="block1-link stext-101 cl0 trans-09 text-light">
-									Shop Now
-								</div>
-							</div>
-						</a>
-					</div>
-					
-				</div>
-
-				{% endfor %}
-
 		
+					<!-- Slide2 -->
+					<div class="wrap-slick2">
+						<div class="slick2">
+		
+							{% for i in cat %}
+		
+							<div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
+								<!-- Block2 -->
+								<div class="product product-11 text-center">
+									<div class="block1 wrap-pic-w">
+										<img src="{{i.categories_image.url}}" style="height: 300px; width:600px" alt="IMG-BANNER">
+										<a href="{% url 'shop' %}" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
+											<div class="block1-txt-child1 flex-col-l">
+												<span class="block1-name ltext-102 trans-04 p-b-8 text-light">
+													{{i.categories}}
+												</span>
+												<span class="block1-info stext-102 trans-04 text-light">
+													{{i.categories_discription}}
+												</span>
+											</div>
+											<div class="block1-txt-child2 p-b-4 trans-05">
+												<div class="block1-link stext-101 cl0 trans-09 text-light">
+													Shop Now
+												</div>
+											</div>
+										</a>
+									</div>
+								</div><!-- End .product -->
+							</div>
+		
+					
+		
+							{% endfor %}
+		
+					
+		
+		
+					
+						</div>
+					</div>
+				</div>
+			</section>
+			<div style="width: 75%;height: 1px; background-color: grey;margin-left: 12.5%; margin-top: 20px;"></div>
+	<!-- brands -->
+	<section class="sec-relate-product bg0 p-t-45 " style="background-color: rgb(255, 255, 255); height: max-content;">
+		<div class="container" >
+			<div class="p-b-45">
+				<h3 class="ltext-106 cl5 ">
+					Brand
+				</h3>
+			</div>
+
+			<!-- Slide2 -->
+			<div class="wrap-slick2">
+				<div class="slick2">
+
+					{% for i in brand %}
+
+					<div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
+						<!-- Block2 -->
+						<div class="product product-11 text-center">
+							<div class="block1 wrap-pic-w">
+								<img src="{{i.brand_image.url}}" style="height: 300px; width:600px" alt="IMG-BANNER">
+								<a href="{% url 'shop' %}" class="block1-txt ab-t-l s-full flex-col-l-sb p-lr-38 p-tb-34 trans-03 respon3">
+									<div class="block1-txt-child1 flex-col-l">
+										<span class="block1-name ltext-102 trans-04 p-b-8 text-light">
+											{{i.brand_name}}
+										</span>
+										<span class="block1-info stext-102 trans-04 text-light">
+											{{i.brand_discription}}
+										</span>
+									</div>
+									<div class="block1-txt-child2 p-b-4 trans-05">
+										<div class="block1-link stext-101 cl0 trans-09 text-light">
+											Shop Now
+										</div>
+									</div>
+								</a>
+							</div>
+						</div><!-- End .product -->
+					</div>
+
+			
+
+					{% endfor %}
+
+			
+
+
+			
+				</div>
 			</div>
 		</div>
-	</div>
+	</section>
 
+	<div class="bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15"></div>
 
 	<!-- Product -->
-	<section class="bg0 p-t-23 p-b-140">
+	<section class="bg0 p-t-23 p-b-140" style="margin-top: 50px;">
 		<div class="container-fluid">
 			<div class="p-b-10">
 				<h3 class="ltext-103 cl5">
@@ -478,7 +479,7 @@
 					<!-- Block2 -->
 					<div class="block2">
 						<div class="block2-pic hov-img0">
-							<img src="{{i.product_image.url}}" alt="IMG-PRODUCT">
+							<img src="{{i.product_image.url}}" style="height: 300px; width:600px" alt="IMG-PRODUCT">
 
 							<a href="{% url 'product_detail' i.slug %}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 " >
 								View
@@ -519,7 +520,7 @@
 	<br><br>
 	{% if recently_viewed_products %}
 	
-	<div class="container-fluid"  style="background-color: rgb(235, 231, 231);">
+	<div class="container-fluid"  style="background-color: rgb(255, 255, 255);">
 		<div class="row">
 	
 			<div class="p-b-10" style="margin-top: 15px;">
@@ -533,7 +534,7 @@
 					<!-- Block2 -->
 					<div class="block2">
 						<div class="block2-pic hov-img0">
-							<img src="{{i.product_image.url}}" alt="IMG-PRODUCT">
+							<img src="{{i.product_image.url}}" style="height: 300px; width:600px" alt="IMG-PRODUCT">
 
 							<a href="{% url 'product_detail' i.slug %}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 " >
 								View
@@ -728,8 +729,8 @@
 		</div>
 	</div>
 	<div class="container-fluid">
-		<div class="row">
-			<div class="col-sm-6 col-lg-3">
+		<div class="row" >
+			<div class="col-sm-6 col-lg-3" >
 				<div class="icon-box icon-box-side">
 					<span class="icon-box-icon text-dark">
 						<i class="mdi mdi-truck"></i>
@@ -770,7 +771,7 @@
 			<div class="col-sm-6 col-lg-3">
 				<div class="icon-box icon-box-side">
 					<span class="icon-box-icon text-dark">
-						<i class="icon-life-ring"></i>
+						<i class="mdi mdi-phone-classic"></i>
 					</span>
 
 					<div class="icon-box-content">

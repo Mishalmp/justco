@@ -36,7 +36,7 @@ def product_detail(request, product_id):
     recently_viewed_products.insert(0, product.id)
 
     # Limit the list to store only the last 5 viewed products
-    recently_viewed_products = recently_viewed_products[:5]
+    recently_viewed_products = recently_viewed_products[:4]
 
     # Update the session variable with the updated list
     request.session['recently_viewed_products'] = recently_viewed_products
@@ -44,14 +44,46 @@ def product_detail(request, product_id):
     # Check if the user is authenticated and not anonymous
     if request.user.is_authenticated and not isinstance(request.user, AnonymousUser):
         cart = Cart.objects.filter(user=request.user, product=prod)
+        buy=Buynow.objects.filter(user=request.user, product=prod)
 
     context = {
         'allpro': related,
         'pro_detail': prod,
-        'cart': cart
+        'cart': cart,
+        'buy':buy
     }
     
     return render(request, 'product-detail.html', context)
+
+
+# def add_buynow(request):
+#     if request.method == 'POST':
+#         if request.user.is_authenticated:
+           
+#             prod_id = request.POST.get('prod_id')
+#             add_qty= int(request.POST.get('add_qty'))
+#             try:
+#                 product_check = Product.objects.get(id=prod_id)
+                
+
+#             except Product.DoesNotExist:
+#                 return JsonResponse({'status': 'No such product found'})
+            
+           
+        
+#             prod_qty = add_qty
+            
+#             if product_check.quantity >= prod_qty:
+#                 Buynow.objects.create(user=request.user, product_id=prod_id, product_qty=prod_qty)
+                
+#                 return JsonResponse({'status': 'Product added successfully'})
+#             else:
+#                 return JsonResponse({'status': "Only few quantity available"})
+#         else:
+#             return JsonResponse({'status': 'Login to continue'})
+#     return redirect('product_detail')
+
+
 
 
 def add_buynow(request):
@@ -66,21 +98,24 @@ def add_buynow(request):
 
             except Product.DoesNotExist:
                 return JsonResponse({'status': 'No such product found'})
-            
-        
-            prod_qty = add_qty
-            
-            if product_check.quantity >= prod_qty:
-                Buynow.objects.create(user=request.user, product_id=prod_id, product_qty=prod_qty)
-                
-                return JsonResponse({'status': 'Product added successfully'})
+
+            if Buynow.objects.filter(user=request.user, product_id=prod_id).exists():
+                prod_qty = int(request.POST.get('product_qty'))
+                if product_check.quantity > prod_qty:
+                    Buynow.objects.filter(user=request.user, product_id=prod_id).update(product_qty=prod_qty + add_qty)
+                    return JsonResponse({'status': 'Product quantity increased'})
+                else:
+                    return JsonResponse({'status': "Only few quantity available"})
+
             else:
-                return JsonResponse({'status': "Only few quantity available"})
+                prod_qty = add_qty
+                
+                if product_check.quantity >= prod_qty:
+                    Buynow.objects.create(user=request.user, product_id=prod_id, product_qty=prod_qty)
+                 
+                    return JsonResponse({'status': 'Product added successfully'})
+                else:
+                    return JsonResponse({'status': "Only few quantity available"})
         else:
             return JsonResponse({'status': 'Login to continue'})
     return redirect('product_detail')
-
-
-
-
-

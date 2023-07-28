@@ -54,7 +54,7 @@
 </style>
 <main class="main" style="background-color: rgb(255, 251, 251);">
   
-    <section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url('{% static 'images/bg-01.jpg' %}');">
+    <section class="bg-img1 txt-center p-lr-15 p-tb-92" style="opacity: 60%;  background-image: url('{% static 'images/banner-1_1200x360.jpg' %}');">
       <h2 class="ltext-105 cl0 txt-center">
        My Account
       </h2>
@@ -363,6 +363,10 @@
                                 </div>
                                 <div class="modal-body">
                                   Cancel Product {{ order_item.product.product_name }}
+                                  <div  class="form-outline mb-4">
+                                    <textarea style="padding-left: 5px; padding-right: 5px;"  class="form-control"  id="exampleFormControlTextarea1" rows="3" name="reason"></textarea>
+                                    <label class="form-label" for="form3Example3cg">Reason</label>
+                                  </div>
                                 </div>
                                 <div class="modal-footer">
                                   {% csrf_token %}
@@ -749,7 +753,7 @@
                                                 {{address.phone}}<br>
                                                 {{address.email}}<br>
                                                 {{address.city}} {{address.state}}<br>
-                                                <a href="#" type="button" class="site-btn mb-3" data-bs-toggle="modal" data-bs-target="#editModal">Edit <i class="icon-edit"></i></a></p>
+                                                <a href="#" type="button" class="site-btn mb-3" data-bs-toggle="modal" data-bs-target="#editModal">Edit </a></p>
                                             </div><!-- End .card-body -->
                                         </div><!-- End .card-dashboard -->
                                        
@@ -783,12 +787,17 @@
                                                                 <h5 class="card-title">{{adrs.address}}, {{adrs.pincode}}</h5>
                                                                 <p class="card-text">{{adrs.city}}-{{adrs.state}}-{{adrs.country}}</p>
                                                               <div>
-                                
+                                                                
+                                                                <div style="display: flex; justify-content: space-evenly; margin-left: 10px;" >
                                                               <!-- Button trigger vie address -->
-                                                                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#viewaddress{{forloop.counter}}">
-                                                                  View
-                                                                </button>
-                                                            <a href="#" type="button" class="site-btn mb-3" data-bs-toggle="modal" data-bs-target="#editModal2{{forloop.counter}}">Edit <i class="icon-edit"></i></a></p>
+                                                                <a  data-bs-toggle="modal" data-bs-target="#viewaddress{{forloop.counter}}">
+                                                                  <i style="font-size: xx-large;" class="mdi mdi-eye"></i>
+                                                                </a>
+                                                            <a href="#"  class="site-btn mb-3" data-bs-toggle="modal" data-bs-target="#editModal2{{forloop.counter}}"><i style="font-size: xx-large; color: black;" class="mdi mdi-tooltip-edit"></i></a></p>
+                                                            <a href="#"  data-bs-toggle="modal" data-bs-target="#deletaddress{{forloop.counter}}">
+                                                              <i style="font-size: xx-large; margin-left: -30px; color: black;" class="mdi mdi-delete-forever"></i>
+                                                            </a>
+                                                          </div>
                                                                
                                                                 <!-- Modal -->
                                                                 <div class="modal fade" id="viewaddress{{forloop.counter}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -886,39 +895,39 @@
                                                                           </div>
                                                                           <hr>
                         
-                                                                      </div>
+                                                                      </div> 
                                                                       <div class="modal-footer">
-                                                                        <a  class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#deletaddress{{forloop.counter}}">
-                                                                          delete
-                                                                        </a>
+                                                                       
                                                             
-                                                                          <!--Delete Modal -->
-                                                                          <div class="modal fade" id="deletaddress{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                                            <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                                              <div class="modal-content">
-                                                                                <div class="modal-header">
-                                                                                  <h5 class="" id="exampleModalLabel">Delete</h5>
-                                                                                  <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"> <i class="fa fa-times" ></i></button>
-                                                                                </div>
-                                                                                <div class="modal-body">
-                                                                                  <p>Are you sure to delete Address <span class="text-primary">" {{adrs.first_name}} {{adrs.last_name}} ..."</span></p>
-                                                                                  
-                                                                                    <div class="d-flex justify-content-center">
-                                                                                      <a type="button" href="#"
-                                                                                        class="btn btn-danger btn-lg gradient-custom-4 w-50 text-light">Confirm</a>
-                                                                                    </div>
-                                                                
-                                                                                </div>
-                                                                              </div>
-                                                                            </div>
-                                                                          </div>
+                                                                       
                                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                                       </div>
                                                                     </div>
                                                                   </div>
                                                                 </div>
+
                                                               
                                                              </div>
+                                                                <!--Delete Modal -->
+                                                                <div class="modal fade" id="deletaddress{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                  <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                                    <div class="modal-content">
+                                                                      <div class="modal-header">
+                                                                        <h5 class="" id="exampleModalLabel">Delete</h5>
+                                                                        <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Close"> <i class="fa fa-times" ></i></button>
+                                                                      </div>
+                                                                      <div class="modal-body">
+                                                                        <p>Are you sure to delete Address <span class="text-primary">" {{adrs.first_name}} {{adrs.last_name}} ..."</span></p>
+                                                                        
+                                                                          <div class="d-flex justify-content-center">
+                                                                            <a type="button" href="#"
+                                                                              class="btn btn-danger btn-lg gradient-custom-4 w-50 text-light">Confirm</a>
+                                                                          </div>
+                                                      
+                                                                      </div>
+                                                                    </div>
+                                                                  </div>
+                                                                </div>
                                                              
                                                         </div>
                                                         <!--edit address modal2 -->

@@ -1,5 +1,8 @@
 console.log('hello world')
 
+const slug = document.getElementById('product_slug')
+const pro_slug=slug.value
+
 const alertBox = document.getElementById('alert-box')
 const imageBox = document.getElementById('image-box')
 const imageForm = document.getElementById('image-form')
@@ -7,6 +10,7 @@ const confirmBtn = document.getElementById('confirm-btn')
 const input = document.getElementById('id_product_image')
 const input2 = document.getElementById('id_product_image2')
 const input3 = document.getElementById('id_product_image3')
+
 
 const csrf = document.getElementsByName('csrfmiddlewaretoken')
 
@@ -49,9 +53,9 @@ function createCropper(inputElement) {
                     success: function(response) {
                         console.log('success', response)
                         alertBox.innerHTML = `<div class="alert alert-success" role="alert">
-                                                Successfully saved and cropped the selected image
+                                                Images Saved Successfully 
                                             </div>`
-                                            window.location.href = `http://127.0.0.1:8000/products/`;
+                                            // window.location.href='http://127.0.0.1:8000/products/product_view/${pro_slug}';
                     },
                     error: function(error) {
                         console.log('error', error)

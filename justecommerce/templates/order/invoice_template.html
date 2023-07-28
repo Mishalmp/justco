@@ -69,9 +69,9 @@
               
                 {% for item in order_items %}
                 <tr>
-                    <td><img src="{{ item.product.product_image.url }}" alt="Product Image" width="50"></td>
+                    <td><img src="{{ item.product.product_image.path }}" alt="Product Image" width="50"></td>
                     <td>{{ item.product.product_name }}</td>
-                    <td>{{ order_items.quantity }}</td>
+                    <td>{{ item.quantity }}</td>
                     <td>{{ item.product.product_price }}</td>
                 </tr>
                 {% endfor %}

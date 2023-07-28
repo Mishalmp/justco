@@ -25,6 +25,8 @@ def admin_orders(request):
             order.od_status = 'Return'
         elif all(order_item.status == 'Processing' for order_item in order.orderitem_set.all()):
             order.od_status = 'Processing'
+        elif all(order_item.status == 'Shipped' for order_item in order.orderitem_set.all()):
+            order.od_status = 'Shipped'
         else:
             order.od_status = 'Pending'
 

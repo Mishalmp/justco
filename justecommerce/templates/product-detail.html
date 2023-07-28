@@ -12,18 +12,24 @@
 
 
 
-
+<section class="bg-img1 txt-center p-lr-15 p-tb-92" style="opacity: 60%;  background-image: url('{% static 'images/banner-1_1200x360.jpg' %}');">
+	<h2 class="ltext-105 cl0 txt-center">
+		{{pro_detail.product_name}}
+	</h2>
+  </section>	
  
 	<!-- breadcrumb -->
 	<div class="container">
-		<br>
-		<br>
-		<br><br><br>
-		<span class="stext-109 cl4">
-			{{pro_detail.product_name}}
-		</span>
-			
-		
+		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+			<a href="{% url 'home' %}" class="stext-109 cl8 hov-cl1 trans-04">
+				Home
+				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+			</a>
+	
+			<span class="stext-109 cl4">
+				{{pro_detail.product_name}}
+			</span>
+		</div>
 	</div>
 	{% for m in messages  %}
 <div class="alert alert-info" id="message" role="alert">
@@ -100,6 +106,7 @@
 
 						<p class="stext-102 cl3 p-t-23">
 							{{pro_detail.product_description}}
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris consequat consequat enim, non auctor massa ultrices non. Morbi sed odio massa. Quisque at vehicula tellus, sed tincidunt augue.
 						</p>
 						
 						<!--  -->
@@ -174,7 +181,7 @@
 								
 								<div class="buttooons" style="display: flex; margin-top: 10px; justify-content: space-between;">
 								<button  class="add-to-cart-btn flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 " data-product_id="{{ pro_detail.id }}">Add to Cart</button>
-								<button class="buynow-btn flex-c-m stext-101 cl0 size-101 bg-dark bor1 hov-btn1 p-lr-15 trans-04 " data-product_id="{{ pro_detail.id }}">Buy Now</button>
+								<button class="buynow-btn flex-c-m stext-101 cl0 size-101 bg-dark bor1 hov-btn1 p-lr-15 trans-04 " style="margin-left: 10px;" data-product_id="{{ pro_detail.id }}">Buy Now</button>
 							</div>
 								{% else %}
 								<h4 class="text-danger" >Out of stock</h4> 
@@ -184,6 +191,12 @@
 								{% for item in cart %}
 
 								<input readonly id="pro_qty{{item.product.id}}" class="mtext-104 cl3 txt-center num-product" type="hidden" name="num-product1" value="{{item.product_qty}}">
+
+								{% endfor %}
+
+								{% for item in buy %}
+
+								<input readonly id="buy_qty{{item.product.id}}" class="mtext-104 cl3 txt-center num-product2" type="hidden" name="num-product2" value="{{item.product_qty}}">
 
 								{% endfor %}
 
@@ -425,9 +438,9 @@
 						<!-- Block2 -->
 						<div class="block2">
 							<div class="block2-pic hov-img0">
-								<img src="{{i.product_image.url}}" alt="IMG-PRODUCT">
+								<img src="{{i.product_image.url}}" style="height: 250px; width:400px" alt="IMG-PRODUCT">
 
-								<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
+								<a href="{% url 'product_detail' i.slug %}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 ">
 									Quick View
 								</a>
 							</div>
@@ -714,7 +727,7 @@
 			  var product_id = $(this).data('product_id');
 			  var add_qty = $('#qty-input').val()
 			  
-			  var quantity = $('#pro_qty' + product_id).val()
+			  var quantity = $('#buy_qty' + product_id).val()
 			  console.log(product_id,quantity,add_qty,'yyyyyyyyyyyyyyyyyyyyyyy1')
 			  $.ajax({
 				method: "POST",
@@ -733,7 +746,7 @@
 				  if (response.status === 'No such product found' || response.status === 'Only few quantity available') {
 					swal("Error!", response.status, "error");
 					$('.cartdata').load(location.href + " .cartdata");
-				  } else if (response.status === 'Product added successfully' ) {
+				  } else if (response.status === 'Product added successfully' || response.status ==='Product quantity increased') {
 					swal("Congratulations!", response.status, "success");
 					$('.cartdata').load(location.href + " .cartdata");
 					window.location.href = '/checkout/buynow_checkout/'

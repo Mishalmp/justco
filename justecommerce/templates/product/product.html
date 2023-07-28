@@ -259,7 +259,11 @@
                       <div class="form-outline mb-4">
                         <select class="form-select form-select-sm mt-3" aria-label=".form-select-sm example" name="price_range">
                           {% for c in price_range %}
+                          {% if c.price_range.id == c.id %}
+                          <option value="{{ c.id }}" selected>{{ c.price_range }}</option>
+                          {% else %}
                           <option value="{{ c.id }}">{{ c.price_range }}</option>
+                          {% endif %}
                           {% endfor %}
                       </select>
                         <label class="form-label" for="form3Example3cg">price_range</label>
@@ -267,15 +271,23 @@
                       <div class="form-outline mb-4">
                         <select class="form-select form-select-sm mt-3" aria-label=".form-select-sm example" name="brand">
                           {% for b in brand %}
+                          {% if b.brand.id == b.id %}
+                          <option value="{{ b.id }}" selected>{{ b.brand_name }}</option>
+                          {% else %}
                           <option value="{{b.brand_name}}" >{{b.brand_name}}</option>
+                          {% endif %}
                           {% endfor %}
                         </select>
-                        <label class="form-label" for="form3Example3cg">Product</label>
+                        <label class="form-label" for="form3Example3cg">Brand</label>
                       </div>
                       <div class="form-outline mb-4">
                         <select class="form-select form-select-sm mt-3" aria-label=".form-select-sm example" name="category">
                           {% for c in category %}
+                          {% if c.category.id == c.id %}
+                          <option value="{{ c.id }}" selected>{{ c.categories }}</option>
+                          {% else %}
                           <option value="{{ c.id }}">{{ c.categories }}</option>
+                          {% endif %}
                           {% endfor %}
                       </select>
                         <label class="form-label" for="form3Example3cg">Category</label>
@@ -284,8 +296,13 @@
                         <select class="form-select form-select-sm mt-3" aria-label=".form-select-sm example" name="offer">
                           <option >No offer</option>
                           {% for c in offer %}
+                          {% if c.offer.id == off.id %}
+                          <option value="{{ c.id }}" selected>{{ c.offer_name }}</option>
+                          {% else %}
                           <option value="{{ c.id }}">{{ c.offer_name }}</option>
+                          {% endif %}
                           {% endfor %}
+                         
                       </select>
                       <label class="form-label" for="form3Example3cg">Offer</label>
                         </div>
@@ -302,7 +319,8 @@
 
                     <div class="form-outline mb-4">
                       <label class="form-label">Is Available</label>
-                      <input type="checkbox" name='checkbox'>
+                      
+                      <input type="checkbox" name="checkbox" {% if c.is_available %}checked{% endif %}>
                     </div> 
                   </div>
                      <div class="d-flex justify-content-center">
