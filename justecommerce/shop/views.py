@@ -144,17 +144,30 @@ def add_review(request):
             # Get the product instance based on the product_id
             product = get_object_or_404(Product, id=product_id)
 
+            if rating == 0:
+                return JsonResponse({'status': 'Please Select Stars'})
+          
+
+
+
+
+            if request.user.email == email:
             # Create and save the product review associated with the product
-            review = ProductReview.objects.create(
+                review = ProductReview.objects.create(
                 product=product,
                 rating=rating,
                 review_text=review_text,
                 name=name,
                 email=email
             )
-            print(rating,review_text,name,email,'rrrrrrrrrrrrrrrrrrr')
-            # Return a JSON response indicating success
-            return JsonResponse({'status': 'Review added successfully'})
+                return JsonResponse({'status': 'Review added successfully'})
+            else:
+                return JsonResponse({'status': 'Invalid email! Please log in with the correct email'})
+    
+
+           
+
+   
         else:
             return JsonResponse({'status': 'Login to continue'})
     

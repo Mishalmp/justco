@@ -323,7 +323,10 @@
 						<div class="tab-pane fade show active" id="description" role="tabpanel">
 							<div class="how-pos2 p-lr-15-md">
 								<p class="stext-102 cl6">
-									Aenean sit amet gravida nisi. Nam fermentum est felis, quis feugiat nunc fringilla sit amet. Ut in blandit ipsum. Quisque luctus dui at ante aliquet, in hendrerit lectus interdum. Morbi elementum sapien rhoncus pretium maximus. Nulla lectus enim, cursus et elementum sed, sodales vitae eros. Ut ex quam, porta consequat interdum in, faucibus eu velit. Quisque rhoncus ex ac libero varius molestie. Aenean tempor sit amet orci nec iaculis. Cras sit amet nulla libero. Curabitur dignissim, nunc nec laoreet consequat, purus nunc porta lacus, vel efficitur tellus augue in ipsum. Cras in arcu sed metus rutrum iaculis. Nulla non tempor erat. Duis in egestas nunc.
+									{{pro_detail.product_description}}
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris consequat consequat enim, non auctor massa ultrices non. Morbi sed odio massa. Quisque at vehicula tellus, sed tincidunt augue.
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris consequat consequat enim, non auctor massa ultrices non. Morbi sed odio massa. Quisque at vehicula tellus, sed tincidunt augue.
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris consequat consequat enim, non auctor massa ultrices non. Morbi sed odio massa. Quisque at vehicula tellus, sed tincidunt augue.
 								</p>
 							</div>
 						</div>
@@ -470,24 +473,24 @@
 													<i class="item-rating pointer zmdi zmdi-star-outline"></i>
 													<i class="item-rating pointer zmdi zmdi-star-outline"></i>
 													<i class="item-rating pointer zmdi zmdi-star-outline"></i>
-													<input class="dis-none" type="number" name="rating">
+													<input class="dis-none" type="number" name="rating" >
 												</span>
 											</div>
 
 											<div class="row p-b-25">
 												<div class="col-12 p-b-5">
 													<label class="stext-102 cl3" for="review">Your review</label>
-													<textarea class="size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10" id="review" name="review"></textarea>
+													<textarea class="size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10" id="review" name="review" required></textarea>
 												</div>
 
 												<div class="col-sm-6 p-b-5">
 													<label class="stext-102 cl3" for="name">Name</label>
-													<input class="size-111 bor8 stext-102 cl2 p-lr-20" id="name" type="text" name="name">
+													<input class="size-111 bor8 stext-102 cl2 p-lr-20" id="name" type="text" name="name" required>
 												</div>
 
 												<div class="col-sm-6 p-b-5">
 													<label class="stext-102 cl3" for="email">Email</label>
-													<input class="size-111 bor8 stext-102 cl2 p-lr-20" id="email" type="text" name="email">
+													<input class="size-111 bor8 stext-102 cl2 p-lr-20" id="email" type="text" name="email" required>
 												</div>
 											</div>
 											
@@ -891,7 +894,7 @@
 							console.log(response);
 						   
 							
-							if (response.status === 'No such product found' || response.status === 'Login to continue') {
+							if (response.status === 'No such product found' || response.status === 'Login to continue'||response.status === 'Invalid email! Please log in with the correct email'||response.status === 'Please Select Stars') {
 							  swal("Error!", response.status, "error");
 							  $('.cartdata').load(location.href + " .cartdata");
 							} else if (response.status === 'Review added successfully' ) {
