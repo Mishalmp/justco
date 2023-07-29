@@ -357,7 +357,7 @@
 										<!-- Review -->
 										<div class="flex-w flex-t p-b-68">
 											<div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
-												<img src="images/avatar-01.jpg" alt="AVATAR">
+												<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="AVATAR">
 											</div>
 
 											<div class="size-207">
@@ -383,7 +383,7 @@
 										{% for i in reviews %}
 										<div class="flex-w flex-t p-b-68">
 											<div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
-												<img src="images/avatar-01.jpg" alt="AVATAR">
+												<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="AVATAR">
 											</div>
 
 											<div class="size-207">
@@ -455,6 +455,7 @@
 											
 											
 											<input type="hidden" name="product_rev" value="{{ pro_detail.id }}">
+											<input type="hidden" name="product_slug" value="{{ pro_detail.slug }}">
 
 											<button class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10">
 												Submit
@@ -826,7 +827,8 @@
 			$(document).ready(function() {
 				$('#review-form').submit(function(e) {
 					e.preventDefault();
-		
+					var pro_slug = $('[name="product_slug"]').val();
+					console.log(pro_slug,'ssssssssssssss')
 					// Gather form data
 					const formData = {
 						product_id: parseInt($('input[name=product_rev]').val()),
@@ -834,6 +836,7 @@
 						review: $('textarea[name=review]').val(),
 						name: $('input[name=name]').val(),
 						email: $('input[name=email]').val(),
+						
 					};
 					console.log(formData,'ffffffffffffffffffffffffffff')
 					// AJAX request to send the form data
@@ -854,7 +857,7 @@
 							  swal("Error!", response.status, "error");
 							  $('.cartdata').load(location.href + " .cartdata");
 							} else if (response.status === 'Review added successfully' ) {
-								//window.location.href = '/shop/product_detail/'
+								//window.location.href = '/shop/product_detail/' + pro_slug + '/';
 							  swal("Congratulations!", response.status, "success");
 							  $('.cartdata').load(location.href + " .cartdata");
 							  
