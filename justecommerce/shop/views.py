@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from products.models import Product
+from products.models import Product,ProductReview
 
 from wishlist.models import Wishlist
 from django.views.decorators.cache import cache_control
@@ -7,7 +7,7 @@ from django.http.response import JsonResponse
 from cart.models import Cart,Buynow
 # Create your views here.
 from django.contrib.auth.models import User
-
+from django.db.models import Avg
 
 
 from django.http import JsonResponse
@@ -28,6 +28,7 @@ def product_detail(request, product_id):
 
     related = Product.objects.all()
     cart = None  # Set cart as None by default
+    buy=None
     product = get_object_or_404(Product, slug=product_id)
     recently_viewed_products = request.session.get('recently_viewed_products', [])
 
@@ -41,6 +42,9 @@ def product_detail(request, product_id):
     # Update the session variable with the updated list
     request.session['recently_viewed_products'] = recently_viewed_products
 
+    reviews = ProductReview.objects.filter(product_id=product.id)
+    average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+    rev_count=ProductReview.objects.all().count()
     # Check if the user is authenticated and not anonymous
     if request.user.is_authenticated and not isinstance(request.user, AnonymousUser):
         cart = Cart.objects.filter(user=request.user, product=prod)
@@ -50,10 +54,14 @@ def product_detail(request, product_id):
         'allpro': related,
         'pro_detail': prod,
         'cart': cart,
-        'buy':buy
+        'buy':buy,
+        'reviews':reviews,
+        'average_rating':average_rating ,
+        'rev_count':rev_count
     }
     
     return render(request, 'product-detail.html', context)
+
 
 
 # def add_buynow(request):
@@ -119,3 +127,36 @@ def add_buynow(request):
         else:
             return JsonResponse({'status': 'Login to continue'})
     return redirect('product_detail')
+
+
+def add_review(request):
+
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            rating = int(request.POST.get('rating'))
+            review_text = request.POST.get('review')
+            name = request.POST.get('name')
+            email = request.POST.get('email')
+            product_id = request.POST.get('product_id')
+
+            print(rating,review_text,name,email,product_id,'111111111111')
+
+            # Get the product instance based on the product_id
+            product = get_object_or_404(Product, id=product_id)
+
+            # Create and save the product review associated with the product
+            review = ProductReview.objects.create(
+                product=product,
+                rating=rating,
+                review_text=review_text,
+                name=name,
+                email=email
+            )
+            print(rating,review_text,name,email,'rrrrrrrrrrrrrrrrrrr')
+            # Return a JSON response indicating success
+            return JsonResponse({'status': 'Review added successfully'})
+        else:
+            return JsonResponse({'status': 'Login to continue'})
+    
+    # If the request method is not POST, return an error response
+    return JsonResponse({'error': 'Invalid request method'}, status=400)

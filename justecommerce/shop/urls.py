@@ -8,6 +8,8 @@ urlpatterns=[
   
     path('product_detail/<slug:product_id>',product_detail,name='product_detail'),
     path('add_buynow/',add_buynow,name='add_buynow'),
+    path('add_review/', add_review, name='add_review'),
+
   
     
 ]
