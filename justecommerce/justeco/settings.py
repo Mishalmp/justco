@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'offer',
     'mathfilters',
     'twilio',
+    'django_social_share'
     
     
     

@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title  %}Product Detail{% endblock %}
-
+{% load social_share %}
 
 
 {% block content %}
@@ -208,9 +208,9 @@
 
 								{% if pro_detail.quantity %}
 								
-								<div class="buttooons" style="display: flex; margin-top: 10px; justify-content: space-between;">
-								<button  class="add-to-cart-btn flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 " data-product_id="{{ pro_detail.id }}">Add to Cart</button>
-								<button class="buynow-btn flex-c-m stext-101 cl0 size-101 bg-dark bor1 hov-btn1 p-lr-15 trans-04 " style="margin-left: 10px;" data-product_id="{{ pro_detail.id }}">Buy Now</button>
+								<div class="buttooons" style="display: flex; margin-top: 10px; margin-left: -60px; justify-content: space-between;">
+								<button  class="add-to-cart-btn flex-c-m stext-101 cl0 size-101 bg-info bor1 hov-btn1  trans-04 " data-product_id="{{ pro_detail.id }}">Add to Cart</button>
+								<button class="buynow-btn flex-c-m stext-101 cl0 size-101 bg-success bor1 hov-btn1  trans-04 " style="margin-left: 10px;" data-product_id="{{ pro_detail.id }}">Buy Now</button>
 							</div>
 								{% else %}
 								<h4 class="text-danger" >Out of stock</h4> 
@@ -237,29 +237,67 @@
 						</div>
 
 						<!--  -->
-						<div class="flex-w flex-m p-l-100 p-t-40 respon7">
+						<div class="flex-w flex-m p-l-50 p-t-40 respon7">
 							<div class="flex-m bor9 p-r-10 m-r-11 ">
 								<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100 addToWishlist"   data-productid="product.id" data-tooltip="Add to Wishlist">
 									<i class="zmdi zmdi-favorite addToWishlist" data-product_id="{{ pro_detail.id }}" style="font-size: x-large;"></i>
 								</a>
 							</div>
 							
+							<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#shareModal">
+								Share Product
+							  </button> -->
+							  <p style="font-size: large; font-weight: bolder;">Share  <i class="mdi mdi-share-variant" style="font-size: large;"></i>:</p>
 
 							<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Facebook">
-								<i class="fa fa-facebook"></i>
+								<i class="fa fa-facebook" style="font-size: large;"></i>
 							</a>
 
 							<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Twitter">
-								<i class="fa fa-twitter"></i>
+								<i class="fa fa-twitter" style="font-size: large;"></i>
+							</a>
+							<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Whatsapp">
+								
+								<i class="fa fa-whatsapp" style="font-size: large;"></i>
+							</a>
+							<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Telegram">
+								
+								<i class="fa fa-telegram" style="font-size: large;"></i>
+							</a>
+							<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="reddit">
+								
+								<i class="fa fa-reddit" style="font-size: large;"></i>
 							</a>
 
 							<a href="#" class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100" data-tooltip="Google Plus">
-								<i class="fa fa-google-plus"></i>
+								<i class="fa fa-google-plus" style="font-size: large;"></i>
 							</a>
 						</div>
 					</div>
 				</div>
 			</div>
+
+<!-- <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="shareModalLabel">Share Product</h5>
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+		  List of sharing methods -->
+		  <!-- <ul>
+			<li><a href="#" class="share-link" data-share-method="whatsapp">WhatsApp</a></li>
+			<li><a href="#" class="share-link" data-share-method="facebook">Facebook</a></li>
+			<li><a href="#" class="share-link" data-share-method="telegram">Telegram</a></li>
+		 Add more sharing methods as needed 
+		  </ul>
+		</div>
+	  </div>
+	</div>
+  </div> --> 
 
 			<div class="bor10 m-t-50 p-t-43 p-b-40">
 				<!-- Tab01 -->
@@ -870,6 +908,29 @@
 				});
 			});
 		</script>
+		<!-- <script>
+			$(document).ready(function() {
+			  // Handle click event on share links
+			  $('.share-link').on('click', function(e) {
+				e.preventDefault();
+				const shareMethod = $(this).data('share-method');
+		  
+				// Perform different actions based on the selected sharing method
+				if (shareMethod === 'whatsapp') {
+				  // Implement WhatsApp sharing logic (e.g., using a custom URL with product information)
+				  window.location.href = 'whatsapp://send?text=Check out this awesome product: [Product Name] - [Product URL]';
+				} else if (shareMethod === 'facebook') {
+				  // Implement Facebook sharing logic (e.g., using a custom URL with product information)
+				  window.location.href = 'https://www.facebook.com/sharer/sharer.php?u=[Product URL]';
+				} else if (shareMethod === 'telegram') {
+				  // Implement Telegram sharing logic (e.g., using a custom URL with product information)
+				  window.location.href = 'https://telegram.me/share/url?url=[Product URL]&text=Check out this awesome product: [Product Name]';
+				}
+				// Add more share methods as needed
+			  });
+			});
+		  </script> -->
+		  
 <!--===============================================================================================-->	
 	
 {% endblock %}
