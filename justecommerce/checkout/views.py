@@ -422,6 +422,73 @@ def add_checkout_address(request):
     return redirect('checkout')
 
 
+def edit_check_address(request,edit_id):
+
+    if request.method == 'POST':
+
+        first_name=request.POST.get('firstname')
+        last_name=request.POST.get('lastname')
+        country=request.POST.get('country')
+        address=request.POST.get('address')
+        city=request.POST.get('city')
+        pincode=request.POST.get('pincode')
+        phone=request.POST.get('phone')
+        email=request.POST.get('email')
+        state=request.POST.get('state')
+        order_note=request.POST.get('order_note')
+
+
+        if request.user is None:
+            return
+        
+        if first_name.strip() == '' or last_name.strip() == '':
+            messages.error(request,'names cannot be empty!!!')
+            return redirect('checkout')
+        
+        if country.strip()=='':
+            messages.error(request,'Country cannot be empty')
+            return redirect('checkout')
+        if city.strip()=='':
+            messages.error(request,'city cannot be empty')
+            return redirect('checkout')
+        if address.strip()=='':
+            messages.error(request,'address cannot be empty')
+            return redirect('checkout')
+        if pincode.strip()=='':
+            messages.error(request,'pincode cannot be empty')
+            return redirect('checkout')
+        if phone.strip()=='':
+            messages.error(request,'phone cannot be empty')
+            return redirect('checkout')
+        if email.strip()=='':
+            messages.error(request,'email cannot be empty')
+            return redirect('checkout')
+        if state.strip()=='':
+            messages.error(request,'state cannot be empty')
+            return redirect('checkout')
+
+        try:
+            ads = Address.objects.get(id=edit_id)
+        except Address.DoesNotExist:
+            messages.error(request, 'Address not found')
+            return redirect('checkout')
+        ads.user=request.user
+        ads.first_name=first_name
+        ads.last_name=last_name
+        ads.country=country
+        ads.address=address
+        ads.city=city
+        ads.pincode=pincode
+        ads.phone=phone
+        ads.email=email
+        ads.state=state
+        ads.order_note=order_note
+        ads.save()
+
+        return redirect('checkout')
+    else:
+        return redirect('checkout')
+
 #.........................................buynow...................................................... 
 
 def buynow_checkout(request):
@@ -740,3 +807,70 @@ def add_buy_checkout_address(request):
 
         return redirect('buynow_checkout')
     return redirect('buynow_checkout')
+
+def edit_buy_address(request,edit_id):
+
+    if request.method == 'POST':
+
+        first_name=request.POST.get('firstname')
+        last_name=request.POST.get('lastname')
+        country=request.POST.get('country')
+        address=request.POST.get('address')
+        city=request.POST.get('city')
+        pincode=request.POST.get('pincode')
+        phone=request.POST.get('phone')
+        email=request.POST.get('email')
+        state=request.POST.get('state')
+        order_note=request.POST.get('order_note')
+
+
+        if request.user is None:
+            return
+        
+        if first_name.strip() == '' or last_name.strip() == '':
+            messages.error(request,'names cannot be empty!!!')
+            return redirect('buynow_checkout')
+        
+        if country.strip()=='':
+            messages.error(request,'Country cannot be empty')
+            return redirect('buynow_checkout')
+        if city.strip()=='':
+            messages.error(request,'city cannot be empty')
+            return redirect('buynow_checkout')
+        if address.strip()=='':
+            messages.error(request,'address cannot be empty')
+            return redirect('buynow_checkout')
+        if pincode.strip()=='':
+            messages.error(request,'pincode cannot be empty')
+            return redirect('buynow_checkout')
+        if phone.strip()=='':
+            messages.error(request,'phone cannot be empty')
+            return redirect('buynow_checkout')
+        if email.strip()=='':
+            messages.error(request,'email cannot be empty')
+            return redirect('buynow_checkout')
+        if state.strip()=='':
+            messages.error(request,'state cannot be empty')
+            return redirect('buynow_checkout')
+
+        try:
+            ads = Address.objects.get(id=edit_id)
+        except Address.DoesNotExist:
+            messages.error(request, 'Address not found')
+            return redirect('buynow_checkout')
+        ads.user=request.user
+        ads.first_name=first_name
+        ads.last_name=last_name
+        ads.country=country
+        ads.address=address
+        ads.city=city
+        ads.pincode=pincode
+        ads.phone=phone
+        ads.email=email
+        ads.state=state
+        ads.order_note=order_note
+        ads.save()
+
+        return redirect('buynow_checkout')
+    else:
+        return redirect('buynow_checkout')

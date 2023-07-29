@@ -136,7 +136,7 @@
                                         </a>
                                     </div><!-- End .card-header -->
                                     <div id="collapse-11" class="collapse" aria-labelledby="heading-11" data-parent="#accordion-payment">
-                                        <button type="button" class="site-btn mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        <button type="button" class="btn btn-dark site-btn mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                             New Address
                                        
                                         </button>
@@ -166,6 +166,9 @@
                                               <!-- Button trigger vie address -->
                                                 <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#viewaddress{{forloop.counter}}">
                                                   View
+                                                </button>
+                                                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#editbuyModal{{forloop.counter}}">
+                                                  Edit
                                                 </button>
                                                
                                                 <!-- Modal -->
@@ -295,6 +298,84 @@
                                                     </div>
                                                   </div>
                                                 </div>
+                                                <div class="modal fade" id="editbuyModal{{forloop.counter}}" tabindex="-1"  aria-labelledby="editbuyModalLabel" aria-hidden="true">
+                                                  <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
+                                                    <div class="modal-content">
+                                                      <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">Billing Details</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                      </div>
+                                                      <div class="modal-body" style="margin-left:35px; ">
+                                  
+                                                      <form action="{% url 'edit_buy_address' adrs.id %}" method="post">
+                                                              {% csrf_token %}
+                                                          <div class="row">
+                                                          <div class="col-lg-9">
+                                                              <h3 class="checkout-title">Billing Details</h3><!-- End .checkout-title -->
+                                                              
+                                                                  <div class="row">
+                                                                      <div class="col-sm-6 col-xl-6">
+                                                                          <label>First Name *</label>
+                                                                          <input type="text" class="form-control" name="firstname" value="{{adrs.first_name}}" required>
+                                                                      </div><!-- End .col-sm-6 -->
+                                  
+                                                                      <div class="col-sm-6 col-xl-6">
+                                                                          <label>Last Name *</label>
+                                                                          <input type="text" class="form-control" name="lastname" value="{{adrs.last_name}}" required>
+                                                                      </div><!-- End .col-sm-6 -->
+                                                                  </div><!-- End .row -->
+                                  
+                                  
+                                                                  <label>Country *</label>
+                                                                  <input type="text" class="form-control" name="country" value="{{adrs.country}}" required>
+                                  
+                                                                  <label>Street address *</label>
+                                                                  <input type="text" class="form-control" name="address" value="{{adrs.address}}" placeholder="House number and Street name" required>
+                                                                  <input type="text" class="form-control" name="address" value="" placeholder="Appartments, suite, unit etc ..." required>
+                                  
+                                                                  <div class="row">
+                                                                      <div class="col-sm-6">
+                                                                          <label>Town / City *</label>
+                                                                          <input type="text" class="form-control" name="city" value="{{adrs.city}}" required>
+                                                                      </div><!-- End .col-sm-6 -->
+                                  
+                                                                      <div class="col-sm-6">
+                                                                          <label>State *</label>
+                                                                          <input type="text" class="form-control" name="state" value="{{adrs.state}}" required>
+                                                                      </div><!-- End .col-sm-6 -->
+                                                                  </div><!-- End .row -->
+                                  
+                                                                  <div class="row">
+                                                                      <div class="col-sm-6">
+                                                                          <label>Postcode / ZIP *</label>
+                                                                          <input type="number" class="form-control" name="pincode" value="{{adrs.pincode}}" required>
+                                                                      </div><!-- End .col-sm-6 -->
+                                  
+                                                                      <div class="col-sm-6">
+                                                                          <label>Phone *</label>
+                                                                          <input type="tel" class="form-control" name="phone" value="{{adrs.phone}}" required>
+                                                                      </div><!-- End .col-sm-6 -->
+                                                                  </div><!-- End .row -->
+                                  
+                                                                  <label>Email address *</label>
+                                                                  <input type="email" class="form-control" name="email" value="{{adrs.email}}" required>
+                                  
+                                                                 
+                                                          
+                                                                  <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+                                                                      <span class="btn-text">Save</span>
+                                                                      <span class="btn-hover-text">Save Address</span>
+                                                                  </button>
+                                                          
+                                                              </div><!-- End .col-lg-9 -->
+                                  
+                                                          </div>
+                                                          </form>
+                                  
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
                                               
                                              </div>
                                              

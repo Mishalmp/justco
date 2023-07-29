@@ -305,7 +305,7 @@ def sales_report(request):
             # Filter orders based on the selected date range
             start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
             end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
-            if start_date >= end_date:
+            if start_date > end_date:
                 messages.error(request, "Start date must be before end date.")
                 return redirect('sales_report')
             if end_date > date.today():

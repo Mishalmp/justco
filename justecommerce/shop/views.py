@@ -44,7 +44,8 @@ def product_detail(request, product_id):
 
     reviews = ProductReview.objects.filter(product_id=product.id)
     average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
-    rev_count=ProductReview.objects.all().count()
+
+    rev_count=ProductReview.objects.filter(product_id=product.id).count()
     # Check if the user is authenticated and not anonymous
     if request.user.is_authenticated and not isinstance(request.user, AnonymousUser):
         cart = Cart.objects.filter(user=request.user, product=prod)
