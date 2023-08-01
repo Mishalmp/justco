@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from django.conf import settings
-
+from decouple import config
 
 
 
@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n(_9tj%y&(0kzf39tbj-z8vqm0pvc9qi(y7c^jp4-wg&+x=0(%'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -182,23 +182,23 @@ STATICFILES_DIRS=[
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # settings.py
 
-TWILIO_ACCOUNT_SID = 'AC85eaedafa42150fcc6f8b1acda27c129'
-TWILIO_AUTH_TOKEN = 'e1d2862ca859b58300947e6a3981e9a2'
+TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
 
 
 # Email Configuration
 # settings.py
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com' # e.g., smtp.gmail.com
-EMAIL_PORT = 587  # check your SMTP provider for the correct port
-EMAIL_HOST_USER = 'mishalmp916@gmail.com'
-EMAIL_HOST_PASSWORD = 'bvspramnxxydjsqp'
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_HOST_USER = config('EMAIL_PORT')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 
-RAZORPAY_KEY_ID = 'rzp_test_4vQTEjTZ9mHK3d'
-RAZORPAY_KEY_SECRET = '0mcpiXgs9jiOppGgbFZQ3mdk'
+RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID')
+RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET')
