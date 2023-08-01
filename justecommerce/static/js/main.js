@@ -224,14 +224,25 @@
     });
 
 // wishlist
-    $('.js-show-wishlist').on('click',function(){
-        $('.js-panel-wishlist').addClass('show-header-cart');
-    });
+$('.js-show-wishlist').on('click', function() {
+    $('.js-panel-wishlist').addClass('show-header-wishlist');
+});
 
-    $('.js-hide-wishlist').on('click',function(){
-        $('.js-panel-wishlist').removeClass('show-header-cart');
-    });
+$('.js-hide-wishlist').on('click', function() {
+    $('.js-panel-wishlist').removeClass('show-header-wishlist');
+});
+// JavaScript to handle the toggle functionality for wishlist panel
+// $('.js-toggle-wishlist').on('click', function() {
+//     $('.js-panel-wishlist').toggleClass('show-header-wishlist');
+// });
 
+    // $('.js-show-sidebar').on('click',function(){
+    //     $('.js-sidebar').addClass('show-sidebar');
+    // });
+
+    // $('.js-hide-sidebar').on('click',function(){
+    //     $('.js-sidebar').removeClass('show-sidebar');
+    // });
 
 
      //number up down 

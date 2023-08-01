@@ -1,3 +1,4 @@
 {
-    "powermode.combo.location": "off"
+    "powermode.combo.location": "off",
+    "liveServer.settings.port": 5501
 }

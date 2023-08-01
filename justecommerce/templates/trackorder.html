@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order</title>
+    <link rel="icon" type="image/png" href="{% static 'images/icons/favicon.png ' %}"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    
+    <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+
+
+</head>
+<body>
+    <style>
+        body{margin-top:20px;}
+
+.steps .step {
+    display: block;
+    width: 100%;
+    margin-bottom: 35px;
+    text-align: center
+}
+.heading{
+  
+    display: flex;
+    background-color: black;
+    width: 100%;
+    color: white;
+    
+}
+.text-uppercase{
+    margin-left: 35%;
+}
+.steps .step .step-icon-wrap {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 80px;
+    text-align: center
+}
+
+.steps .step .step-icon-wrap::before,
+.steps .step .step-icon-wrap::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    height: 3px;
+    margin-top: -1px;
+    background-color: #e1e7ec;
+    content: '';
+    z-index: 1
+}
+
+.steps .step .step-icon-wrap::before {
+    left: 0
+}
+
+.steps .step .step-icon-wrap::after {
+    right: 0
+}
+
+.steps .step .step-icon {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border: 1px solid #e1e7ec;
+    border-radius: 50%;
+    background-color: #f5f5f5;
+    color: #374250;
+    font-size: 38px;
+    line-height: 81px;
+    z-index: 5
+}
+
+.steps .step .step-title {
+    margin-top: 16px;
+    margin-bottom: 0;
+    color: #606975;
+    font-size: 14px;
+    font-weight: 500
+}
+
+.steps .step:first-child .step-icon-wrap::before {
+    display: none
+}
+
+.steps .step:last-child .step-icon-wrap::after {
+    display: none
+}
+
+.steps .step.completed .step-icon-wrap::before,
+.steps .step.completed .step-icon-wrap::after {
+    background-color: #0da9ef
+}
+
+.steps .step.completed .step-icon {
+    border-color: #0da9ef;
+    background-color: #0da9ef;
+    color: #fff
+}
+
+@media (max-width: 576px) {
+    .flex-sm-nowrap .step .step-icon-wrap::before,
+    .flex-sm-nowrap .step .step-icon-wrap::after {
+        display: none
+    }
+}
+
+@media (max-width: 768px) {
+    .flex-md-nowrap .step .step-icon-wrap::before,
+    .flex-md-nowrap .step .step-icon-wrap::after {
+        display: none
+    }
+}
+
+@media (max-width: 991px) {
+    .flex-lg-nowrap .step .step-icon-wrap::before,
+    .flex-lg-nowrap .step .step-icon-wrap::after {
+        display: none
+    }
+}
+
+@media (max-width: 1200px) {
+    .flex-xl-nowrap .step .step-icon-wrap::before,
+    .flex-xl-nowrap .step .step-icon-wrap::after {
+        display: none
+    }
+}
+
+.bg-faded, .bg-secondary {
+    background-color: #f5f5f5 !important;
+}
+.sec-head{
+    
+    font-size: 20px;
+}
+
+        
+    </style>
+    <div class="container padding-bottom-3x mb-1">
+            <div class="card mb-3">
+              <div class="heading p-4 text-center text-white text-lg  rounded-top"><h2 class="text-uppercase">Tracking Order No - </h2><h2 class="text-medium">{{order.tracking_no}}</h2></div>
+              <div class="d-flex flex-wrap flex-sm-nowrap justify-content-between py-3 px-2 bg-secondary" style="display: flex; justify-content: space-around;height:70px">
+                <div class="w-100 text-center sec-head py-1 px-2"><span class="text-medium">Order Date:</span>{{order.created_at}} </div>
+                <div class="w-100 text-center sec-head py-1 px-2"><span class="text-medium">Status:</span> {{order.od_status}}</div>
+                <div class="w-100 text-center sec-head py-1 px-2"><span class="text-medium">Expected Date:</span> {{order.expected_delivery}}</div>
+              </div>
+              <div class="card-body">
+                <div class="steps  d-flex flex-wrap flex-sm-nowrap justify-content-between padding-top-2x padding-bottom-1x" style="display: flex; margin-top: 5%;">
+                  <div class="step completed">
+                    <div class="step-icon-wrap">
+                      <div class="step-icon"><i class="pe-7s-cart"></i></div>
+                    </div>
+                    <h4 class="step-title badge badge-warning">Pending</h4>
+                  </div>
+                  <div class="step completed">
+                    <div class="step-icon-wrap">
+                      <div class="step-icon"><i class="pe-7s-config"></i></div>
+                    </div>
+                    <h4 class="step-title">Processing</h4>
+                  </div>
+                  <div class="step completed">
+                    <div class="step-icon-wrap">
+                      <div class="step-icon"><i class="mdi mdi-truck-delivery"></i></div>
+                    </div>
+                    <h4 class="step-title">Shipped</h4>
+                  </div>
+                
+                  <div class="step">
+                    <div class="step-icon-wrap">
+                      <div class="step-icon"><i class="pe-7s-home"></i></div>
+                    </div>
+                    <h4 class="step-title">Delivered</h4>
+                  </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-lx-4">
+                      <div class="card border rounded mb-3" style="box-shadow: 0 2px 10px rgba(97, 196, 243, 0.988);">
+                        <div class="card-body">
+                          <h5 class="card-title" style="font-weight: bold;">{{ order.id }} {{order.address.firstname}} {{order.address.lastname}}</h5>
+                          <p class="card-text">{{order.address.address}} <br>{{order.address.city}}<br>{{order.address.state}} <br>{{order.address.pincode}}<br>{{order.address.country}} <br>{{order.address.email}} <br>{{order.address.phone}}</p>
+                      
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 col-lx-4">
+                      <div class="card border rounded mb-3" style="box-shadow: 0 2px 10px rgba(97, 196, 243, 0.988);">
+                        <div class="card-body">
+                          <h5 class="card-title" style="font-weight: bold;">ORDER INFO</h5>
+                      
+                          <p class="card-text">User Name<span>: {{order.user.username}}</span></p>
+                          <p class="card-text">Order Date<span>: {{order.created_at}}</span></p>
+                          <p class="card-text">Payment id<span>: {{order.payment_id}}</span></p>
+                          <p class="card-text">Payment Method<span>: {{order.payment_mode}}</span></p>
+                          <p class="card-text">Total price<span>: {{order.total_price |floatformat:2}}</span></p>
+                          <p class="card-text">Expected Delivery<span>: {{ order.expected_delivery|date:"Y-m-d" }}</span></p>
+                      
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="collapse row" id="orderDetails">
+
+              
+                    <table class="product_data m-4 col-lg-12" >
+                      <thead>
+                        <tr>
+                          
+                          <th>Product Image</th>
+                          <th>Name </th>
+                          <th>Price</th>
+                          <th>Quantity</th>
+                          <th>Total</th>
+                          
+                        
+                        </tr>
+                      </thead>
+                      
+                      <tbody>
+                        {% for order_item in order_items %}
+                        <tr>
+                           
+                          <td class="product_cart_item">
+                            <div class="product_cart_item_pic">
+                              <img src="{{ order_item.product.product_image.url }}" height="70px" alt="IMG">
+                            </div>
+                          </td>
+                          <td class="product_cart_item_text">
+                            <h5 style="font-weight: bold;">{{ order_item.product.product_name }}</h5>
+                            
+            
+                          </td>
+                          <td><h5 style="font-weight: bold;"> ₹ {{order_item.product.product_price}}</h5></td>
+                         
+                          <td>{{ order_item.quantity }}</td>
+                          <td class="cart__price total">{{ order_item.order.total_price |floatformat:2}}</td>
+                      
+                        <input type="hidden" class="orderitem_id" value="{{order_item.id}}">
+                       
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
+            </div>
+            <div class="d-flex flex-wrap flex-md-nowrap justify-content-center justify-content-sm-between align-items-center">
+              <div class="custom-control custom-checkbox mr-3">
+                <input class="custom-control-input" type="checkbox" id="notify_me" checked="">
+                <label class="custom-control-label" for="notify_me">Notify me when order is delivered</label>
+              </div>
+              <div class="text-left text-sm-right">
+                <a class="btn btn-outline-primary toggle-details btn-rounded btn-sm" data-bs-toggle="collapse" href="#orderDetails" role="button" aria-expanded="false" aria-controls="orderDetails">View Order Details</a>
+              </div>
+              
+          
+            
+            </div>
+          </div>
+         
+      
+          
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+</html>

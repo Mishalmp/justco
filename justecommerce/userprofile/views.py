@@ -276,4 +276,14 @@ def deleteaddress(request,delete_id):
 
 
 
+def trackorder(request,order_id):
 
+    order=Order.objects.get(id=order_id)
+    order_items=OrderItem.objects.filter(order_id=order_id)
+
+    context={
+        'order':order,
+        'order_items':order_items
+    }
+
+    return render(request,'trackorder.html',context)

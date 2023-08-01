@@ -283,7 +283,7 @@
 
                       {% if c.od_status == 'Shipped' or c.od_status == 'Processing' or c.od_status == 'Pending' %}
                      
-                      <a href="#" type="button" class="btn btn-outline-dark">Track Your order</a>
+                      <a href="{% url 'trackorder' c.id  %}" type="button" class="btn btn-outline-dark">Track Your order</a>
                       <!-- <div>
                         <ul id="progressbar" >
                             <li class="step0 active " id="step1">PLACED</li>
@@ -757,7 +757,7 @@
                                             </div><!-- End .card-body -->
                                         </div><!-- End .card-dashboard -->
                                        
-                                        <button type="button" class="btn btn-primary site-btn mb-3"  data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        <button type="button" class="btn btn-dark site-btn mb-3"  data-bs-toggle="modal" data-bs-target="#exampleModal">
                                             New Address
                                        
                                         </button>
