@@ -31,7 +31,6 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = ['*']
 
 
@@ -73,17 +72,19 @@ INSTALLED_APPS = [
 #     'image_cropping.thumbnail_processors.crop_corners',
 # ) + defaults.PROCESSORS
 
-
+from justeco.middleware import Custom404Middleware
 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'justeco.middleware.Custom404Middleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'justeco.urls'
@@ -190,10 +191,10 @@ TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
 # Email Configuration
 # settings.py
 
-EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT')
-EMAIL_HOST_USER = config('EMAIL_PORT')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 

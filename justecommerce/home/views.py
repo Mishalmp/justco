@@ -145,7 +145,9 @@ def user_logout(request):
 
 
 
+# def error_404_view(request,exception):
 
+#     return render(request, 'error/index.html', status=404)
 
 
 def about(request):
