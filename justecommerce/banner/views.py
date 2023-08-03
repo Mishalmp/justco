@@ -1,15 +1,17 @@
 from django.shortcuts import render,redirect
 from .models import banner
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
-
+@login_required(login_url='admin_login')
 def banners(request):
     if not request.user.is_superuser:
         return redirect('admin_login')
     bans = banner.objects.all().order_by('id')
     return render(request, 'banner/banner.html',{'banner' : bans})
 
+@login_required(login_url='admin_login')
 def createbanners(request):
     if not request.user.is_superuser:
         return redirect('admin_login')
@@ -43,6 +45,7 @@ def createbanners(request):
 
     return render(request, 'banner/banner.html')
 
+@login_required(login_url='admin_login')
 def editbanner(request, editbanner_id):
     if not request.user.is_superuser:
         return redirect('admin_login')
@@ -80,6 +83,7 @@ def editbanner(request, editbanner_id):
     return render(request, 'banner/banner.html', {'banners': bans})
 
 # Delete brand
+@login_required(login_url='admin_login')
 def deletebanner(request,deletebanner_id):
     if not request.user.is_superuser:
         return redirect('admin_login')

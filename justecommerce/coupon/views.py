@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 
 
-
+@login_required(login_url='admin_login')
 def coupons(request):
     if not request.user.is_superuser:
         return redirect('admin_login')

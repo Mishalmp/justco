@@ -476,6 +476,7 @@ def user(request):
     return render(request,'adminapp/users.html',{'users': user_data})
 
 # Block User
+@login_required(login_url='admin_login')
 def blockuser(request,user_id):
     if not request.user.is_superuser:
         return redirect('admin_login')
@@ -489,6 +490,7 @@ def blockuser(request,user_id):
     return redirect('user')
 
 # Search User
+@login_required(login_url='admin_login')
 def searchuser(request):
     if not request.user.is_superuser:
         return redirect('admin_login')

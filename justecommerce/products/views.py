@@ -45,6 +45,7 @@ def product(request):
     }
     return render(request ,'product/product.html',dict_list)
 
+@login_required(login_url='admin_login')
 
 def product_view(request,prod_id):
     if not request.user.is_superuser:

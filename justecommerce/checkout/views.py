@@ -24,8 +24,9 @@ from django.conf import settings
 import os
 from django.http import HttpResponse
 from django.contrib.sessions.backends.db import SessionStore
-
+from django.contrib.auth.decorators import login_required
 # from weasyprint import HTML
+@login_required(login_url='user_login')
 def checkout(request):
     cartitems = Cart.objects.filter(user=request.user)
     total_price = 0
@@ -91,13 +92,14 @@ def checkout(request):
 
 
 
-
+@login_required(login_url='user_login')
 def cancel_order_before(request):
 
     return redirect('cart')
     
 
 #cart order
+@login_required(login_url='user_login')
 def placeorder(request):
     if request.method == 'POST':
         # Retrieve the current user
@@ -209,7 +211,7 @@ def placeorder(request):
         
 
     return redirect('checkout')
-
+@login_required(login_url='user_login')
 def apply_coupon(request):
     if request.method == 'POST':
         coupon_code = request.POST.get('coupon_code')
@@ -308,7 +310,7 @@ def generate_invoice_pdf(request, order_id):
 #         request.session['grand_total'] = grand_total
 #         return JsonResponse({'status': 'Grand total updated successfully'})
 #     return JsonResponse({'status': 'Invalid request'})
-
+@login_required(login_url='user_login')
 def remove_coupon(request):
     if request.method == 'POST':
         coupon_code = request.POST.get('coupon_code')
@@ -377,7 +379,7 @@ def generate_random_payment_id(length):
 
 
 
-
+@login_required(login_url='user_login')
 def razarypaycheck(request):
     cart = Cart.objects.filter(user=request.user)
     total_price = 0
@@ -400,7 +402,7 @@ def razarypaycheck(request):
 
 
 
-
+@login_required(login_url='user_login')
 def add_checkout_address(request):
     if request.method == 'POST':
         address = Address()
@@ -421,7 +423,7 @@ def add_checkout_address(request):
         return redirect('checkout')
     return redirect('checkout')
 
-
+@login_required(login_url='user_login')
 def edit_check_address(request,edit_id):
 
     if request.method == 'POST':
@@ -490,7 +492,7 @@ def edit_check_address(request,edit_id):
         return redirect('checkout')
 
 #.........................................buynow...................................................... 
-
+@login_required(login_url='user_login')
 def buynow_checkout(request):
 
     
@@ -555,6 +557,7 @@ def buynow_checkout(request):
 
     return render(request, 'checkout/buynow.html', context)
 
+@login_required(login_url='user_login')
 def apply_buy_coupon(request):
     if request.method == 'POST':
         coupon_code = request.POST.get('coupon_code')
@@ -593,6 +596,7 @@ def apply_buy_coupon(request):
             
     return JsonResponse({'status': 'Invalid request'})
 #buynow order
+@login_required(login_url='user_login')
 def buynow_placeorder(request):
     if request.method == 'POST':
         # Retrieve the current user
@@ -751,7 +755,7 @@ def generate_buy_invoice_pdf(request, order_id):
     os.remove(pdf_file)
     return redirect('buynow_placeorder')
 
-
+@login_required(login_url='user_login')
 def razarybuynow_paycheck(request):
     cart = Buynow.objects.filter(user=request.user)
     total_price = 0
@@ -770,13 +774,14 @@ def razarybuynow_paycheck(request):
     
     return JsonResponse({'total_price': total_price})
 
-
+@login_required(login_url='user_login')
 def cancel_buy_before(request):
     cart_items = Buynow.objects.filter(user=request.user)
     cart_items.delete()
 
     return redirect('home')
 
+@login_required(login_url='user_login')
 def deletebuyitem(request,product_id):
     
 
@@ -787,7 +792,7 @@ def deletebuyitem(request,product_id):
         cart_items.delete()
     return redirect('buynow_checkout')
 
-
+@login_required(login_url='user_login')
 def add_buy_checkout_address(request):
     if request.method == 'POST':
         address = Address()
@@ -808,6 +813,7 @@ def add_buy_checkout_address(request):
         return redirect('buynow_checkout')
     return redirect('buynow_checkout')
 
+@login_required(login_url='user_login')
 def edit_buy_address(request,edit_id):
 
     if request.method == 'POST':

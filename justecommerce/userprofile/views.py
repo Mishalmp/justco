@@ -84,7 +84,7 @@ def user_profile(request):
 
 
 
-
+@login_required(login_url='user_login')
 def add_address(request):
 
     if request.method == 'POST':
@@ -146,7 +146,7 @@ def add_address(request):
 
         return redirect('user_profile')
     
-
+@login_required(login_url='user_login')
 def edit_address(request,edit_id):
 
     if request.method == 'POST':
@@ -213,7 +213,8 @@ def edit_address(request,edit_id):
         return redirect('user_profile')
     else:
         return redirect('user_profile')
-    
+
+@login_required(login_url='user_login')
 def editprofile(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -244,6 +245,7 @@ def editprofile(request):
     return redirect('user_profile')
 
 # Change Password 
+@login_required(login_url='user_login')
 def changepassword(request):
     if request.method == 'POST':
         old_password = request.POST.get('old_password')
@@ -269,13 +271,14 @@ def changepassword(request):
     return redirect('user_profile')
 
 # delete Address
+@login_required(login_url='user_login')
 def deleteaddress(request,delete_id):
     address = Address.objects.get(id = delete_id)
     address.delete()
     return redirect('user_profile')
 
 
-
+@login_required(login_url='user_login')
 def trackorder(request,order_id):
 
     order=Order.objects.get(id=order_id)

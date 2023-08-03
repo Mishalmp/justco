@@ -117,7 +117,7 @@ def add_cart(request):
 
 
                    
-
+@login_required(login_url='user_login')
 def update_cart(request):
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
@@ -171,7 +171,7 @@ def update_cart(request):
 
 # Deletecart
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
-
+@login_required(login_url='user_login')
 def deletecartitem(request,product_id):
     
     

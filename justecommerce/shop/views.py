@@ -8,7 +8,7 @@ from cart.models import Cart,Buynow
 # Create your views here.
 from django.contrib.auth.models import User
 from django.db.models import Avg
-
+from django.contrib.auth.decorators import login_required
 
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
@@ -128,6 +128,7 @@ def add_buynow(request):
         else:
             return JsonResponse({'status': 'Login to continue'})
     return redirect('product_detail')
+
 
 
 def add_review(request):

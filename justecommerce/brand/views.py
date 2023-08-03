@@ -100,6 +100,7 @@ def editbrands(request, editbrands_id):
     return render(request, 'brand/editbrands.html', {'catego': cate})
 
 # Delete brand
+@login_required(login_url='admin_login')
 def deletebrands(request,deletebrands_id):
     if not request.user.is_superuser:
         return redirect('admin_login')

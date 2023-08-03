@@ -827,7 +827,7 @@
       e.preventDefault();
       var token = $("[name='csrfmiddlewaretoken']").val();
       var couponCode = $(this).data('coupon-code'); // Assuming you have a data attribute to store the coupon code
-      console.log(couponCode,'daxooooooooo')
+      
       $.ajax({
         method: "POST",
         url: "{% url 'remove_coupon' %}",

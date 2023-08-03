@@ -3,8 +3,10 @@ from products.models import Offer
 from django.contrib import messages
 from django.utils import timezone
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 # offer
+@login_required(login_url='admin_login')
 def adminoffer(request):
     context = {
         'offer' : Offer.objects.all()

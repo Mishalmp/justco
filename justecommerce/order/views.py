@@ -8,7 +8,10 @@ from django.contrib import messages
 from products.models import Product
 from .models import Orderreturn
 from datetime import timedelta
+from django.contrib.auth.decorators import login_required
+
 # ...................admin section.............
+@login_required(login_url='admin_login')
 def admin_orders(request):
     orders=Order.objects.all().order_by('-created_at')
     order_item=OrderItem.objects.all()
@@ -40,6 +43,7 @@ def admin_orders(request):
     }
     return render (request,'order/ad-orders.html',context)
 
+@login_required(login_url='admin_login')
 def ad_order_detail(request,order_id):
 
     order_id=order_id
