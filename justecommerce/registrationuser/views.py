@@ -35,10 +35,13 @@ def user_signup(request):
 
         get_otp=request.POST.get('otp')
 
+
         if get_otp:
 
             get_email=request.POST.get('email')
             usr=User.objects.get(email=get_email)
+
+            
 
             if int(get_otp)==UserOTP.objects.filter(user=usr).last().otp:
                 usr.is_active=True
@@ -64,7 +67,7 @@ def user_signup(request):
 
             #null values checking 
 
-            check=[username,email,password1,password2,phone]
+            check=[username,email,password1,password2,phone,firstname,lastname]
 
             for values in check:
 

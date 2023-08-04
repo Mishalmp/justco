@@ -16,7 +16,7 @@
             {% csrf_token %}
              
               <div class="form-group">
-                <input type="text" class="form-control" placeholder="enter otp" name="otp" >
+                <input type="number" class="form-control" placeholder="enter otp" name="otp" required>
               </div> <!-- form-group// -->
               <div class="form-group">
                 <input type="hidden" name="email" value="{{usr.email}}" >

@@ -15,7 +15,7 @@
       <form action="{% url 'forgot_password' %}" method="POST">
         {% csrf_token %}
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="otp" name="otp" value="{{pre_otp}}" required>
+          <input type="number" class="form-control" placeholder="otp" name="otp" value="{{pre_otp}}" required>
         </div> <!-- form-group// -->
         <div class="form-group">
           <input type="password" class="form-control" placeholder="Password" name="password1" required>
