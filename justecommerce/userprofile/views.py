@@ -41,12 +41,12 @@ def user_profile(request):
         
         
     user_info = {
-        'address': Address.objects.filter(user=request.user).first(),
+        'address': Address.objects.filter(user=request.user,available=True).first(),
         'user': User.objects.get(username=request.user),
         'wallets': Wallet.objects.filter(user=request.user),
         'cart': Cart.objects.filter(user=request.user).order_by('-id'),
         'wishlist': Wishlist.objects.filter(user=request.user).order_by('-id'),
-        'addresses': Address.objects.filter(user=request.user),
+        'addresses': Address.objects.filter(user=request.user,available=True),
         'orders': orders,
         'order_items': order_items,
     }
@@ -274,7 +274,8 @@ def changepassword(request):
 @login_required(login_url='user_login')
 def deleteaddress(request,delete_id):
     address = Address.objects.get(id = delete_id)
-    address.delete()
+    address.available=False
+    address.save()
     return redirect('user_profile')
 
 

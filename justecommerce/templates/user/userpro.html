@@ -920,7 +920,7 @@
                                                                         <p>Are you sure to delete Address <span class="text-primary">" {{adrs.first_name}} {{adrs.last_name}} ..."</span></p>
                                                                         
                                                                           <div class="d-flex justify-content-center">
-                                                                            <a type="button" href="#"
+                                                                            <a type="button" href="{% url 'deleteaddress' adrs.id %}"
                                                                               class="btn btn-danger btn-lg gradient-custom-4 w-50 text-light">Confirm</a>
                                                                           </div>
                                                       

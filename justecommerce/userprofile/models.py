@@ -15,6 +15,7 @@ class Address(models.Model):
     city = models.CharField(max_length=50,blank=True)
     pincode = models.CharField(max_length=50,blank=True)
     order_note = models.CharField(max_length=100, blank=True ,null=True)
+    available=models.BooleanField(null=True,default=True)
 
     def __str__(self):
         return f"{self.id}"

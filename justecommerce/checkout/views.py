@@ -72,7 +72,7 @@ def checkout(request):
                 pass
           
 
-    address = Address.objects.filter(user=request.user)
+    address = Address.objects.filter(user=request.user,available=True)
 
     context = {
         'cartitems': cartitems,
@@ -543,7 +543,7 @@ def buynow_checkout(request):
             except Coupon.DoesNotExist:
                 pass
 
-    address = Address.objects.filter(user=request.user)
+    address = Address.objects.filter(user=request.user,available=True)
 
     context = {
         'cartitems': cartitems,
