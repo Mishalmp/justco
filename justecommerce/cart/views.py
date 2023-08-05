@@ -13,7 +13,7 @@ from products.models import Product
 @login_required(login_url='user_login')
 def cart(request):
     if request.user.is_superuser:
-                return redirect('dashboard')
+        return redirect('dashboard')
 
     cart=Cart.objects.filter(user=request.user).order_by('id')
 

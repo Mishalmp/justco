@@ -20,6 +20,8 @@ from django.http import JsonResponse
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='user_login')
 def user_profile(request):
+    if request.user.is_superuser:
+        return redirect('dashboard')
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     order_items = OrderItem.objects.filter(order__in=orders).order_by('-order__created_at')
     
@@ -281,6 +283,8 @@ def deleteaddress(request,delete_id):
 
 @login_required(login_url='user_login')
 def trackorder(request,order_id):
+    if request.user.is_superuser:
+        return redirect('dashboard')
 
     order=Order.objects.get(id=order_id)
     order_items=OrderItem.objects.filter(order_id=order_id)

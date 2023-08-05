@@ -15,7 +15,7 @@ from cart.models import Cart
 @login_required(login_url='user_login')
 def wishlist(request):
     if request.user.is_superuser:
-                return redirect('dashboard')
+        return redirect('dashboard')
   
     
     wishlist = Wishlist.objects.filter(user = request.user)

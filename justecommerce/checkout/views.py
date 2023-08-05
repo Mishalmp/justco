@@ -28,6 +28,8 @@ from django.contrib.auth.decorators import login_required
 # from weasyprint import HTML
 @login_required(login_url='user_login')
 def checkout(request):
+    if request.user.is_superuser:
+        return redirect('dashboard')
     cartitems = Cart.objects.filter(user=request.user)
     total_price = 0
 
@@ -494,6 +496,8 @@ def edit_check_address(request,edit_id):
 #.........................................buynow...................................................... 
 @login_required(login_url='user_login')
 def buynow_checkout(request):
+    if request.user.is_superuser:
+        return redirect('dashboard')
 
     
     cartitems = Buynow.objects.filter(user=request.user)
