@@ -40,6 +40,8 @@ def user_profile(request):
             order.od_status = 'Pending'
 
         order.save()
+
+    
         
         
     user_info = {
@@ -149,7 +151,7 @@ def add_address(request):
         return redirect('user_profile')
     
 @login_required(login_url='user_login')
-def edit_address(request,edit_id):
+def edit_address(request,edit_id,):
 
     if request.method == 'POST':
 

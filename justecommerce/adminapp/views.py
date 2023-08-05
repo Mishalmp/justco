@@ -193,6 +193,9 @@ def admin_signup(request):
 # @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='admin_login')
 def dashboard(request):
+    if not request.user.is_superuser:
+        return redirect('admin_login')
+    
     total_profit = Order.objects.aggregate(total_profit=Sum('total_price'))['total_profit'] or 0
 
     # Count total orders

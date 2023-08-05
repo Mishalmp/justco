@@ -577,6 +577,7 @@
 
                             <div class="tab-pane fade" id="tab-address" role="tabpanel" aria-labelledby="tab-address-link">
                                 <p>The following addresses will be used on the checkout page by default.</p>
+                               {% if addresses %}
                                 <!--add address modal -->
                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" style="max-width: 600px; max-height: 650px; overflow-y: auto; overflow-x: hidden; ">
@@ -667,6 +668,8 @@
                                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body" style="margin-left:35px; ">
+
+
                 
                                     <form action="{% url 'edit_address' address.id %}" method="post">
                                             {% csrf_token %}
@@ -793,7 +796,7 @@
                                                                 <a  data-bs-toggle="modal" data-bs-target="#viewaddress{{forloop.counter}}">
                                                                   <i style="font-size: xx-large;" class="mdi mdi-eye"></i>
                                                                 </a>
-                                                            <a href="#"  class="site-btn mb-3" data-bs-toggle="modal" data-bs-target="#editModal2{{forloop.counter}}"><i style="font-size: xx-large; color: black;" class="mdi mdi-tooltip-edit"></i></a></p>
+                                                            <a href="#"  class="site-btn mb-3" data-bs-toggle="modal" data-bs-target="#editModal2{{forloop.counter}}" data-edit-id="{{ adrs.id }}"><i style="font-size: xx-large; color: black;" class="mdi mdi-tooltip-edit"></i></a></p>
                                                             <a href="#"  data-bs-toggle="modal" data-bs-target="#deletaddress{{forloop.counter}}">
                                                               <i style="font-size: xx-large; margin-left: -30px; color: black;" class="mdi mdi-delete-forever"></i>
                                                             </a>
@@ -1013,12 +1016,15 @@
                                                        
                                                         </div>
                                                         {% endfor %}
+
+                                                        {% else %}
                                                     <div class="card-body">
-                                                      {% if not address %}<h5 class="card-title">No address saved</h5>{% endif %}
+                                                      <h5 class="card-title">No address saved</h5>
                                                       <p class="card-text"> </p>
                                                       <div>
                                                       </div>
                                                     </div>
+                                                    {% endif %}
                                                 </div>
 
                                                
