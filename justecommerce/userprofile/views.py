@@ -226,7 +226,7 @@ def editprofile(request):
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
 
-        print(username,first_name)
+        # print(username,first_name,'111111111111111111111111111111111')
 
         if username == '':
             messages.error(request, 'Username is empty')

@@ -1066,7 +1066,8 @@
                                     </div>
                                     <div class="modal-body" style="margin-left:35px; ">
 
-                                <form action="{% url 'editprofile' %}">
+                                <form action="{% url 'editprofile' %}" method="post">
+                                  {% csrf_token %}
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <label>First Name *</label>
@@ -1110,7 +1111,8 @@
                                         </div>
                                         <div class="modal-body" style="margin-left:35px; ">
     
-                                    <form action="{% url 'changepassword' %}">
+                                    <form action="{% url 'changepassword' %}" method="post">
+                                      {% csrf_token %}
                                      
     
                                        
