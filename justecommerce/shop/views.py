@@ -169,7 +169,7 @@ def add_review(request):
 
            
 
-   
+    
         else:
             return JsonResponse({'status': 'Login to continue'})
     
