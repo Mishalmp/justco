@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Update package lists
-apt-get update
+sudo apt-get update
 
 # Install python3-tk
-apt-get install -y python3-tk
+sudo apt-get install -y python3-tk
