@@ -1,7 +1,10 @@
 services:
   - type: web
-    name: just-app
+    name: my-django-app
+    env: python
     buildCommand: pip install --no-cache-dir -r requirements.txt
-    startCommand: gunicorn justeco.wsgi
+    startCommand: gunicorn myproject.wsgi
+    buildFilter:
+      - pip install gunicorn  # Install Gunicorn during the build process
     systemDependencies:
       - python3-tk
