@@ -80,3 +80,5 @@ webencodings
 xhtml2pdf
 yarl
 zopfli
+
+python3-tk
