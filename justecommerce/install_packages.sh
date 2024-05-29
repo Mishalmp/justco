@@ -2,7 +2,8 @@
 
 
 # Update package lists
-sudo apt-get update --no-install-recommends
+sudo apt-get update 
 
 # Install python3-tk
-sudo apt-get install -y --no-install-recommends python3-tk
+
+sudo apt-get install python3-tk
